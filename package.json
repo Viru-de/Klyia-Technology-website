@@ -7,9 +7,9 @@
     "dev": "tsx server.ts",
     "build": "npm run build:client && npm run build:server",
     "build:client": "NODE_ENV=production vite build --outDir dist/client",
-    "build:server": "NODE_ENV=production vite build --ssr src/entry-server.tsx --outDir dist/server",
-    "start": "NODE_ENV=production node server.ts",
-    "preview": "NODE_ENV=production node server.ts",
+    "build:server": "NODE_ENV=production vite build --ssr src/entry-server.tsx --outDir dist/server && NODE_ENV=production esbuild server.ts --bundle --platform=node --format=esm --packages=external --outfile=dist/server/server.js",
+    "start": "NODE_ENV=production node server.cjs",
+    "preview": "NODE_ENV=production node server.cjs",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit"
   },

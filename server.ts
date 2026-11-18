@@ -2,7 +2,7 @@ import 'dotenv/config';
 import {randomUUID} from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import {fileURLToPath} from 'node:url';
+import {fileURLToPath, pathToFileURL} from 'node:url';
 import express from 'express';
 import type {NextFunction, Request, Response} from 'express';
 import {
@@ -59,8 +59,14 @@ interface InquiryPayload {
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const projectRoot =
+  path.basename(__dirname) === 'server' && path.basename(path.dirname(__dirname)) === 'dist'
+    ? path.resolve(__dirname, '../..')
+    : __dirname;
 const isProduction = process.env.NODE_ENV === 'production';
-const port = Number(process.env.PORT || 3000);
+const rawPort = process.env.PORT;
+const port: number | string =
+  rawPort && /^\d+$/.test(rawPort) ? Number(rawPort) : rawPort || 3000;
 const VISITOR_COOKIE_NAME = 'klyia_vid';
 const DEFAULT_SITEMAP_LASTMOD = '2026-11-18';
 
@@ -403,12 +409,12 @@ async function createAppServer() {
     });
     app.use(vite.middlewares);
   } else {
-    const clientDistDir = path.resolve(__dirname, 'dist/client');
-    const serverEntryPath = path.resolve(__dirname, 'dist/server/entry-server.js');
+    const clientDistDir = path.resolve(projectRoot, 'dist/client');
+    const serverEntryPath = path.resolve(projectRoot, 'dist/server/entry-server.js');
     const templatePath = path.resolve(clientDistDir, 'index.html');
 
     productionTemplate = await fs.readFile(templatePath, 'utf-8');
-    const serverModule = (await import(serverEntryPath)) as SsrModule;
+    const serverModule = (await import(pathToFileURL(serverEntryPath).href)) as SsrModule;
     productionRender = serverModule.render;
 
     app.use(
@@ -441,7 +447,7 @@ async function createAppServer() {
       let renderFn: SsrModule['render'];
 
       if (!isProduction && vite) {
-        const rawTemplate = await fs.readFile(path.resolve(__dirname, 'index.html'), 'utf-8');
+        const rawTemplate = await fs.readFile(path.resolve(projectRoot, 'index.html'), 'utf-8');
         template = await vite.transformIndexHtml(url, rawTemplate);
         const loaded = (await vite.ssrLoadModule('/src/entry-server.tsx')) as SsrModule;
         renderFn = loaded.render;
@@ -484,8 +490,22 @@ async function createAppServer() {
       );
   });
 
-  const server = app.listen(port, '0.0.0.0', () => {
-    console.info(`Klyia Technology SSR server running on port ${port} (${isProduction ? 'production' : 'development'})`);
+  const server = await new Promise<ReturnType<typeof app.listen>>((resolve, reject) => {
+    const onListening = () => {
+      console.info(
+        `Klyia Technology SSR server running on port ${port} (${isProduction ? 'production' : 'development'})`,
+      );
+      resolve(httpServer);
+    };
+
+    const httpServer =
+      typeof port === 'number'
+        ? app.listen(port, '0.0.0.0', onListening)
+        : app.listen(port, onListening);
+
+    httpServer.once('error', (error) => {
+      reject(error);
+    });
   });
 
   const shutdown = () => {
@@ -499,7 +519,7 @@ async function createAppServer() {
   process.on('SIGINT', shutdown);
 }
 
-createAppServer().catch((error) => {
+export const serverReady = createAppServer().catch((error) => {
   console.error('Failed to start Klyia Technology SSR server:', error);
   closeDatabase();
   process.exit(1);

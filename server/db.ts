@@ -6,8 +6,12 @@ import {fileURLToPath} from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const projectRoot =
+  path.basename(__dirname) === 'server' && path.basename(path.dirname(__dirname)) === 'dist'
+    ? path.resolve(__dirname, '../..')
+    : path.resolve(__dirname, '..');
 
-const DEFAULT_DB_PATH = path.resolve(__dirname, '../data/klyia.db');
+const DEFAULT_DB_PATH = path.resolve(projectRoot, 'data/klyia.db');
 const VISITOR_HASH_SALT = process.env.VISITOR_HASH_SALT || 'klyia-tech-bhilai-visitor-salt-v1';
 
 let dbInstance: DatabaseSync | null = null;

@@ -24,13 +24,13 @@ npm run build
 ```
 This runs two builds:
 1. `vite build --outDir dist/client` — builds optimized client bundles and copies `src/assets` into `dist/client/src/assets`.
-2. `vite build --ssr src/entry-server.tsx --outDir dist/server` — builds the SSR bundle (`dist/server/entry-server.js`).
+2. `vite build --ssr src/entry-server.tsx --outDir dist/server` — builds the SSR bundle (`dist/server/entry-server.js`), and `esbuild server.ts` compiles the production server entry (`dist/server/server.js`).
 
 ## 5. Production Startup Command
 ```bash
 npm start
 ```
-Executes `NODE_ENV=production node server.ts`, binding to `0.0.0.0` on `process.env.PORT` (default `3000`).
+Executes `NODE_ENV=production node server.cjs`, which dynamically loads `dist/server/server.js` and binds to `0.0.0.0` on `process.env.PORT` (default `3000`).
 
 ## 6. Environment Variable Instructions
 Configure these environment variables in your Hostinger Node.js application settings (never commit secrets or `.env` files to Git):
@@ -54,7 +54,7 @@ Configure these environment variables in your Hostinger Node.js application sett
 1. Push your repository to GitHub/GitLab or upload project files (excluding `node_modules`, `dist`, and `data`) to your Hostinger Node.js hosting directory.
 2. In **Hostinger hPanel -> Websites -> Node.js**:
    - Select **Node.js 22.x**.
-   - Set **Entry file / Startup command** to `server.ts` (or `npm start`).
+   - Set **Entry file / Startup file** to `server.cjs` (or `npm start`).
    - Set **Build command** to `npm install && npm run build`.
 3. Add the environment variables listed in Section 6 inside Hostinger's Environment Variables panel.
 4. Trigger **Build & Deploy** from hPanel (or via SSH: `npm ci && npm run build && npm start`).
