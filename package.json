@@ -6,11 +6,11 @@
   "scripts": {
     "dev": "tsx server.ts",
     "build": "npm run build:client && npm run build:server",
-    "build:client": "vite build --outDir dist/client",
-    "build:server": "vite build --ssr src/entry-server.tsx --outDir dist/server",
+    "build:client": "NODE_ENV=production vite build --outDir dist/client",
+    "build:server": "NODE_ENV=production vite build --ssr src/entry-server.tsx --outDir dist/server",
     "start": "NODE_ENV=production node server.ts",
     "preview": "NODE_ENV=production node server.ts",
-    "clean": "rm -rf dist server.js",
+    "clean": "rm -rf dist",
     "lint": "tsc --noEmit"
   },
   "dependencies": {
@@ -30,7 +30,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "autoprefixer": "^10.4.21",
-    "esbuild": "^0.25.0",
+    "esbuild": "^0.28.0",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.21.0",
     "typescript": "^7.0.2",
