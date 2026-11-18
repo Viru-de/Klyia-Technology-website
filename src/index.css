@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-klyia-obsidian: #080808;
+  --color-klyia-graphite: #141414;
+  --color-klyia-surface: #1B1B1B;
+  --color-klyia-card: #111111;
+  --color-klyia-chrome: #CDCBCA;
+  --color-klyia-secondary: #969696;
+  --color-klyia-border: #303030;
+  --color-klyia-crimson: #D41514;
+  --color-klyia-crimson-hover: #E31E1D;
+  --color-klyia-white: #FFFFFF;
+}
+
+:root {
+  --klyia-bg-primary: #080808;
+  --klyia-bg-graphite: #141414;
+  --klyia-bg-elevated: #1B1B1B;
+  --klyia-bg-card: #111111;
+  --klyia-text-primary: #CDCBCA;
+  --klyia-text-secondary: #969696;
+  --klyia-text-white: #FFFFFF;
+  --klyia-border: #303030;
+  --klyia-accent: #D41514;
+  --klyia-accent-hover: #E31E1D;
+
+  --font-display: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --ease-corporate: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html {
+  font-family: var(--font-body);
+  color: var(--klyia-text-primary);
+  background-color: var(--klyia-bg-primary);
+  color-scheme: dark;
+  scroll-behavior: smooth;
+  overflow-x: clip;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--klyia-text-primary);
+  background-color: var(--klyia-bg-primary);
+  overflow-x: clip;
+  line-height: 1.65;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  color: var(--klyia-text-primary);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+:focus-visible {
+  outline: 2px solid var(--klyia-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

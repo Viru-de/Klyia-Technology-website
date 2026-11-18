@@ -1,0 +1,38 @@
+export const BRAND = {
+  name: 'Klyia Technology',
+  wordmarkPrimary: 'KLYIA',
+  wordmarkSecondary: 'TECHNOLOGY',
+  tagline: 'Technology That Moves Businesses Forward.',
+  domain: 'https://klyiatechnology.com',
+  email: 'klyiatechnology@gmail.com',
+  phoneDisplay: '+91 8296887643',
+  phoneHref: 'tel:+918296887643',
+  whatsappHref: 'https://wa.me/918296887643',
+  address: {
+    line1: 'First Floor, Bajrang Hardware,',
+    line2: 'Krishna Talkies Road, Risali,',
+    cityStateCountry: 'Bhilai, Chhattisgarh, India.',
+    full: 'First Floor, Bajrang Hardware, Krishna Talkies Road, Risali, Bhilai, Chhattisgarh, India.',
+    locality: 'Bhilai',
+    region: 'Chhattisgarh',
+    countryCode: 'IN',
+  },
+  colors: {
+    obsidianBlack: '#080808',
+    deepGraphite: '#141414',
+    elevatedSurface: '#1B1B1B',
+    cardBackground: '#111111',
+    chromeSilver: '#CDCBCA',
+    secondaryText: '#969696',
+    subtleBorder: '#303030',
+    laserCrimson: '#D41514',
+    whiteHighlight: '#FFFFFF',
+  },
+  typography: {
+    displayFont: '"Manrope", sans-serif',
+    bodyFont: '"Inter", sans-serif',
+    monoFont: '"JetBrains Mono", monospace',
+  },
+  footerSummary:
+    'Klyia Technology provides custom software, ERP, website development, AI solutions and digital growth services to businesses across India.',
+} as const;
