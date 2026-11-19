@@ -1,4 +1,4 @@
-import {createHash} from 'node:crypto';
+import {createHash, randomBytes, randomUUID} from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import {DatabaseSync} from 'node:sqlite';
@@ -16,17 +16,72 @@ const VISITOR_HASH_SALT = process.env.VISITOR_HASH_SALT || 'klyia-tech-bhilai-vi
 
 let dbInstance: DatabaseSync | null = null;
 
+export type LeadSourceType = 'contact' | 'quote' | 'service' | 'solar' | 'chat';
+
 export interface LeadRecordInput {
-  source: 'contact' | 'quote';
+  source: LeadSourceType;
   name: string;
   company?: string;
   phone: string;
-  email?: string;
+  email: string;
   city?: string;
   service?: string;
   industry?: string;
   subject?: string;
   message: string;
+  sourcePage?: string;
+  sourceSection?: string;
+  consentGiven: boolean;
+  fingerprint: string;
+}
+
+export interface ChatSessionRecord {
+  id: string;
+  sessionToken: string;
+  referenceId: string;
+  name: string;
+  phone: string;
+  email: string;
+  company: string;
+  service: string;
+  initialRequirement: string;
+  sourcePage: string;
+  consent: boolean;
+  emailStatus: string;
+  createdAt: string;
+}
+
+export interface ChatMessageRecord {
+  id: number;
+  sessionId: string;
+  sender: 'visitor' | 'system';
+  message: string;
+  emailStatus: string;
+  createdAt: string;
+}
+
+function ensureLeadsColumns(db: DatabaseSync) {
+  const columns = db.prepare('PRAGMA table_info(leads)').all() as {name?: string}[];
+  const existing = new Set(columns.map((c) => c.name).filter(Boolean));
+
+  const migrations: [string, string][] = [
+    ['consent', 'ALTER TABLE leads ADD COLUMN consent INTEGER NOT NULL DEFAULT 0'],
+    ['source_page', 'ALTER TABLE leads ADD COLUMN source_page TEXT'],
+    ['source_section', 'ALTER TABLE leads ADD COLUMN source_section TEXT'],
+    ['email_status', "ALTER TABLE leads ADD COLUMN email_status TEXT NOT NULL DEFAULT 'pending'"],
+    ['email_error', 'ALTER TABLE leads ADD COLUMN email_error TEXT'],
+    ['submission_fingerprint', 'ALTER TABLE leads ADD COLUMN submission_fingerprint TEXT'],
+  ];
+
+  for (const [col, ddl] of migrations) {
+    if (!existing.has(col)) {
+      db.exec(ddl);
+    }
+  }
+
+  db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_leads_fingerprint_time ON leads (submission_fingerprint, created_at DESC)',
+  );
 }
 
 export function getDatabase(): DatabaseSync {
@@ -78,12 +133,49 @@ export function getDatabase(): DatabaseSync {
       industry TEXT,
       subject TEXT,
       message TEXT NOT NULL,
+      consent INTEGER NOT NULL DEFAULT 0,
+      source_page TEXT,
+      source_section TEXT,
+      email_status TEXT NOT NULL DEFAULT 'pending',
+      email_error TEXT,
+      submission_fingerprint TEXT,
       created_at TEXT NOT NULL
     );
 
     CREATE INDEX IF NOT EXISTS idx_leads_created_at
       ON leads (created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS chat_sessions (
+      id TEXT PRIMARY KEY,
+      session_token TEXT NOT NULL,
+      reference_id TEXT UNIQUE NOT NULL,
+      name TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      email TEXT NOT NULL,
+      company TEXT NOT NULL,
+      service TEXT NOT NULL,
+      initial_requirement TEXT NOT NULL,
+      source_page TEXT,
+      consent INTEGER NOT NULL DEFAULT 1,
+      email_status TEXT NOT NULL DEFAULT 'pending',
+      created_at TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS chat_messages (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      session_id TEXT NOT NULL,
+      sender TEXT NOT NULL,
+      message TEXT NOT NULL,
+      email_status TEXT NOT NULL DEFAULT 'sent',
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (session_id) REFERENCES chat_sessions(id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_chat_messages_session
+      ON chat_messages (session_id, id ASC);
   `);
+
+  ensureLeadsColumns(db);
 
   dbInstance = db;
   return dbInstance;
@@ -91,6 +183,40 @@ export function getDatabase(): DatabaseSync {
 
 export function hashVisitorIdentifier(rawId: string): string {
   return createHash('sha256').update(`${VISITOR_HASH_SALT}:${rawId}`).digest('hex');
+}
+
+export function computeSubmissionFingerprint(parts: string[]): string {
+  return createHash('sha256')
+    .update(parts.map((p) => p.trim().toLowerCase()).join('|'))
+    .digest('hex');
+}
+
+export function findRecentDuplicateLead(
+  fingerprint: string,
+  windowSeconds = 120,
+): {referenceId: string; createdAt: string; emailStatus: string} | null {
+  const db = getDatabase();
+  const cutoffIso = new Date(Date.now() - windowSeconds * 1000).toISOString();
+  const row = db
+    .prepare(
+      `SELECT reference_id, created_at, email_status
+       FROM leads
+       WHERE submission_fingerprint = ? AND created_at >= ?
+       ORDER BY id DESC LIMIT 1`,
+    )
+    .get(fingerprint, cutoffIso) as
+    | {reference_id?: string; created_at?: string; email_status?: string}
+    | undefined;
+
+  if (!row?.reference_id || !row?.created_at) {
+    return null;
+  }
+
+  return {
+    referenceId: row.reference_id,
+    createdAt: row.created_at,
+    emailStatus: row.email_status || 'pending',
+  };
 }
 
 export function getTotalVisitors(): number {
@@ -163,8 +289,9 @@ export function saveLeadRecord(input: LeadRecordInput): {referenceId: string; cr
 
   db.prepare(
     `INSERT INTO leads (
-      reference_id, source, name, company, phone, email, city, service, industry, subject, message, created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      reference_id, source, name, company, phone, email, city, service, industry, subject, message,
+      consent, source_page, source_section, email_status, submission_fingerprint, created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     referenceId,
     input.source,
@@ -177,10 +304,240 @@ export function saveLeadRecord(input: LeadRecordInput): {referenceId: string; cr
     input.industry || null,
     input.subject || null,
     input.message,
+    input.consentGiven ? 1 : 0,
+    input.sourcePage || null,
+    input.sourceSection || null,
+    'pending',
+    input.fingerprint,
     createdAt,
   );
 
   return {referenceId, createdAt};
+}
+
+export function updateLeadEmailStatus(
+  referenceId: string,
+  status: 'sent' | 'failed' | 'smtp_unconfigured',
+  errorMsg?: string,
+): void {
+  const db = getDatabase();
+  db.prepare('UPDATE leads SET email_status = ?, email_error = ? WHERE reference_id = ?').run(
+    status,
+    errorMsg ? errorMsg.slice(0, 500) : null,
+    referenceId,
+  );
+}
+
+export function createChatSession(input: {
+  name: string;
+  phone: string;
+  email: string;
+  company: string;
+  service: string;
+  initialRequirement: string;
+  sourcePage: string;
+}): {session: ChatSessionRecord; initialMessages: ChatMessageRecord[]} {
+  const db = getDatabase();
+  const now = new Date();
+  const stamp = `${now.getUTCFullYear()}${String(now.getUTCMonth() + 1).padStart(2, '0')}${String(now.getUTCDate()).padStart(2, '0')}`;
+  const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+  const referenceId = `KLY-CHAT-${stamp}-${randomSuffix}`;
+  const sessionId = randomUUID();
+  const sessionToken = randomBytes(24).toString('hex');
+  const createdAt = now.toISOString();
+
+  db.exec('BEGIN IMMEDIATE');
+  try {
+    db.prepare(
+      `INSERT INTO chat_sessions (
+        id, session_token, reference_id, name, phone, email, company, service,
+        initial_requirement, source_page, consent, email_status, created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 'pending', ?)`,
+    ).run(
+      sessionId,
+      sessionToken,
+      referenceId,
+      input.name,
+      input.phone,
+      input.email,
+      input.company,
+      input.service,
+      input.initialRequirement,
+      input.sourcePage,
+      createdAt,
+    );
+
+    db.prepare(
+      `INSERT INTO leads (
+        reference_id, source, name, company, phone, email, service, subject, message,
+        consent, source_page, source_section, email_status, submission_fingerprint, created_at
+      ) VALUES (?, 'chat', ?, ?, ?, ?, ?, ?, ?, 1, ?, 'Website Chatbox', 'pending', ?, ?)`,
+    ).run(
+      referenceId,
+      input.name,
+      input.company,
+      input.phone,
+      input.email,
+      input.service,
+      `Chatbox Enquiry: ${input.service}`,
+      input.initialRequirement,
+      input.sourcePage,
+      computeSubmissionFingerprint(['chat', input.email, input.phone, input.initialRequirement]),
+      createdAt,
+    );
+
+    const userMsgInfo = db
+      .prepare(
+        `INSERT INTO chat_messages (session_id, sender, message, email_status, created_at)
+         VALUES (?, 'visitor', ?, 'pending', ?)`,
+      )
+      .run(sessionId, input.initialRequirement, createdAt);
+
+    db.exec('COMMIT');
+
+    const session: ChatSessionRecord = {
+      id: sessionId,
+      sessionToken,
+      referenceId,
+      name: input.name,
+      phone: input.phone,
+      email: input.email,
+      company: input.company,
+      service: input.service,
+      initialRequirement: input.initialRequirement,
+      sourcePage: input.sourcePage,
+      consent: true,
+      emailStatus: 'pending',
+      createdAt,
+    };
+
+    const initialMessages: ChatMessageRecord[] = [
+      {
+        id: Number(userMsgInfo.lastInsertRowid),
+        sessionId,
+        sender: 'visitor',
+        message: input.initialRequirement,
+        emailStatus: 'pending',
+        createdAt,
+      },
+    ];
+
+    return {session, initialMessages};
+  } catch (error) {
+    db.exec('ROLLBACK');
+    throw error;
+  }
+}
+
+export function getChatSessionAuthorized(
+  sessionId: string,
+  sessionToken: string,
+): {session: ChatSessionRecord; messages: ChatMessageRecord[]} | null {
+  const db = getDatabase();
+  const row = db
+    .prepare(
+      `SELECT id, session_token, reference_id, name, phone, email, company, service,
+              initial_requirement, source_page, consent, email_status, created_at
+       FROM chat_sessions WHERE id = ? AND session_token = ?`,
+    )
+    .get(sessionId, sessionToken) as
+    | {
+        id: string;
+        session_token: string;
+        reference_id: string;
+        name: string;
+        phone: string;
+        email: string;
+        company: string;
+        service: string;
+        initial_requirement: string;
+        source_page: string;
+        consent: number;
+        email_status: string;
+        created_at: string;
+      }
+    | undefined;
+
+  if (!row) {
+    return null;
+  }
+
+  const msgRows = db
+    .prepare(
+      `SELECT id, session_id, sender, message, email_status, created_at
+       FROM chat_messages WHERE session_id = ? ORDER BY id ASC`,
+    )
+    .all(sessionId) as {
+    id: number;
+    session_id: string;
+    sender: 'visitor' | 'system';
+    message: string;
+    email_status: string;
+    created_at: string;
+  }[];
+
+  return {
+    session: {
+      id: row.id,
+      sessionToken: row.session_token,
+      referenceId: row.reference_id,
+      name: row.name,
+      phone: row.phone,
+      email: row.email,
+      company: row.company,
+      service: row.service,
+      initialRequirement: row.initial_requirement,
+      sourcePage: row.source_page || '/',
+      consent: Boolean(row.consent),
+      emailStatus: row.email_status,
+      createdAt: row.created_at,
+    },
+    messages: msgRows.map((m) => ({
+      id: m.id,
+      sessionId: m.session_id,
+      sender: m.sender,
+      message: m.message,
+      emailStatus: m.email_status,
+      createdAt: m.created_at,
+    })),
+  };
+}
+
+export function appendChatMessage(
+  sessionId: string,
+  sender: 'visitor' | 'system',
+  message: string,
+  emailStatus: string,
+): ChatMessageRecord {
+  const db = getDatabase();
+  const createdAt = new Date().toISOString();
+  const info = db
+    .prepare(
+      `INSERT INTO chat_messages (session_id, sender, message, email_status, created_at)
+       VALUES (?, ?, ?, ?, ?)`,
+    )
+    .run(sessionId, sender, message, emailStatus, createdAt);
+
+  return {
+    id: Number(info.lastInsertRowid),
+    sessionId,
+    sender,
+    message,
+    emailStatus,
+    createdAt,
+  };
+}
+
+export function updateChatEmailStatus(
+  sessionId: string,
+  status: 'sent' | 'failed' | 'smtp_unconfigured',
+  messageId?: number,
+): void {
+  const db = getDatabase();
+  db.prepare('UPDATE chat_sessions SET email_status = ? WHERE id = ?').run(status, sessionId);
+  if (typeof messageId === 'number') {
+    db.prepare('UPDATE chat_messages SET email_status = ? WHERE id = ?').run(status, messageId);
+  }
 }
 
 export function closeDatabase(): void {

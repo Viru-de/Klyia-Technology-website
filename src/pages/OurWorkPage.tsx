@@ -8,6 +8,8 @@ import {STATIC_PAGE_BANNERS} from '../config/banners.ts';
 import {TECHNOLOGY_SOLUTIONS} from '../config/homeData.ts';
 import {ROUTES} from '../config/routes.ts';
 import type {BreadcrumbEntry} from '../config/seo.ts';
+import {saveQuotePrefill} from '../lib/quotePrefill.ts';
+import {Link} from '../lib/router.tsx';
 
 interface OurWorkPageProps {
   breadcrumbs: BreadcrumbEntry[];
@@ -48,7 +50,7 @@ export function OurWorkPage({breadcrumbs}: OurWorkPageProps) {
                 className="flex flex-col justify-between rounded-xl border border-[#303030] bg-[#111111] p-6 sm:p-7 transition-all duration-200 hover:border-[#D41514]/55 hover:shadow-[0_14px_34px_-16px_rgba(212,21,20,0.24)]"
               >
                 <div>
-                  <h3 className="text-xl font-bold text-[#CDCBCA]">{solution.title}</h3>
+                  <p className="text-xl font-bold text-[#CDCBCA]">{solution.title}</p>
                   <p className="mt-2.5 text-sm leading-[1.65] text-[#969696]">
                     {solution.summary}
                   </p>
@@ -62,9 +64,23 @@ export function OurWorkPage({breadcrumbs}: OurWorkPageProps) {
                   </ul>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-[#303030]">
-                  <Button href={ROUTES.GET_A_QUOTE} variant="outline" size="sm">
-                    <span>Request Architecture Walkthrough</span>
+                <div className="mt-6 pt-4 border-t border-[#303030] flex flex-wrap items-center justify-between gap-3">
+                  <Link
+                    href={solution.href}
+                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#CDCBCA] hover:text-[#D41514] transition-colors"
+                  >
+                    <span>Explore {solution.title} Architecture</span>
+                    <ArrowRight className="w-4 h-4 text-[#D41514]" aria-hidden="true" />
+                  </Link>
+                  <Button
+                    href={ROUTES.GET_A_QUOTE}
+                    onNavigate={() =>
+                      saveQuotePrefill({service: solution.quotePrefillService || solution.title})
+                    }
+                    variant="outline"
+                    size="sm"
+                  >
+                    <span>Scope {solution.title}</span>
                     <ArrowRight className="w-3.5 h-3.5 text-[#D41514]" aria-hidden="true" />
                   </Button>
                 </div>

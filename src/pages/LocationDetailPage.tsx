@@ -1,11 +1,12 @@
 import React from 'react';
-import {ArrowRight, CheckCircle2, MapPin, MessageCircle} from 'lucide-react';
+import {ArrowRight, CheckCircle2, MapPin, Phone} from 'lucide-react';
 import {CTASection} from '../components/home/CTASection.tsx';
 import {InnerPageBanner} from '../components/layout/InnerPageBanner.tsx';
 import {VisibleFaqBlock} from '../components/shared/VisibleFaqBlock.tsx';
 import {Button} from '../components/ui/Button.tsx';
 import {Container} from '../components/ui/Container.tsx';
-import {BRAND} from '../config/brand.ts';
+import {WhatsAppIcon} from '../components/ui/WhatsAppIcon.tsx';
+import {BRAND, buildWhatsAppHref} from '../config/brand.ts';
 import {ROUTES} from '../config/routes.ts';
 import type {BreadcrumbEntry} from '../config/seo.ts';
 import {
@@ -14,6 +15,7 @@ import {
   getServiceBySlug,
   type LocationPageData,
 } from '../data/index.ts';
+import {saveQuotePrefill} from '../lib/quotePrefill.ts';
 import {Link} from '../lib/router.tsx';
 
 interface LocationDetailPageProps {
@@ -30,9 +32,12 @@ export function LocationDetailPage({location, breadcrumbs}: LocationDetailPagePr
     .map((slug) => getLocationBySlug(slug))
     .filter((item): item is LocationPageData => Boolean(item));
 
-  const whatsappUrl = `${BRAND.whatsappHref}?text=${encodeURIComponent(
+  const whatsappUrl = buildWhatsAppHref(
     `Hello Klyia Technology, we are looking for ${location.serviceFocus} in ${location.city}.`,
-  )}`;
+  );
+
+  const prefillLocationQuote = () =>
+    saveQuotePrefill({city: location.city, service: location.serviceFocus});
 
   return (
     <>
@@ -43,7 +48,8 @@ export function LocationDetailPage({location, breadcrumbs}: LocationDetailPagePr
         backgroundImage={location.heroImage}
         backgroundAlt={location.heroImageAlt}
         ctaLabel={`Consult for ${location.city}`}
-        ctaHref={`${ROUTES.GET_A_QUOTE}?city=${encodeURIComponent(location.city)}&service=${encodeURIComponent(location.serviceFocus)}`}
+        ctaHref={ROUTES.GET_A_QUOTE}
+        onCtaNavigate={prefillLocationQuote}
       />
 
       <section className="bg-[#080808] py-14 sm:py-16 border-b border-[#303030]">
@@ -69,29 +75,38 @@ export function LocationDetailPage({location, breadcrumbs}: LocationDetailPagePr
             </div>
 
             <aside className="lg:col-span-4 rounded-xl border border-[#303030] bg-[#141414] p-6 space-y-4">
-              <h3 className="text-lg font-bold text-white">
+              <p className="text-lg font-bold text-white">
                 Consult Our Team for {location.city}
-              </h3>
+              </p>
               <p className="text-sm leading-relaxed text-[#969696]">
                 Call or WhatsApp {BRAND.phoneDisplay} or submit your project brief to arrange an on-site (Bhilai/Durg/Raipur) or online consultation.
               </p>
               <div className="flex flex-col gap-3">
                 <Button
-                  href={`${ROUTES.GET_A_QUOTE}?city=${encodeURIComponent(location.city)}&service=${encodeURIComponent(location.serviceFocus)}`}
+                  href={ROUTES.GET_A_QUOTE}
+                  onNavigate={prefillLocationQuote}
                   variant="primary"
                   size="md"
+                  className="w-full"
                 >
-                  <span>Request Proposal</span>
+                  <span>Request {location.city} Proposal</span>
                   <ArrowRight className="w-4 h-4" aria-hidden="true" />
                 </Button>
                 <a
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#303030] bg-[#111111] px-4 py-3 text-sm font-semibold text-[#CDCBCA] hover:border-[#25D366] hover:text-white transition-colors"
+                >
+                  <WhatsAppIcon className="w-4 h-4 text-[#25D366]" />
+                  <span>WhatsApp Us</span>
+                </a>
+                <a
+                  href={BRAND.phoneHref}
                   className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#303030] bg-[#111111] px-4 py-3 text-sm font-semibold text-[#CDCBCA] hover:border-[#D41514] hover:text-white transition-colors"
                 >
-                  <MessageCircle className="w-4 h-4 text-[#D41514]" aria-hidden="true" />
-                  <span>WhatsApp Us</span>
+                  <Phone className="w-4 h-4 text-[#D41514]" aria-hidden="true" />
+                  <span>Call Now ({BRAND.phoneDisplay})</span>
                 </a>
               </div>
             </aside>
@@ -125,18 +140,18 @@ export function LocationDetailPage({location, breadcrumbs}: LocationDetailPagePr
                   className="relative group rounded-xl border border-[#303030] bg-[#111111] p-5 hover:border-[#D41514] transition-colors flex flex-col justify-between gap-3"
                 >
                   <div>
-                    <h3 className="text-base font-bold text-white group-hover:text-[#D41514] transition-colors">
+                    <p className="text-base font-bold text-white group-hover:text-[#D41514] transition-colors">
                       <Link href={`/services/${item.serviceSlug}/`} className="after:absolute after:inset-0">
                         {item.title}
                       </Link>
-                    </h3>
+                    </p>
                     <p className="mt-2 text-sm text-[#969696]">{item.detail}</p>
                   </div>
                   <span
                     aria-hidden="true"
                     className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#CDCBCA]"
                   >
-                    <span>View {item.title}</span>
+                    <span>Explore {item.title}</span>
                     <ArrowRight className="w-3.5 h-3.5 text-[#D41514]" />
                   </span>
                 </article>

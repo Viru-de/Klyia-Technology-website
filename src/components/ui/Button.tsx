@@ -7,6 +7,7 @@ type ButtonSize = 'sm' | 'md' | 'lg';
 interface BaseProps {
   variant?: ButtonVariant;
   size?: ButtonSize;
+  nowrap?: boolean;
   className?: string;
   children: React.ReactNode;
 }
@@ -38,16 +39,17 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
 };
 
 const SIZE_CLASSES: Record<ButtonSize, string> = {
-  sm: 'px-4 py-2 text-xs',
-  md: 'px-6 py-3 text-sm',
-  lg: 'px-7 py-3.5 text-[15px]',
+  sm: 'min-h-[38px] px-4 py-2 text-xs',
+  md: 'min-h-[44px] px-5 py-2.5 text-sm',
+  lg: 'min-h-[48px] px-7 py-3.5 text-[15px]',
 };
 
 export function Button(props: ButtonProps) {
-  const {variant = 'primary', size = 'md', className = '', children, ...rest} = props;
+  const {variant = 'primary', size = 'md', nowrap = false, className = '', children, ...rest} = props;
   const classes = [
-    'inline-flex items-center justify-center gap-2 rounded-lg font-semibold leading-none',
-    'whitespace-nowrap shrink-0 transition-all duration-150 ease-out cursor-pointer',
+    'inline-flex max-w-full items-center justify-center gap-2 rounded-lg font-semibold leading-[1.35] text-center',
+    nowrap ? 'whitespace-nowrap' : 'whitespace-normal',
+    '[&_svg]:shrink-0 transition-all duration-150 ease-out cursor-pointer',
     'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D41514]',
     'disabled:opacity-60 disabled:cursor-not-allowed',
     VARIANT_CLASSES[variant],

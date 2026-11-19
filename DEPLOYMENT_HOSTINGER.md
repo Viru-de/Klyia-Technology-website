@@ -40,10 +40,13 @@ Configure these environment variables in your Hostinger Node.js application sett
 | `NODE_ENV` | `production` | Enables production static serving and compiled SSR bundle |
 | `SITE_URL` | `https://klyiatechnology.com` | Canonical domain for `<link rel="canonical">`, OpenGraph, and `/sitemap.xml` |
 | `PORT` | *(Injected by Hostinger, or `3000`)* | Listening port for the Express SSR server |
-| `GEMINI_API_KEY` | *(Secret — optional)* | Server-side Google Gemini API key for conversational KLYIA AI responses (falls back safely to approved knowledge base when unset) |
-| `AI_PROVIDER` | `gemini` | AI provider selector (`gemini` or `knowledge-base`) |
-| `AI_MODEL` | `gemini-4-hydrogen` | Configurable Gemini model alias used by `server/aiAssistant.ts` |
-| `DATABASE_PATH` | `./data/klyia.db` | Optional custom path for persistent SQLite storage (`visitor_stats`, `visitor_sessions`, `leads`) |
+| `SMTP_HOST` | `smtp.gmail.com` | Outgoing SMTP host used by `server/mailer.ts` |
+| `SMTP_PORT` | `465` | SMTP port (`465` SSL or `587` STARTTLS) |
+| `SMTP_SECURE` | `true` | Use TLS (`true` for port `465`, `false` for `587`) |
+| `SMTP_USER` | `klyiatechnology@gmail.com` | SMTP authentication username / Gmail address |
+| `SMTP_PASS` | *(Secret — Gmail App Password)* | 16-character Gmail App Password or SMTP password |
+| `ENQUIRY_TO_EMAIL` | `klyiatechnology@gmail.com` | Destination email for all forms & chatbox transcripts |
+| `DATABASE_PATH` | `./data/klyia.db` | Optional custom path for persistent SQLite storage (`visitor_stats`, `leads`, `chat_sessions`, `chat_messages`) |
 | `VISITOR_HASH_SALT` | *(Random secret string)* | Salt used for privacy-preserving SHA-256 visitor deduplication |
 
 ## 7. Persistent SQLite Storage (Visitor Counter & Leads)

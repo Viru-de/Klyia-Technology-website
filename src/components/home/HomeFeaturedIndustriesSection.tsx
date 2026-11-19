@@ -1,5 +1,8 @@
 import React from 'react';
 import {ArrowRight, CheckCircle2} from 'lucide-react';
+import {SOLAR_CORE_VISUAL_SERVICES} from '../../config/homeData.ts';
+import {ROUTES} from '../../config/routes.ts';
+import {saveQuotePrefill} from '../../lib/quotePrefill.ts';
 import {Link} from '../../lib/router.tsx';
 import {Button} from '../ui/Button.tsx';
 import {Container} from '../ui/Container.tsx';
@@ -12,10 +15,11 @@ const PRIORITY_SPOTLIGHTS = [
     summary:
       'Comprehensive websites, structural steel grade catalogs, rolling yield & dual-unit (MT + bundles) Steel ERP, weighbridge-ready billing, and WhatsApp dispatch alerts.',
     image: '/src/assets/images/industry_steel_iron_1795005438477.jpg',
+    webpImage: undefined,
     alt: 'Steel rolling mill and structural steel yard technology solutions',
     href: '/industries/steel-iron-industry/',
-    ctaLabel: 'Steel Industry Solutions',
-    secondaryLabel: 'View Industry Solutions',
+    ctaLabel: 'Explore Steel & Iron Playbook',
+    secondaryLabel: 'Compare Industry Capabilities',
     secondaryHref: '/industries/',
     bullets: [
       'TMT Bars, Structural Steel, MS Plates, Angles, Channels, Beams, Pipes & Coils',
@@ -29,10 +33,11 @@ const PRIORITY_SPOTLIGHTS = [
     summary:
       'Lead-to-commissioning Solar EPC websites, mobile site-survey CRMs, kW proposal/BOM generators, DISCOM net-metering status logs, serial tracking, and AMC schedules.',
     image: '/src/assets/images/industry_solar_energy_1795005439181.jpg',
+    webpImage: '/src/assets/images/industry_solar_energy_1795005439181.webp',
     alt: 'Commercial and rooftop solar EPC engineering software and portals',
     href: '/industries/solar-renewable-energy/',
-    ctaLabel: 'Solar Industry Solutions',
-    secondaryLabel: 'Solar ERP Software',
+    ctaLabel: 'Explore Solar EPC Playbook',
+    secondaryLabel: 'Inspect Solar ERP Features',
     secondaryHref: '/services/solar-erp-software/',
     bullets: [
       'Residential Rooftop & Commercial C&I project trackers',
@@ -45,7 +50,7 @@ const PRIORITY_SPOTLIGHTS = [
 export function HomeFeaturedIndustriesSection() {
   return (
     <section className="bg-[#141414] py-16 sm:py-20 border-b border-[#303030]">
-      <Container className="space-y-10">
+      <Container className="space-y-12">
         <div className="max-w-3xl space-y-3">
           <p className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold tracking-wider uppercase text-[#D41514]">
             <span className="h-px w-5 bg-[#D41514]" aria-hidden="true" />
@@ -68,6 +73,7 @@ export function HomeFeaturedIndustriesSection() {
               <div className="aspect-[16/9] w-full bg-[#080808]">
                 <MediaFrame
                   src={item.image}
+                  webpSrc={item.webpImage}
                   alt={item.alt}
                   width={960}
                   height={540}
@@ -113,7 +119,83 @@ export function HomeFeaturedIndustriesSection() {
             </article>
           ))}
         </div>
+
+        {/* Dedicated Core Services for Solar & Renewable Energy Visual Grid */}
+        <div className="pt-8 border-t border-[#303030] space-y-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div className="max-w-3xl space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-wider text-[#D41514]">
+                Solar EPC Software &amp; Digital Infrastructure
+              </p>
+              <h3 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl font-bold text-white">
+                Core Services for Solar &amp; Renewable Energy
+              </h3>
+              <p className="text-sm sm:text-base leading-relaxed text-[#969696]">
+                Dedicated engineering covering solar panel installation pipelines, commercial &amp; industrial solar EPC execution, Solar ERP project dashboards, and post-commissioning monitoring and maintenance.
+              </p>
+            </div>
+            <Button
+              href={ROUTES.GET_A_QUOTE}
+              onNavigate={() => saveQuotePrefill({service: 'Solar ERP', industry: 'Solar & Renewable Energy'})}
+              variant="outline"
+              size="md"
+              className="self-start md:self-auto"
+            >
+              <span>Request Solar EPC Quote</span>
+              <ArrowRight className="w-4 h-4 text-[#D41514]" aria-hidden="true" />
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            {SOLAR_CORE_VISUAL_SERVICES.map((solarItem) => (
+              <article
+                key={solarItem.id}
+                className="relative group flex flex-col justify-between overflow-hidden rounded-xl border border-[#303030] bg-[#111111] transition-all duration-200 hover:border-[#D41514]/65 hover:shadow-[0_14px_34px_-16px_rgba(212,21,20,0.26)]"
+              >
+                <div>
+                  <div className="aspect-[16/10] w-full overflow-hidden bg-[#080808]">
+                    <MediaFrame
+                      src={solarItem.image}
+                      webpSrc={solarItem.webpImage}
+                      alt={solarItem.alt}
+                      width={640}
+                      height={400}
+                      fallbackLabel={solarItem.title}
+                      imgClassName="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                    />
+                  </div>
+                  <div className="p-5 space-y-2.5">
+                    <p className="text-[16px] font-bold leading-snug text-white group-hover:text-[#D41514] transition-colors">
+                      {solarItem.title}
+                    </p>
+                    <p className="text-xs sm:text-sm leading-relaxed text-[#969696]">
+                      {solarItem.summary}
+                    </p>
+                    <ul className="space-y-1.5 pt-1 text-xs text-[#CDCBCA]">
+                      {solarItem.highlights.map((pt) => (
+                        <li key={pt} className="flex items-start gap-2">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-[#D41514] shrink-0 mt-0.5" aria-hidden="true" />
+                          <span>{pt}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+                <div className="px-5 pb-5 pt-3 border-t border-[#303030]/70">
+                  <Link
+                    href={solarItem.href}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#CDCBCA] group-hover:text-white after:absolute after:inset-0"
+                  >
+                    <span>{solarItem.ctaLabel}</span>
+                    <ArrowRight className="w-3.5 h-3.5 text-[#D41514]" aria-hidden="true" />
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
       </Container>
     </section>
   );
 }
+

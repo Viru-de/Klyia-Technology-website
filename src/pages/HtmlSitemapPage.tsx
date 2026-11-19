@@ -77,7 +77,7 @@ export function HtmlSitemapPage({breadcrumbs}: HtmlSitemapPageProps) {
                     key={category.id}
                     className="rounded-xl border border-[#303030] bg-[#111111] p-6 space-y-3"
                   >
-                    <h3 className="text-base font-bold text-[#D41514]">{category.title}</h3>
+                    <p className="text-base font-bold text-[#D41514]">{category.title}</p>
                     <ul className="space-y-1.5 text-sm">
                       {items.map((srv) => (
                         <li key={srv.slug}>

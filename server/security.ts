@@ -98,3 +98,33 @@ export function sanitizeMultiline(value: unknown, maxLen: number): string {
   }
   return value.trim().slice(0, maxLen);
 }
+
+export function isValidEmailAddress(email: string): boolean {
+  if (!email || email.length > 160) {
+    return false;
+  }
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+}
+
+export function isValidPhoneNumber(phone: string): boolean {
+  const digits = phone.replace(/\D/g, '');
+  if (digits.length < 10 || digits.length > 15) {
+    return false;
+  }
+  if (digits.length === 10) {
+    return /^[6-9]\d{9}$/.test(digits);
+  }
+  if (digits.length === 12 && digits.startsWith('91')) {
+    return /^[6-9]\d{9}$/.test(digits.slice(2));
+  }
+  return true;
+}
+
+export function escapeHtml(raw: string): string {
+  return raw
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}

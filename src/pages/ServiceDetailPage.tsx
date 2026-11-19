@@ -4,17 +4,21 @@ import {
   CheckCircle2,
   Cpu,
   Layers,
-  MessageCircle,
+  Phone,
   ShieldCheck,
   Sparkles,
   Wrench,
 } from 'lucide-react';
 import {CTASection} from '../components/home/CTASection.tsx';
 import {InnerPageBanner} from '../components/layout/InnerPageBanner.tsx';
+import {ServiceEnquiryForm} from '../components/shared/ServiceEnquiryForm.tsx';
 import {VisibleFaqBlock} from '../components/shared/VisibleFaqBlock.tsx';
 import {Button} from '../components/ui/Button.tsx';
 import {Container} from '../components/ui/Container.tsx';
-import {BRAND} from '../config/brand.ts';
+import {MediaFrame} from '../components/ui/MediaFrame.tsx';
+import {WhatsAppIcon} from '../components/ui/WhatsAppIcon.tsx';
+import {BRAND, buildWhatsAppHref} from '../config/brand.ts';
+import {SOLAR_CORE_VISUAL_SERVICES} from '../config/homeData.ts';
 import {ROUTES} from '../config/routes.ts';
 import type {BreadcrumbEntry} from '../config/seo.ts';
 import {
@@ -23,6 +27,7 @@ import {
   getServiceBySlug,
   type ServicePageData,
 } from '../data/index.ts';
+import {saveQuotePrefill} from '../lib/quotePrefill.ts';
 import {Link} from '../lib/router.tsx';
 
 interface ServiceDetailPageProps {
@@ -31,6 +36,8 @@ interface ServiceDetailPageProps {
 }
 
 export function ServiceDetailPage({service, breadcrumbs}: ServiceDetailPageProps) {
+  const isSolarService = service.slug === 'solar-erp-software';
+
   const relatedServices = service.relatedServiceSlugs
     .map((slug) => getServiceBySlug(slug))
     .filter((item): item is ServicePageData => Boolean(item));
@@ -39,9 +46,26 @@ export function ServiceDetailPage({service, breadcrumbs}: ServiceDetailPageProps
     .map((slug) => getBlogArticleBySlug(slug))
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
-  const whatsappUrl = `${BRAND.whatsappHref}?text=${encodeURIComponent(
+  const whatsappUrl = buildWhatsAppHref(
     `Hello Klyia Technology, I would like a consultation regarding ${service.name}.`,
-  )}`;
+  );
+
+  const prefillQuote = () =>
+    saveQuotePrefill({
+      service: service.name,
+      industry: isSolarService ? 'Solar & Renewable Energy' : undefined,
+    });
+
+  const serviceOptions = Array.from(
+    new Set([
+      service.name,
+      ...relatedServices.map((rel) => rel.name),
+      'Custom Software Development',
+      'ERP Software',
+      'Solar ERP Software',
+      'Website Development Services',
+    ]),
+  );
 
   return (
     <>
@@ -51,8 +75,9 @@ export function ServiceDetailPage({service, breadcrumbs}: ServiceDetailPageProps
         breadcrumbs={breadcrumbs}
         backgroundImage={service.heroImage}
         backgroundAlt={service.heroImageAlt}
-        ctaLabel="Request Quote"
-        ctaHref={`${ROUTES.GET_A_QUOTE}?service=${encodeURIComponent(service.name)}`}
+        ctaLabel={`Scope ${service.name}`}
+        ctaHref={ROUTES.GET_A_QUOTE}
+        onCtaNavigate={prefillQuote}
       />
 
       {/* Section 1 & 2: Service Introduction & Immediate Consultation Strip */}
@@ -81,12 +106,12 @@ export function ServiceDetailPage({service, breadcrumbs}: ServiceDetailPageProps
             </div>
 
             <aside className="lg:col-span-4 rounded-xl border border-[#303030] bg-[#141414] p-6 space-y-4">
-              <h3 className="text-lg font-bold text-white">Request a Project Consultation</h3>
+              <p className="text-lg font-bold text-white">Request a Project Consultation</p>
               <p className="text-sm leading-relaxed text-[#969696]">
                 Speak with our engineering team in Risali, Bhilai ({BRAND.phoneDisplay}) for honest requirement scoping—serving Bhilai, Durg, Raipur, Chhattisgarh, and all of India.
               </p>
               <div className="flex flex-col gap-3">
-                <Button href={`${ROUTES.GET_A_QUOTE}?service=${encodeURIComponent(service.name)}`} variant="primary" size="md">
+                <Button href={ROUTES.GET_A_QUOTE} onNavigate={prefillQuote} variant="primary" size="md" className="w-full">
                   <span>Request Quote for {service.name}</span>
                   <ArrowRight className="w-4 h-4" aria-hidden="true" />
                 </Button>
@@ -94,21 +119,69 @@ export function ServiceDetailPage({service, breadcrumbs}: ServiceDetailPageProps
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#303030] bg-[#111111] px-4 py-3 text-sm font-semibold text-[#CDCBCA] hover:border-[#25D366] hover:text-white transition-colors"
+                >
+                  <WhatsAppIcon className="w-4 h-4 text-[#25D366]" />
+                  <span>Discuss on WhatsApp</span>
+                </a>
+                <a
+                  href={BRAND.phoneHref}
                   className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#303030] bg-[#111111] px-4 py-3 text-sm font-semibold text-[#CDCBCA] hover:border-[#D41514] hover:text-white transition-colors"
                 >
-                  <MessageCircle className="w-4 h-4 text-[#D41514]" aria-hidden="true" />
-                  <span>Discuss on WhatsApp</span>
+                  <Phone className="w-4 h-4 text-[#D41514]" aria-hidden="true" />
+                  <span>Call Now ({BRAND.phoneDisplay})</span>
                 </a>
               </div>
             </aside>
           </div>
+
+          {/* Dedicated Visual Workflows for Solar ERP */}
+          {isSolarService ? (
+            <div className="rounded-2xl border border-[#303030] bg-[#111111] p-6 sm:p-8 space-y-6">
+              <div className="max-w-3xl space-y-2">
+                <p className="text-xs font-semibold uppercase tracking-wider text-[#D41514]">
+                  Solar EPC Software Architecture
+                </p>
+                <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-white">
+                  Solar ERP Dashboards &amp; Core Services for Solar &amp; Renewable Energy
+                </h2>
+                <p className="text-sm sm:text-base leading-relaxed text-[#969696]">
+                  Built to coordinate solar panel installation, rooftop solar systems, commercial &amp; industrial solar installations, BOM stock, and AMC solar monitoring and maintenance.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                {SOLAR_CORE_VISUAL_SERVICES.map((item) => (
+                  <article
+                    key={item.id}
+                    className="flex flex-col overflow-hidden rounded-xl border border-[#303030] bg-[#080808]"
+                  >
+                    <div className="aspect-[16/10] w-full bg-[#141414]">
+                      <MediaFrame
+                        src={item.image}
+                        webpSrc={item.webpImage}
+                        alt={item.alt}
+                        width={640}
+                        height={400}
+                        fallbackLabel={item.title}
+                        imgClassName="h-full w-full object-cover"
+                      />
+                    </div>
+                    <div className="p-4 space-y-2">
+                      <p className="text-sm font-bold text-white">{item.title}</p>
+                      <p className="text-xs leading-relaxed text-[#969696]">{item.summary}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          ) : null}
 
           {/* Section 3 & 4: Why Needed, Business Challenges & Klyia Solutions */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="rounded-xl border border-[#303030] bg-[#111111] p-6 space-y-4">
               <div className="flex items-center gap-2 text-sm font-bold text-white">
                 <Sparkles className="w-4 h-4 text-[#D41514]" aria-hidden="true" />
-                <h3>Why Businesses Need It</h3>
+                <p>Why Businesses Need It</p>
               </div>
               <ul className="space-y-3 text-sm leading-relaxed text-[#969696]">
                 {service.whyNeeded.map((point) => (
@@ -123,7 +196,7 @@ export function ServiceDetailPage({service, breadcrumbs}: ServiceDetailPageProps
             <div className="rounded-xl border border-[#303030] bg-[#111111] p-6 space-y-4">
               <div className="flex items-center gap-2 text-sm font-bold text-white">
                 <ShieldCheck className="w-4 h-4 text-[#D41514]" aria-hidden="true" />
-                <h3>Common Operational Challenges</h3>
+                <p>Common Operational Challenges</p>
               </div>
               <ul className="space-y-3 text-sm leading-relaxed text-[#969696]">
                 {service.challenges.map((point) => (
@@ -138,7 +211,7 @@ export function ServiceDetailPage({service, breadcrumbs}: ServiceDetailPageProps
             <div className="rounded-xl border border-[#303030] bg-[#141414] p-6 space-y-4">
               <div className="flex items-center gap-2 text-sm font-bold text-white">
                 <Wrench className="w-4 h-4 text-[#D41514]" aria-hidden="true" />
-                <h3>Our Engineering Solution</h3>
+                <p>Our Engineering Solution</p>
               </div>
               <ul className="space-y-3 text-sm leading-relaxed text-[#CDCBCA]">
                 {service.solutions.map((point) => (
@@ -163,7 +236,7 @@ export function ServiceDetailPage({service, breadcrumbs}: ServiceDetailPageProps
                     key={feat.title}
                     className="rounded-xl border border-[#303030] bg-[#111111] p-5 space-y-2"
                   >
-                    <h3 className="text-base font-bold text-white">{feat.title}</h3>
+                    <p className="text-base font-bold text-white">{feat.title}</p>
                     <p className="text-sm leading-relaxed text-[#969696]">{feat.detail}</p>
                   </div>
                 ))}
@@ -188,7 +261,7 @@ export function ServiceDetailPage({service, breadcrumbs}: ServiceDetailPageProps
               <div className="rounded-xl border border-[#303030] bg-[#141414] p-6 space-y-3">
                 <div className="flex items-center gap-2 text-sm font-bold text-white">
                   <Cpu className="w-4 h-4 text-[#D41514]" aria-hidden="true" />
-                  <h3>Technologies &amp; Standards Used</h3>
+                  <p>Technologies &amp; Standards Used</p>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {service.technologies.map((tech) => (
@@ -223,7 +296,7 @@ export function ServiceDetailPage({service, breadcrumbs}: ServiceDetailPageProps
                   <span className="font-[family-name:var(--font-mono)] text-xs font-semibold text-[#D41514]">
                     {stage.step}
                   </span>
-                  <h3 className="text-base font-bold text-white">{stage.title}</h3>
+                  <p className="text-base font-bold text-white">{stage.title}</p>
                   <p className="text-sm leading-relaxed text-[#969696]">{stage.description}</p>
                 </div>
               ))}
@@ -245,11 +318,11 @@ export function ServiceDetailPage({service, breadcrumbs}: ServiceDetailPageProps
                     key={ind.slug}
                     className="relative group rounded-xl border border-[#303030] bg-[#111111] p-5 hover:border-[#D41514] transition-colors space-y-2"
                   >
-                    <h3 className="text-sm font-bold text-white group-hover:text-[#D41514] transition-colors">
+                    <p className="text-sm font-bold text-white group-hover:text-[#D41514] transition-colors">
                       <Link href={`/industries/${ind.slug}/`} className="after:absolute after:inset-0">
                         {ind.label}
                       </Link>
-                    </h3>
+                    </p>
                     <p className="text-xs leading-relaxed text-[#969696]">{ind.note}</p>
                   </article>
                 ))}
@@ -289,17 +362,17 @@ export function ServiceDetailPage({service, breadcrumbs}: ServiceDetailPageProps
                           <span className="text-[11px] font-semibold uppercase tracking-wider text-[#D41514]">
                             {rel.categoryLabel}
                           </span>
-                          <h3 className="mt-1 text-base font-bold text-white group-hover:text-[#D41514] transition-colors">
+                          <p className="mt-1 text-base font-bold text-white group-hover:text-[#D41514] transition-colors">
                             <Link href={rel.canonicalPath} className="after:absolute after:inset-0">
                               {rel.name}
                             </Link>
-                          </h3>
+                          </p>
                         </div>
                         <span
                           aria-hidden="true"
                           className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#CDCBCA]"
                         >
-                          <span>View Service</span>
+                          <span>Explore {rel.name}</span>
                           <ArrowRight className="w-3.5 h-3.5 text-[#D41514]" />
                         </span>
                       </article>
@@ -320,11 +393,11 @@ export function ServiceDetailPage({service, breadcrumbs}: ServiceDetailPageProps
                         className="relative group rounded-xl border border-[#303030] bg-[#141414] p-5 hover:border-[#D41514] transition-colors space-y-2"
                       >
                         <span className="text-xs font-semibold text-[#D41514]">{post.category}</span>
-                        <h3 className="text-base font-bold text-white group-hover:text-[#D41514] transition-colors">
+                        <p className="text-base font-bold text-white group-hover:text-[#D41514] transition-colors">
                           <Link href={post.canonicalPath} className="after:absolute after:inset-0">
                             {post.title}
                           </Link>
-                        </h3>
+                        </p>
                         <p className="text-sm text-[#969696]">{post.excerpt}</p>
                       </article>
                     ))}
@@ -333,6 +406,19 @@ export function ServiceDetailPage({service, breadcrumbs}: ServiceDetailPageProps
               ) : null}
             </div>
           ) : null}
+
+          {/* Embedded Service Enquiry Form -> Emails klyiatechnology@gmail.com */}
+          <ServiceEnquiryForm
+            type={isSolarService ? 'solar' : 'service'}
+            heading={`Enquire About ${service.name}`}
+            subtitle={`Share your project goals for ${service.name}. All enquiries are delivered directly to klyiatechnology@gmail.com.`}
+            defaultService={service.name}
+            serviceOptions={serviceOptions}
+            industry={isSolarService ? 'Solar & Renewable Energy' : undefined}
+            sourceSection={`${service.name} Service Page Form`}
+            submitLabel={`Request ${service.name} Consultation`}
+            whatsappContextMessage={`Hello Klyia Technology, I would like to discuss ${service.name}.`}
+          />
 
           {/* Section 11: Visible Crawlable FAQs */}
           <VisibleFaqBlock
@@ -347,3 +433,4 @@ export function ServiceDetailPage({service, breadcrumbs}: ServiceDetailPageProps
     </>
   );
 }
+

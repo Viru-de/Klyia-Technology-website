@@ -84,11 +84,11 @@ export function LocationsHubPage({breadcrumbs}: LocationsHubPageProps) {
                           <span className="text-xs font-semibold uppercase tracking-wider text-[#D41514]">
                             {loc.regionLabel}
                           </span>
-                          <h3 className="text-lg font-bold text-white group-hover:text-[#D41514] transition-colors">
+                          <p className="text-lg font-bold text-white group-hover:text-[#D41514] transition-colors">
                             <Link href={loc.canonicalPath} className="after:absolute after:inset-0">
                               {loc.serviceFocus} in {loc.city}
                             </Link>
-                          </h3>
+                          </p>
                           <p className="text-sm text-[#969696] leading-relaxed">{loc.heroSubtitle}</p>
                         </div>
 

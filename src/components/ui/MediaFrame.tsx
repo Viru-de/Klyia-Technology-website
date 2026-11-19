@@ -3,6 +3,7 @@ import {Building2} from 'lucide-react';
 
 interface MediaFrameProps {
   src: string;
+  webpSrc?: string;
   alt: string;
   width: number;
   height: number;
@@ -14,6 +15,7 @@ interface MediaFrameProps {
 
 export function MediaFrame({
   src,
+  webpSrc,
   alt,
   width,
   height,
@@ -39,7 +41,7 @@ export function MediaFrame({
     );
   }
 
-  return (
+  const imgElement = (
     <img
       src={src}
       alt={alt}
@@ -52,4 +54,15 @@ export function MediaFrame({
       className={`block ${imgClassName} ${className}`}
     />
   );
+
+  if (webpSrc) {
+    return (
+      <picture className="contents">
+        <source srcSet={webpSrc} type="image/webp" />
+        {imgElement}
+      </picture>
+    );
+  }
+
+  return imgElement;
 }

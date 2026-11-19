@@ -1,3 +1,10 @@
+export const WHATSAPP_DEFAULT_MESSAGE =
+  'Hello Klyia Technology, I visited your website and would like to know more about your services.';
+
+export function buildWhatsAppHref(customMessage: string = WHATSAPP_DEFAULT_MESSAGE): string {
+  return `https://wa.me/918296887643?text=${encodeURIComponent(customMessage)}`;
+}
+
 export const BRAND = {
   name: 'Klyia Technology',
   wordmarkPrimary: 'KLYIA',
@@ -8,6 +15,7 @@ export const BRAND = {
   phoneDisplay: '+91 82968 87643',
   phoneHref: 'tel:+918296887643',
   whatsappHref: 'https://wa.me/918296887643',
+  whatsappPrefilledHref: buildWhatsAppHref(WHATSAPP_DEFAULT_MESSAGE),
   googleMapsUrl:
     'https://www.google.com/maps/search/?api=1&query=First+Floor,+Bajrang+Hardware,+Krishna+Talkies+Road,+Risali,+Bhilai,+Chhattisgarh,+India',
   social: {

@@ -1,5 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import {ChevronDown, MessageCircle, Phone, X} from 'lucide-react';
+import React, {useEffect, useRef, useState} from 'react';
+import {createPortal} from 'react-dom';
+import {ChevronDown, Phone, X} from 'lucide-react';
 import {BRAND} from '../../config/brand.ts';
 import {
   HEADER_CTA,
@@ -9,7 +10,7 @@ import {
 } from '../../config/navigation.ts';
 import {ROUTES, normalizePathname} from '../../config/routes.ts';
 import {Link, useRouter} from '../../lib/router.tsx';
-import {Logo} from '../ui/Logo.tsx';
+import {WhatsAppIcon} from '../ui/WhatsAppIcon.tsx';
 
 interface MobileNavigationProps {
   isOpen: boolean;
@@ -19,11 +20,50 @@ interface MobileNavigationProps {
 export function MobileNavigation({isOpen, onClose}: MobileNavigationProps) {
   const {pathname} = useRouter();
   const currentPath = normalizePathname(pathname);
+  const prevPathRef = useRef(currentPath);
   const [servicesExpanded, setServicesExpanded] = useState(false);
   const [industriesExpanded, setIndustriesExpanded] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [rendered, setRendered] = useState(false);
+  const [animateIn, setAnimateIn] = useState(false);
 
   useEffect(() => {
-    if (!isOpen) {
+    setMounted(true);
+  }, []);
+
+  // Coordinate lightweight mount/unmount transitions cleanly
+  useEffect(() => {
+    if (!mounted) {
+      return;
+    }
+    if (isOpen) {
+      setRendered(true);
+      const frame = window.requestAnimationFrame(() => {
+        setAnimateIn(true);
+      });
+      return () => window.cancelAnimationFrame(frame);
+    }
+
+    setAnimateIn(false);
+    const timer = window.setTimeout(() => {
+      setRendered(false);
+    }, 200);
+    return () => window.clearTimeout(timer);
+  }, [isOpen, mounted]);
+
+  // Close drawer automatically on route changes (e.g., browser Back/Forward)
+  useEffect(() => {
+    if (prevPathRef.current !== currentPath) {
+      prevPathRef.current = currentPath;
+      if (isOpen) {
+        onClose();
+      }
+    }
+  }, [currentPath, isOpen, onClose]);
+
+  // Lock background scroll, bind Escape, and close automatically on desktop breakpoint
+  useEffect(() => {
+    if (!isOpen || typeof window === 'undefined' || typeof document === 'undefined') {
       return;
     }
 
@@ -33,47 +73,66 @@ export function MobileNavigation({isOpen, onClose}: MobileNavigationProps) {
       }
     };
 
-    const previousOverflow = document.body.style.overflow;
+    const desktopMq = window.matchMedia('(min-width: 1024px)');
+    const handleBreakpoint = (event: MediaQueryListEvent) => {
+      if (event.matches) {
+        onClose();
+      }
+    };
+
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
     document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
     window.addEventListener('keydown', handleKeyDown);
+    desktopMq.addEventListener('change', handleBreakpoint);
 
     return () => {
-      document.body.style.overflow = previousOverflow;
+      document.body.style.overflow = previousBodyOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
       window.removeEventListener('keydown', handleKeyDown);
+      desktopMq.removeEventListener('change', handleBreakpoint);
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) {
+  if (!mounted || !rendered || typeof document === 'undefined') {
     return null;
   }
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 lg:hidden"
+      id="mobile-navigation-drawer"
+      className="fixed inset-x-0 top-16 bottom-0 z-[60] lg:hidden"
       role="dialog"
       aria-modal="true"
       aria-label="Mobile Navigation"
     >
-      {/* Backdrop */}
+      {/* Backdrop — covers page content and z-40 floating support dock cleanly */}
       <div
-        className="fixed inset-0 bg-black/75 backdrop-blur-xs transition-opacity"
+        className={`absolute inset-0 bg-black/75 backdrop-blur-xs transition-opacity duration-200 ${
+          animateIn ? 'opacity-100' : 'opacity-0'
+        }`}
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Obsidian Drawer */}
-      <div className="fixed inset-y-0 right-0 flex w-full max-w-sm flex-col bg-[#080808] border-l border-[#303030] shadow-2xl overflow-y-auto">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#303030]">
-          <Link href={ROUTES.HOME} onNavigate={onClose} aria-label="Klyia Technology Home">
-            <Logo size="sm" theme="dark" />
-          </Link>
+      {/* Obsidian Slide-Over Drawer */}
+      <div
+        className={`relative ml-auto flex h-full w-[88vw] max-w-sm flex-col bg-[#080808] border-l border-[#303030] shadow-2xl overflow-y-auto overscroll-contain transition-transform duration-200 ease-out ${
+          animateIn ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      >
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#303030] bg-[#111111]">
+          <span className="text-xs font-bold uppercase tracking-wider text-[#969696]">
+            Navigation Menu
+          </span>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close navigation menu"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-[#303030] bg-[#111111] text-[#CDCBCA] hover:border-[#D41514] hover:text-white transition-colors cursor-pointer"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#303030] bg-[#080808] text-[#CDCBCA] hover:border-[#D41514] hover:text-white transition-colors cursor-pointer"
           >
-            <X className="w-5 h-5" aria-hidden="true" />
+            <X className="w-4 h-4" aria-hidden="true" />
           </button>
         </div>
 
@@ -222,12 +281,12 @@ export function MobileNavigation({isOpen, onClose}: MobileNavigationProps) {
 
           <div className="grid grid-cols-2 gap-2.5">
             <a
-              href={BRAND.whatsappHref}
+              href={BRAND.whatsappPrefilledHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex min-h-[44px] items-center justify-center gap-2 rounded-lg border border-[#303030] bg-[#111111] px-3 py-2.5 text-xs font-semibold text-[#CDCBCA] hover:border-[#D41514] hover:text-white transition-colors"
+              className="flex min-h-[44px] items-center justify-center gap-2 rounded-lg border border-[#303030] bg-[#111111] px-3 py-2.5 text-xs font-semibold text-[#CDCBCA] hover:border-[#25D366] hover:text-white transition-colors"
             >
-              <MessageCircle className="w-4 h-4 text-[#D41514]" aria-hidden="true" />
+              <WhatsAppIcon className="w-4 h-4 text-[#25D366]" />
               <span>WhatsApp</span>
             </a>
             <a
@@ -235,11 +294,12 @@ export function MobileNavigation({isOpen, onClose}: MobileNavigationProps) {
               className="flex min-h-[44px] items-center justify-center gap-2 rounded-lg border border-[#303030] bg-[#111111] px-3 py-2.5 text-xs font-semibold text-[#CDCBCA] hover:border-[#D41514] hover:text-white transition-colors"
             >
               <Phone className="w-4 h-4 text-[#D41514]" aria-hidden="true" />
-              <span>Call Team</span>
+              <span>Call Now</span>
             </a>
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

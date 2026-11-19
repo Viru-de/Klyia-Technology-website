@@ -1,5 +1,5 @@
 import React from 'react';
-import {Mail, MapPin, MessageCircle, Phone} from 'lucide-react';
+import {Mail, MapPin, Phone} from 'lucide-react';
 import {BRAND} from '../../config/brand.ts';
 import {FOOTER_COLUMNS} from '../../config/navigation.ts';
 import {ROUTES} from '../../config/routes.ts';
@@ -7,6 +7,7 @@ import {Link} from '../../lib/router.tsx';
 import {Container} from '../ui/Container.tsx';
 import {Logo} from '../ui/Logo.tsx';
 import {SocialLinks} from '../ui/SocialLinks.tsx';
+import {WhatsAppIcon} from '../ui/WhatsAppIcon.tsx';
 import {VisitorCounter} from './VisitorCounter.tsx';
 
 export function Footer() {
@@ -14,7 +15,7 @@ export function Footer() {
 
   return (
     <footer className="bg-[#080808] text-[#969696] border-t border-[#303030]">
-      <Container className="py-14 lg:py-16">
+      <Container className="pt-14 pb-24 sm:py-16">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-12">
           {/* Brand Intro & Office Contact */}
           <div className="lg:col-span-4 space-y-5">
@@ -36,20 +37,21 @@ export function Footer() {
               <li className="flex flex-wrap items-center gap-x-5 gap-y-2">
                 <a
                   href={BRAND.phoneHref}
+                  aria-label="Call Now on +91 8296887643"
                   className="inline-flex items-center gap-2 hover:text-[#D41514] transition-colors"
                 >
                   <Phone className="w-4 h-4 text-[#D41514] shrink-0" aria-hidden="true" />
                   <span className="tabular-nums text-[#CDCBCA] hover:text-[#D41514]">
-                    {BRAND.phoneDisplay}
+                    Call Now: {BRAND.phoneDisplay}
                   </span>
                 </a>
                 <a
-                  href={BRAND.whatsappHref}
+                  href={BRAND.whatsappPrefilledHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 hover:text-[#D41514] transition-colors"
+                  className="inline-flex items-center gap-2 hover:text-[#25D366] transition-colors"
                 >
-                  <MessageCircle className="w-4 h-4 text-[#D41514] shrink-0" aria-hidden="true" />
+                  <WhatsAppIcon className="w-4 h-4 text-[#25D366] shrink-0" />
                   <span>WhatsApp Chat</span>
                 </a>
               </li>

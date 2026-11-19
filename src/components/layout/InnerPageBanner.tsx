@@ -11,9 +11,11 @@ interface InnerPageBannerProps {
   subtitle?: string;
   breadcrumbs: BreadcrumbEntry[];
   backgroundImage?: string;
+  backgroundWebpImage?: string;
   backgroundAlt?: string;
   ctaLabel?: string;
   ctaHref?: string;
+  onCtaNavigate?: () => void;
 }
 
 const DEFAULT_BANNER_IMAGE = '/src/assets/images/banner_obsidian_architecture_1795006490317.jpg';
@@ -23,9 +25,11 @@ export function InnerPageBanner({
   subtitle,
   breadcrumbs,
   backgroundImage = DEFAULT_BANNER_IMAGE,
+  backgroundWebpImage,
   backgroundAlt = 'Modern dark architectural glass and brushed graphite facade',
   ctaLabel,
   ctaHref,
+  onCtaNavigate,
 }: InnerPageBannerProps) {
   const prefersReducedMotion = useReducedMotion();
   const [imageError, setImageError] = useState(false);
@@ -33,6 +37,12 @@ export function InnerPageBanner({
   useEffect(() => {
     setImageError(false);
   }, [backgroundImage]);
+
+  const resolvedWebp =
+    backgroundWebpImage ??
+    (backgroundImage === '/src/assets/images/industry_solar_energy_1795005439181.jpg'
+      ? '/src/assets/images/industry_solar_energy_1795005439181.webp'
+      : undefined);
 
   return (
     <section className="relative flex min-h-[240px] sm:min-h-[290px] lg:min-h-[340px] w-full items-center overflow-hidden bg-[#080808] text-[#CDCBCA] border-b border-[#303030]">
@@ -44,18 +54,21 @@ export function InnerPageBanner({
 
       {/* Full-Width 16:9 Domain-Specific Background Banner Image */}
       {!imageError && backgroundImage ? (
-        <img
-          src={backgroundImage}
-          alt={backgroundAlt}
-          width={1600}
-          height={900}
-          loading="eager"
-          fetchPriority="high"
-          decoding="async"
-          referrerPolicy="no-referrer"
-          onError={() => setImageError(true)}
-          className="absolute inset-0 h-full w-full object-cover object-center opacity-55"
-        />
+        <picture>
+          {resolvedWebp ? <source srcSet={resolvedWebp} type="image/webp" /> : null}
+          <img
+            src={backgroundImage}
+            alt={backgroundAlt}
+            width={1600}
+            height={900}
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+            referrerPolicy="no-referrer"
+            onError={() => setImageError(true)}
+            className="absolute inset-0 h-full w-full object-cover object-center opacity-55"
+          />
+        </picture>
       ) : null}
 
       {/* Obsidian Readability Scrim (Left-Weighted for ≥4.5:1 Contrast) + Crimson Edge Highlight */}
@@ -119,7 +132,7 @@ export function InnerPageBanner({
 
           {ctaLabel && ctaHref ? (
             <div className="mt-5 sm:mt-6">
-              <Button href={ctaHref} variant="primary" size="md">
+              <Button href={ctaHref} onNavigate={onCtaNavigate} variant="primary" size="md">
                 <span>{ctaLabel}</span>
                 <ArrowRight className="w-4 h-4" aria-hidden="true" />
               </Button>

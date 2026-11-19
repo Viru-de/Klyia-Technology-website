@@ -55,11 +55,11 @@ export function HomeBlogPreviewSection() {
                   <BookOpen className="w-3.5 h-3.5" aria-hidden="true" />
                   <span>{article.category}</span>
                 </span>
-                <h3 className="text-lg font-bold leading-snug text-white group-hover:text-[#D41514] transition-colors">
+                <p className="text-lg font-bold leading-snug text-white group-hover:text-[#D41514] transition-colors">
                   <Link href={article.canonicalPath} className="after:absolute after:inset-0">
                     {article.title}
                   </Link>
-                </h3>
+                </p>
                 <p className="text-sm leading-relaxed text-[#969696]">{article.excerpt}</p>
               </div>
               <span

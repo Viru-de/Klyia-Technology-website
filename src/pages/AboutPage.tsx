@@ -86,9 +86,9 @@ export function AboutPage({breadcrumbs}: AboutPageProps) {
                     <Building2 className="w-5 h-5" aria-hidden="true" />
                   </span>
                   <div>
-                    <h3 className="text-lg font-bold text-[#CDCBCA]">
+                    <p className="text-lg font-bold text-[#CDCBCA]">
                       How We Work With Organizations
-                    </h3>
+                    </p>
                     <p className="text-xs text-[#969696]">
                       Core principles guiding every engagement
                     </p>

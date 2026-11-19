@@ -85,11 +85,11 @@ export function InsightsPage({breadcrumbs}: InsightsPageProps) {
                     </span>
                   </div>
 
-                  <h3 className="mt-3 text-lg font-bold leading-snug text-white group-hover:text-[#D41514] transition-colors">
+                  <p className="mt-3 text-lg font-bold leading-snug text-white group-hover:text-[#D41514] transition-colors">
                     <Link href={article.canonicalPath} className="after:absolute after:inset-0">
                       {article.title}
                     </Link>
-                  </h3>
+                  </p>
                   <p className="mt-2.5 text-sm leading-[1.65] text-[#969696]">
                     {article.excerpt}
                   </p>

@@ -2,6 +2,7 @@ import React from 'react';
 import {ArrowRight, Check} from 'lucide-react';
 import {TECHNOLOGY_SOLUTIONS} from '../../config/homeData.ts';
 import {ROUTES} from '../../config/routes.ts';
+import {saveQuotePrefill} from '../../lib/quotePrefill.ts';
 import {Link} from '../../lib/router.tsx';
 import {Container} from '../ui/Container.tsx';
 import {SectionHeading} from '../ui/SectionHeading.tsx';
@@ -60,9 +61,12 @@ export function SolutionsPreview() {
                 </Link>
                 <Link
                   href={solution.quoteHref || ROUTES.GET_A_QUOTE}
+                  onNavigate={() =>
+                    saveQuotePrefill({service: solution.quotePrefillService || solution.title})
+                  }
                   className="text-xs font-semibold text-[#969696] hover:text-white transition-colors"
                 >
-                  {solution.quoteLabel || 'Request Proposal'}
+                  {solution.quoteLabel || `Request ${solution.title} Quote`}
                 </Link>
               </div>
             </div>
@@ -75,9 +79,9 @@ export function SolutionsPreview() {
               className="lg:col-span-3 sm:col-span-1 flex flex-col justify-between rounded-xl border border-[#303030] bg-[#111111] p-6 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#D41514]/55 hover:shadow-[0_14px_34px_-16px_rgba(212,21,20,0.24)]"
             >
               <div>
-                <h3 className="text-lg font-bold text-[#CDCBCA]">
+                <p className="text-lg font-bold text-[#CDCBCA]">
                   {solution.title}
-                </h3>
+                </p>
                 <p className="mt-2.5 text-sm leading-[1.6] text-[#969696]">
                   {solution.summary}
                 </p>

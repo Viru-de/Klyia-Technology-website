@@ -1,4 +1,5 @@
 import React, {useEffect} from 'react';
+import {FloatingSupportDock} from './components/layout/FloatingSupportDock.tsx';
 import {Footer} from './components/layout/Footer.tsx';
 import {Header} from './components/layout/Header.tsx';
 import {BRAND} from './config/brand.ts';
@@ -156,6 +157,7 @@ function AppShell() {
       </main>
 
       <Footer />
+      <FloatingSupportDock />
     </div>
   );
 }

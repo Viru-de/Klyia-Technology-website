@@ -35,9 +35,9 @@ export function ServicesPreview() {
                   <ServiceIcon name={service.icon} className="w-5 h-5" />
                 </div>
 
-                <h3 className="mt-5 text-[17px] font-bold leading-snug text-[#CDCBCA] group-hover:text-white transition-colors">
+                <p className="mt-5 text-[17px] font-bold leading-snug text-[#CDCBCA] group-hover:text-white transition-colors">
                   {service.title}
-                </h3>
+                </p>
 
                 <p className="mt-2.5 text-sm leading-[1.65] text-[#969696]">
                   {service.description}

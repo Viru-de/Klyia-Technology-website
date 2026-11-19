@@ -12,6 +12,7 @@ import {
   getServiceBySlug,
   getServicesByCategory,
 } from '../data/index.ts';
+import {saveQuotePrefill} from '../lib/quotePrefill.ts';
 import {Link} from '../lib/router.tsx';
 
 interface ServicesPageProps {
@@ -72,7 +73,8 @@ export function ServicesPage({breadcrumbs}: ServicesPageProps) {
                     </p>
                   </div>
                   <Button
-                    href={`${ROUTES.GET_A_QUOTE}?service=${encodeURIComponent(category.shortTitle)}`}
+                    href={ROUTES.GET_A_QUOTE}
+                    onNavigate={() => saveQuotePrefill({service: category.shortTitle})}
                     variant="outline"
                     size="sm"
                   >
@@ -90,11 +92,11 @@ export function ServicesPage({breadcrumbs}: ServicesPageProps) {
                       <div>
                         <div className="flex items-start gap-2.5">
                           <CheckCircle2 className="w-4 h-4 text-[#D41514] shrink-0 mt-1" aria-hidden="true" />
-                          <h3 className="text-base font-bold text-white group-hover:text-[#D41514] transition-colors">
+                          <p className="text-base font-bold text-white group-hover:text-[#D41514] transition-colors">
                             <Link href={service.canonicalPath} className="after:absolute after:inset-0">
                               {service.name}
                             </Link>
-                          </h3>
+                          </p>
                         </div>
                         <p className="mt-2.5 text-sm leading-relaxed text-[#969696]">
                           {service.heroSubtitle}
@@ -105,7 +107,7 @@ export function ServicesPage({breadcrumbs}: ServicesPageProps) {
                         aria-hidden="true"
                         className="mt-4 pt-3 border-t border-[#303030]/60 inline-flex items-center gap-1.5 text-xs font-semibold text-[#CDCBCA]"
                       >
-                        <span>View Service Details</span>
+                        <span>Explore {service.name}</span>
                         <ArrowRight className="w-3.5 h-3.5 text-[#D41514] transition-transform group-hover:translate-x-0.5" />
                       </div>
                     </article>

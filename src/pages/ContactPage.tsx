@@ -1,50 +1,77 @@
 import React, {useState} from 'react';
-import {Building2, CheckCircle2, ExternalLink, Mail, MapPin, MessageCircle, Phone} from 'lucide-react';
+import {Building2, CheckCircle2, ExternalLink, Mail, MapPin, MessageSquare, Phone} from 'lucide-react';
+import {OPEN_CHATBOX_EVENT} from '../components/layout/FloatingSupportDock.tsx';
 import {InnerPageBanner} from '../components/layout/InnerPageBanner.tsx';
 import {Button} from '../components/ui/Button.tsx';
 import {Container} from '../components/ui/Container.tsx';
 import {SocialLinks} from '../components/ui/SocialLinks.tsx';
+import {WhatsAppIcon} from '../components/ui/WhatsAppIcon.tsx';
 import {STATIC_PAGE_BANNERS} from '../config/banners.ts';
 import {BRAND} from '../config/brand.ts';
+import {CORE_SERVICES} from '../config/homeData.ts';
+import {ROUTES} from '../config/routes.ts';
 import type {BreadcrumbEntry} from '../config/seo.ts';
+import {Link, useRouter} from '../lib/router.tsx';
 
 interface ContactPageProps {
   breadcrumbs: BreadcrumbEntry[];
 }
 
 export function ContactPage({breadcrumbs}: ContactPageProps) {
+  const {pathname} = useRouter();
   const [name, setName] = useState('');
+  const [company, setCompany] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [service, setService] = useState<string>(CORE_SERVICES[0].title);
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
+  const [consent, setConsent] = useState(false);
+  const [websiteUrl, setWebsiteUrl] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [submittedRef, setSubmittedRef] = useState<string | null>(null);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (submitting) {
+      return;
+    }
     setErrorMsg(null);
 
     const trimmedName = name.trim();
+    const trimmedCompany = company.trim();
     const trimmedEmail = email.trim();
     const trimmedPhone = phone.trim();
     const trimmedMessage = message.trim();
+    const digits = trimmedPhone.replace(/\D/g, '');
 
     if (trimmedName.length < 2) {
       setErrorMsg('Please enter your full name.');
       return;
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+    if (trimmedCompany.length < 2) {
+      setErrorMsg('Please enter your company or business name.');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(trimmedEmail)) {
       setErrorMsg('Please enter a valid email address.');
       return;
     }
-    if (trimmedPhone.replace(/\D/g, '').length < 10) {
+    if (
+      digits.length < 10 ||
+      digits.length > 15 ||
+      (digits.length === 10 && !/^[6-9]\d{9}$/.test(digits))
+    ) {
       setErrorMsg('Please enter a valid 10-digit phone or WhatsApp number.');
       return;
     }
     if (trimmedMessage.length < 10) {
       setErrorMsg('Please provide a brief description of your inquiry (at least 10 characters).');
+      return;
+    }
+    if (!consent) {
+      setErrorMsg('Please confirm your privacy consent before submitting.');
       return;
     }
 
@@ -56,25 +83,41 @@ export function ContactPage({breadcrumbs}: ContactPageProps) {
         body: JSON.stringify({
           type: 'contact',
           name: trimmedName,
+          company: trimmedCompany,
           email: trimmedEmail,
           phone: trimmedPhone,
-          subject: subject.trim() || 'General Business Inquiry',
+          service,
+          subject: subject.trim() || `${service} Enquiry`,
           message: trimmedMessage,
+          sourcePage: pathname || ROUTES.CONTACT,
+          sourceSection: 'Contact Us Form',
+          consent,
+          website_url: websiteUrl,
         }),
       });
 
-      const payload = (await response.json()) as {ok?: boolean; referenceId?: string; error?: string};
-      if (!response.ok || !payload.ok) {
-        setErrorMsg(payload.error || 'Unable to submit inquiry right now. Please try email or phone.');
+      const payload = (await response.json()) as {
+        ok?: boolean;
+        emailDelivered?: boolean;
+        referenceId?: string;
+        error?: string;
+      };
+      if (!response.ok || !payload.ok || !payload.emailDelivered) {
+        setErrorMsg(
+          payload.error ||
+            'Unable to send inquiry email right now. Please try WhatsApp or Call Now.',
+        );
         return;
       }
 
       setSubmittedRef(payload.referenceId ?? 'RECEIVED');
       setName('');
+      setCompany('');
       setEmail('');
       setPhone('');
       setSubject('');
       setMessage('');
+      setConsent(false);
     } catch {
       setErrorMsg('Network issue while sending inquiry. Please call or message us directly on WhatsApp.');
     } finally {
@@ -173,17 +216,33 @@ export function ContactPage({breadcrumbs}: ContactPageProps) {
                   </div>
                 </div>
 
-                <div className="pt-2">
+                <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <a
-                    href={BRAND.whatsappHref}
+                    href={BRAND.whatsappPrefilledHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group inline-flex w-full items-center justify-center gap-2 rounded-lg border border-[#303030] bg-[#1B1B1B] px-4 py-2.5 text-sm font-semibold text-[#CDCBCA] hover:border-[#D41514] hover:bg-[#D41514] hover:text-white transition-colors"
+                    className="group inline-flex items-center justify-center gap-2 rounded-lg border border-[#25D366]/50 bg-[#1B1B1B] px-4 py-2.5 text-sm font-semibold text-white hover:border-[#25D366] hover:bg-[#141414] transition-colors"
                   >
-                    <MessageCircle className="w-4 h-4 text-[#D41514] group-hover:text-white" aria-hidden="true" />
+                    <WhatsAppIcon className="w-4 h-4 text-[#25D366]" />
                     <span>Message on WhatsApp</span>
                   </a>
+                  <a
+                    href={BRAND.phoneHref}
+                    className="group inline-flex items-center justify-center gap-2 rounded-lg border border-[#303030] bg-[#1B1B1B] px-4 py-2.5 text-sm font-semibold text-[#CDCBCA] hover:border-[#D41514] hover:bg-[#D41514] hover:text-white transition-colors"
+                  >
+                    <Phone className="w-4 h-4 text-[#D41514] group-hover:text-white" aria-hidden="true" />
+                    <span>Call Now</span>
+                  </a>
                 </div>
+
+                <button
+                  type="button"
+                  onClick={() => window.dispatchEvent(new Event(OPEN_CHATBOX_EVENT))}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-[#303030] bg-[#141414] px-4 py-2.5 text-xs font-semibold text-[#CDCBCA] hover:border-[#D41514] hover:text-white transition-colors cursor-pointer"
+                >
+                  <MessageSquare className="w-4 h-4 text-[#D41514]" aria-hidden="true" />
+                  <span>Open Website Enquiry Chatbox</span>
+                </button>
 
                 <div className="pt-4 border-t border-[#303030] space-y-2.5">
                   <p className="text-xs font-semibold uppercase tracking-wider text-[#969696]">
@@ -210,10 +269,11 @@ export function ContactPage({breadcrumbs}: ContactPageProps) {
                 >
                   <div className="flex items-center gap-2.5 text-white font-bold">
                     <CheckCircle2 className="w-5 h-5 text-[#D41514]" aria-hidden="true" />
-                    <span>Inquiry Submitted Successfully</span>
+                    <span>Inquiry Delivered Successfully</span>
                   </div>
                   <p className="text-sm text-[#CDCBCA]">
-                    Thank you for contacting Klyia Technology. Your reference ID is{' '}
+                    Thank you for contacting Klyia Technology. Your message has been sent to{' '}
+                    <span className="font-semibold text-white">{BRAND.email}</span> under reference{' '}
                     <span className="font-[family-name:var(--font-mono)] font-semibold text-white">
                       {submittedRef}
                     </span>
@@ -239,6 +299,18 @@ export function ContactPage({breadcrumbs}: ContactPageProps) {
                     </div>
                   ) : null}
 
+                  <div className="hidden" aria-hidden="true">
+                    <label htmlFor="contact-honeypot">Leave blank</label>
+                    <input
+                      id="contact-honeypot"
+                      type="text"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={websiteUrl}
+                      onChange={(e) => setWebsiteUrl(e.target.value)}
+                    />
+                  </div>
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label htmlFor="contact-name" className="block text-sm font-semibold text-[#CDCBCA] mb-1.5">
@@ -255,8 +327,25 @@ export function ContactPage({breadcrumbs}: ContactPageProps) {
                       />
                     </div>
                     <div>
+                      <label htmlFor="contact-company" className="block text-sm font-semibold text-[#CDCBCA] mb-1.5">
+                        Company / Business Name *
+                      </label>
+                      <input
+                        id="contact-company"
+                        type="text"
+                        required
+                        value={company}
+                        onChange={(e) => setCompany(e.target.value)}
+                        placeholder="Business or organization name"
+                        className="w-full rounded-lg border border-[#303030] bg-[#080808] px-3.5 py-2.5 text-sm text-[#CDCBCA] placeholder:text-[#969696]/60 focus:border-[#D41514] focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
                       <label htmlFor="contact-phone" className="block text-sm font-semibold text-[#CDCBCA] mb-1.5">
-                        Phone / WhatsApp *
+                        Mobile / WhatsApp Number *
                       </label>
                       <input
                         id="contact-phone"
@@ -268,12 +357,9 @@ export function ContactPage({breadcrumbs}: ContactPageProps) {
                         className="w-full rounded-lg border border-[#303030] bg-[#080808] px-3.5 py-2.5 text-sm text-[#CDCBCA] placeholder:text-[#969696]/60 focus:border-[#D41514] focus:outline-none"
                       />
                     </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label htmlFor="contact-email" className="block text-sm font-semibold text-[#CDCBCA] mb-1.5">
-                        Work Email *
+                        Email Address *
                       </label>
                       <input
                         id="contact-email"
@@ -285,6 +371,32 @@ export function ContactPage({breadcrumbs}: ContactPageProps) {
                         className="w-full rounded-lg border border-[#303030] bg-[#080808] px-3.5 py-2.5 text-sm text-[#CDCBCA] placeholder:text-[#969696]/60 focus:border-[#D41514] focus:outline-none"
                       />
                     </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="contact-service" className="block text-sm font-semibold text-[#CDCBCA] mb-1.5">
+                        Interested Service
+                      </label>
+                      <select
+                        id="contact-service"
+                        value={service}
+                        onChange={(e) => setService(e.target.value)}
+                        className="w-full rounded-lg border border-[#303030] bg-[#080808] px-3.5 py-2.5 text-sm text-[#CDCBCA] focus:border-[#D41514] focus:outline-none"
+                      >
+                        {CORE_SERVICES.map((item) => (
+                          <option key={item.id} value={item.title} className="bg-[#111111] text-[#CDCBCA]">
+                            {item.title}
+                          </option>
+                        ))}
+                        <option value="Solar ERP / Solar EPC Solutions" className="bg-[#111111] text-[#CDCBCA]">
+                          Solar ERP / Solar EPC Solutions
+                        </option>
+                        <option value="Other" className="bg-[#111111] text-[#CDCBCA]">
+                          Other
+                        </option>
+                      </select>
+                    </div>
                     <div>
                       <label htmlFor="contact-subject" className="block text-sm font-semibold text-[#CDCBCA] mb-1.5">
                         Subject
@@ -294,7 +406,7 @@ export function ContactPage({breadcrumbs}: ContactPageProps) {
                         type="text"
                         value={subject}
                         onChange={(e) => setSubject(e.target.value)}
-                        placeholder="ERP, Website, SEO, or Automation"
+                        placeholder="ERP, Website, Solar EPC, or SEO"
                         className="w-full rounded-lg border border-[#303030] bg-[#080808] px-3.5 py-2.5 text-sm text-[#CDCBCA] placeholder:text-[#969696]/60 focus:border-[#D41514] focus:outline-none"
                       />
                     </div>
@@ -313,6 +425,26 @@ export function ContactPage({breadcrumbs}: ContactPageProps) {
                       placeholder="Briefly describe your business workflow, website goals, or software requirements."
                       className="w-full rounded-lg border border-[#303030] bg-[#080808] px-3.5 py-2.5 text-sm text-[#CDCBCA] placeholder:text-[#969696]/60 focus:border-[#D41514] focus:outline-none"
                     />
+                  </div>
+
+                  <div className="rounded-lg border border-[#303030] bg-[#080808] p-3.5">
+                    <label className="flex items-start gap-2.5 cursor-pointer text-xs leading-relaxed text-[#CDCBCA]">
+                      <input
+                        type="checkbox"
+                        checked={consent}
+                        onChange={(e) => setConsent(e.target.checked)}
+                        className="mt-0.5 h-4 w-4 rounded border-[#303030] bg-[#141414] accent-[#D41514] shrink-0"
+                      />
+                      <span>
+                        I consent to Klyia Technology storing and emailing my details strictly to respond to my enquiry.{' '}
+                        <Link
+                          href={ROUTES.PRIVACY_POLICY}
+                          className="underline underline-offset-2 text-white hover:text-[#D41514]"
+                        >
+                          Privacy Policy
+                        </Link>
+                      </span>
+                    </label>
                   </div>
 
                   <Button type="submit" variant="primary" size="md" disabled={submitting}>

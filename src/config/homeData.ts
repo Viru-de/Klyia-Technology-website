@@ -24,6 +24,19 @@ export interface IndustryCardItem {
   title: string;
   summary: string;
   image: string;
+  webpImage?: string;
+  alt: string;
+  href: string;
+  ctaLabel: string;
+}
+
+export interface SolarVisualServiceItem {
+  id: string;
+  title: string;
+  summary: string;
+  highlights: string[];
+  image: string;
+  webpImage: string;
   alt: string;
   href: string;
   ctaLabel: string;
@@ -37,6 +50,7 @@ export interface TechnologySolutionItem {
   href: string;
   ctaLabel: string;
   quoteHref?: string;
+  quotePrefillService?: string;
   quoteLabel?: string;
   featured?: boolean;
 }
@@ -225,6 +239,7 @@ export const HOME_INDUSTRIES: IndustryCardItem[] = [
     title: 'Solar & Renewable Energy',
     summary: 'Solar EPC lead pipelines, site survey workflows, subsidy documentation, and AMC tracking.',
     image: '/src/assets/images/industry_solar_energy_1795005439181.jpg',
+    webpImage: '/src/assets/images/industry_solar_energy_1795005439181.webp',
     alt: 'Commercial utility-scale solar photovoltaic array under clear morning light',
     href: '/industries/solar-renewable-energy/',
     ctaLabel: 'Solar EPC Solutions',
@@ -297,8 +312,9 @@ export const TECHNOLOGY_SOLUTIONS: TechnologySolutionItem[] = [
       'Weighbridge, e-Way bill & GST dispatch',
     ],
     href: '/industries/steel-iron-industry/',
-    ctaLabel: 'Steel ERP Architecture',
-    quoteHref: '/get-a-quote/?service=Industrial+ERP',
+    ctaLabel: 'Industrial Steel ERP',
+    quoteHref: ROUTES.GET_A_QUOTE,
+    quotePrefillService: 'Industrial ERP',
     quoteLabel: 'Scope Industrial ERP',
     featured: true,
   },
@@ -313,8 +329,9 @@ export const TECHNOLOGY_SOLUTIONS: TechnologySolutionItem[] = [
       'Installation milestones & AMC alerts',
     ],
     href: '/services/solar-erp-software/',
-    ctaLabel: 'Solar ERP',
-    quoteHref: '/get-a-quote/?service=Solar+ERP',
+    ctaLabel: 'Solar ERP Software',
+    quoteHref: ROUTES.GET_A_QUOTE,
+    quotePrefillService: 'Solar ERP',
     quoteLabel: 'Scope Solar ERP',
     featured: true,
   },
@@ -487,3 +504,67 @@ export const LOCATION_COVERAGES: LocationCoverageItem[] = [
     href: '/locations/custom-software-development-services-in-india/',
   },
 ];
+
+export const SOLAR_CORE_VISUAL_SERVICES: SolarVisualServiceItem[] = [
+  {
+    id: 'solar-rooftop-installation',
+    title: 'Solar Panel Installation & Rooftop Solar Systems',
+    summary:
+      'Structured enquiry websites, kW roof-sizing intakes, and mobile field survey checklists built for residential and commercial rooftop solar installation teams.',
+    highlights: [
+      'Sanctioned load & electricity bill enquiry capture',
+      'Subsidy workflow documentation & customer milestone logs',
+    ],
+    image: '/src/assets/images/solar_rooftop_installation_1795089423468.jpg',
+    webpImage: '/src/assets/images/solar_rooftop_installation_1795089423468.webp',
+    alt: 'Solar EPC technicians installing monocrystalline solar panel arrays on a commercial rooftop',
+    href: '/industries/solar-renewable-energy/',
+    ctaLabel: 'Rooftop Solar EPC Workflows',
+  },
+  {
+    id: 'solar-epc-ci-installations',
+    title: 'Solar EPC Project Execution & C&I Installations',
+    summary:
+      'Coordinate multi-megawatt commercial and industrial solar installations across engineering approvals, DISCOM net-metering, procurement, and site commissioning.',
+    highlights: [
+      'C&I proposal generation & technical BOM estimation',
+      'DISCOM net-metering & CEIG inspection stage tracking',
+    ],
+    image: '/src/assets/images/solar_ci_infrastructure_1795089432688.jpg',
+    webpImage: '/src/assets/images/solar_ci_infrastructure_1795089432688.webp',
+    alt: 'Aerial view of a commercial and industrial solar power plant installation over an industrial facility',
+    href: '/services/crm-software-development/',
+    ctaLabel: 'Solar EPC CRM Systems',
+  },
+  {
+    id: 'solar-project-erp-dashboards',
+    title: 'Solar Project Management & Solar ERP Dashboards',
+    summary:
+      'Unified Solar ERP software tracking panel and inverter serial numbers, Bill of Materials stock issues, vendor POs, GST invoicing, and stage-wise profitability.',
+    highlights: [
+      'PV module, inverter & BOS inventory reconciliation',
+      'Site-wise expense vs contract margin visibility',
+    ],
+    image: '/src/assets/images/solar_erp_dashboard_1795089432209.jpg',
+    webpImage: '/src/assets/images/solar_erp_dashboard_1795089432209.webp',
+    alt: 'Solar ERP project management dashboard showing kW capacity milestones, BOM stock, and DISCOM status',
+    href: '/services/solar-erp-software/',
+    ctaLabel: 'Explore Solar ERP Software',
+  },
+  {
+    id: 'solar-monitoring-amc',
+    title: 'Solar Monitoring, Maintenance & Renewable Infrastructure',
+    summary:
+      'Post-commissioning AMC schedules, preventive string-cleaning calendars, inverter service ticketing, and automated WhatsApp customer notifications.',
+    highlights: [
+      'Annual Maintenance Contract & warranty claim history',
+      'Automated WhatsApp project stage & service reminders',
+    ],
+    image: '/src/assets/images/solar_monitoring_maintenance_1795089423677.jpg',
+    webpImage: '/src/assets/images/solar_monitoring_maintenance_1795089423677.webp',
+    alt: 'Solar engineer inspecting commercial string inverters and renewable energy diagnostics at a solar plant',
+    href: '/services/whatsapp-business-automation/',
+    ctaLabel: 'Solar Service & WhatsApp Alerts',
+  },
+];
+

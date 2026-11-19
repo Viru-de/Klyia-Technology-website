@@ -5,16 +5,20 @@ import {
   CheckCircle2,
   Factory,
   Globe,
-  MessageCircle,
+  Phone,
   Search,
   Server,
 } from 'lucide-react';
 import {CTASection} from '../components/home/CTASection.tsx';
 import {InnerPageBanner} from '../components/layout/InnerPageBanner.tsx';
+import {ServiceEnquiryForm} from '../components/shared/ServiceEnquiryForm.tsx';
 import {VisibleFaqBlock} from '../components/shared/VisibleFaqBlock.tsx';
 import {Button} from '../components/ui/Button.tsx';
 import {Container} from '../components/ui/Container.tsx';
-import {BRAND} from '../config/brand.ts';
+import {MediaFrame} from '../components/ui/MediaFrame.tsx';
+import {WhatsAppIcon} from '../components/ui/WhatsAppIcon.tsx';
+import {BRAND, buildWhatsAppHref} from '../config/brand.ts';
+import {SOLAR_CORE_VISUAL_SERVICES} from '../config/homeData.ts';
 import {ROUTES} from '../config/routes.ts';
 import type {BreadcrumbEntry} from '../config/seo.ts';
 import {
@@ -22,6 +26,7 @@ import {
   getServiceBySlug,
   type IndustryPageData,
 } from '../data/index.ts';
+import {saveQuotePrefill} from '../lib/quotePrefill.ts';
 import {Link} from '../lib/router.tsx';
 
 interface IndustryDetailPageProps {
@@ -29,7 +34,18 @@ interface IndustryDetailPageProps {
   breadcrumbs: BreadcrumbEntry[];
 }
 
+const SOLAR_ENQUIRY_OPTIONS = [
+  'Solar EPC Website & Local SEO',
+  'Solar ERP Software & Project Dashboards',
+  'Solar CRM & Site Survey Pipeline',
+  'Rooftop Solar & Subsidy Tracking System',
+  'Commercial & Industrial (C&I) Solar Management',
+  'Solar AMC, Monitoring & WhatsApp Alerts',
+];
+
 export function IndustryDetailPage({industry, breadcrumbs}: IndustryDetailPageProps) {
+  const isSolar = industry.slug === 'solar-renewable-energy';
+
   const relatedServices = industry.relatedServiceSlugs
     .map((slug) => getServiceBySlug(slug))
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
@@ -38,9 +54,25 @@ export function IndustryDetailPage({industry, breadcrumbs}: IndustryDetailPagePr
     .map((slug) => getBlogArticleBySlug(slug))
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
-  const whatsappUrl = `${BRAND.whatsappHref}?text=${encodeURIComponent(
+  const whatsappUrl = buildWhatsAppHref(
     `Hello Klyia Technology, we want to discuss software, website, or ERP solutions for the ${industry.name} sector.`,
-  )}`;
+  );
+
+  const prefillQuote = () =>
+    saveQuotePrefill({
+      industry: industry.name,
+      service: isSolar ? 'Solar ERP' : 'Industry-Specific ERP / Software',
+    });
+
+  const serviceOptions = isSolar
+    ? SOLAR_ENQUIRY_OPTIONS
+    : [
+        `${industry.name} Website & SEO`,
+        `${industry.name} Custom ERP Software`,
+        `${industry.name} CRM & Billing Automation`,
+        'WhatsApp Business Automation',
+        'Custom Software Consultation',
+      ];
 
   return (
     <>
@@ -51,7 +83,8 @@ export function IndustryDetailPage({industry, breadcrumbs}: IndustryDetailPagePr
         backgroundImage={industry.heroImage}
         backgroundAlt={industry.heroImageAlt}
         ctaLabel={`Discuss ${industry.name} Scope`}
-        ctaHref={`${ROUTES.GET_A_QUOTE}?industry=${encodeURIComponent(industry.name)}`}
+        ctaHref={ROUTES.GET_A_QUOTE}
+        onCtaNavigate={prefillQuote}
       />
 
       <section className="bg-[#080808] py-14 sm:py-16 border-b border-[#303030]">
@@ -89,25 +122,95 @@ export function IndustryDetailPage({industry, breadcrumbs}: IndustryDetailPagePr
               </p>
               <div className="flex flex-col gap-3">
                 <Button
-                  href={`${ROUTES.GET_A_QUOTE}?industry=${encodeURIComponent(industry.name)}`}
+                  href={ROUTES.GET_A_QUOTE}
+                  onNavigate={prefillQuote}
                   variant="primary"
                   size="md"
+                  className="w-full"
                 >
-                  <span>Discuss {industry.name} Scope</span>
+                  <span>Request {industry.name} Proposal</span>
                   <ArrowRight className="w-4 h-4" aria-hidden="true" />
                 </Button>
                 <a
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#303030] bg-[#111111] px-4 py-3 text-sm font-semibold text-[#CDCBCA] hover:border-[#25D366] hover:text-white transition-colors"
+                >
+                  <WhatsAppIcon className="w-4 h-4 text-[#25D366]" />
+                  <span>WhatsApp Our Team</span>
+                </a>
+                <a
+                  href={BRAND.phoneHref}
                   className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#303030] bg-[#111111] px-4 py-3 text-sm font-semibold text-[#CDCBCA] hover:border-[#D41514] hover:text-white transition-colors"
                 >
-                  <MessageCircle className="w-4 h-4 text-[#D41514]" aria-hidden="true" />
-                  <span>WhatsApp Our Team</span>
+                  <Phone className="w-4 h-4 text-[#D41514]" aria-hidden="true" />
+                  <span>Call Now ({BRAND.phoneDisplay})</span>
                 </a>
               </div>
             </aside>
           </div>
+
+          {/* Dedicated Visual Showcase for Solar & Renewable Energy */}
+          {isSolar ? (
+            <div className="space-y-6 rounded-2xl border border-[#303030] bg-[#111111] p-6 sm:p-8">
+              <div className="max-w-3xl space-y-2">
+                <p className="text-xs font-semibold uppercase tracking-wider text-[#D41514]">
+                  Solar EPC Digital &amp; Software Architecture
+                </p>
+                <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl font-bold text-white">
+                  Visual Guide: Solar Panel Installation, EPC Execution &amp; Solar ERP Systems
+                </h2>
+                <p className="text-sm sm:text-base leading-relaxed text-[#969696]">
+                  From rooftop solar systems and commercial &amp; industrial (C&amp;I) solar installations to Solar ERP dashboards and scheduled solar monitoring and maintenance, every workflow is supported by purpose-built digital infrastructure.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {SOLAR_CORE_VISUAL_SERVICES.map((item) => (
+                  <article
+                    key={item.id}
+                    className="flex flex-col overflow-hidden rounded-xl border border-[#303030] bg-[#080808]"
+                  >
+                    <div className="aspect-[16/9] w-full bg-[#141414]">
+                      <MediaFrame
+                        src={item.image}
+                        webpSrc={item.webpImage}
+                        alt={item.alt}
+                        width={800}
+                        height={450}
+                        fallbackLabel={item.title}
+                        imgClassName="h-full w-full object-cover"
+                      />
+                    </div>
+                    <div className="flex flex-1 flex-col justify-between p-5 sm:p-6 space-y-4">
+                      <div className="space-y-2">
+                        <p className="text-lg font-bold text-white">{item.title}</p>
+                        <p className="text-sm leading-relaxed text-[#969696]">{item.summary}</p>
+                        <ul className="space-y-1.5 pt-1 text-xs sm:text-sm text-[#CDCBCA]">
+                          {item.highlights.map((bullet) => (
+                            <li key={bullet} className="flex items-start gap-2">
+                              <CheckCircle2 className="w-4 h-4 text-[#D41514] shrink-0 mt-0.5" aria-hidden="true" />
+                              <span>{bullet}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      {item.href !== industry.canonicalPath ? (
+                        <Link
+                          href={item.href}
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#CDCBCA] hover:text-[#D41514] transition-colors pt-2 border-t border-[#303030]"
+                        >
+                          <span>{item.ctaLabel}</span>
+                          <ArrowRight className="w-3.5 h-3.5 text-[#D41514]" aria-hidden="true" />
+                        </Link>
+                      ) : null}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          ) : null}
 
           {/* Sector Operational Challenges */}
           <div className="rounded-xl border border-[#303030] bg-[#111111] p-6 sm:p-8 space-y-4">
@@ -124,7 +227,7 @@ export function IndustryDetailPage({industry, breadcrumbs}: IndustryDetailPagePr
             </div>
           </div>
 
-          {/* Optional Product Categories / Core Module Matrix (e.g., Steel Grades or Solar ERP Modules) */}
+          {/* Optional Product Categories / Core Module Matrix */}
           {industry.modulesOrCatalogueHighlight && industry.modulesOrCatalogueHighlight.length > 0 ? (
             <div className="rounded-xl border border-[#303030] bg-[#141414] p-6 sm:p-8 space-y-4">
               <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-white">
@@ -154,7 +257,7 @@ export function IndustryDetailPage({industry, breadcrumbs}: IndustryDetailPagePr
               <div className="space-y-4">
                 {industry.websiteSolutions.map((item) => (
                   <div key={item.title} className="border-t border-[#303030] pt-4 first:border-t-0 first:pt-0 space-y-1">
-                    <h3 className="text-base font-bold text-white">{item.title}</h3>
+                    <p className="text-base font-bold text-white">{item.title}</p>
                     <p className="text-sm leading-relaxed text-[#969696]">{item.detail}</p>
                   </div>
                 ))}
@@ -169,7 +272,7 @@ export function IndustryDetailPage({industry, breadcrumbs}: IndustryDetailPagePr
               <div className="space-y-4">
                 {industry.softwareAndErpSolutions.map((item) => (
                   <div key={item.title} className="border-t border-[#303030] pt-4 first:border-t-0 first:pt-0 space-y-1">
-                    <h3 className="text-base font-bold text-white">{item.title}</h3>
+                    <p className="text-base font-bold text-white">{item.title}</p>
                     <p className="text-sm leading-relaxed text-[#969696]">{item.detail}</p>
                   </div>
                 ))}
@@ -244,7 +347,7 @@ export function IndustryDetailPage({industry, breadcrumbs}: IndustryDetailPagePr
             </div>
           ) : null}
 
-          {/* Related Services & Blogs */}
+          {/* Core Services for {industry.name} */}
           {relatedServices.length > 0 ? (
             <div className="space-y-4">
               <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-white">
@@ -260,18 +363,18 @@ export function IndustryDetailPage({industry, breadcrumbs}: IndustryDetailPagePr
                       <span className="text-[11px] font-semibold uppercase tracking-wider text-[#D41514]">
                         {srv.categoryLabel}
                       </span>
-                      <h3 className="mt-1 text-base font-bold text-white group-hover:text-[#D41514] transition-colors">
+                      <p className="mt-1 text-base font-bold text-white group-hover:text-[#D41514] transition-colors">
                         <Link href={srv.canonicalPath} className="after:absolute after:inset-0">
                           {srv.name}
                         </Link>
-                      </h3>
+                      </p>
                       <p className="mt-1 text-xs text-[#969696] line-clamp-2">{srv.heroSubtitle}</p>
                     </div>
                     <span
                       aria-hidden="true"
                       className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#CDCBCA] pt-2"
                     >
-                      <span>View Service Details</span>
+                      <span>Explore {srv.name}</span>
                       <ArrowRight className="w-3.5 h-3.5 text-[#D41514]" />
                     </span>
                   </article>
@@ -292,17 +395,38 @@ export function IndustryDetailPage({industry, breadcrumbs}: IndustryDetailPagePr
                     className="relative group rounded-xl border border-[#303030] bg-[#141414] p-5 hover:border-[#D41514] transition-colors space-y-2"
                   >
                     <span className="text-xs font-semibold text-[#D41514]">{post.category}</span>
-                    <h3 className="text-base font-bold text-white group-hover:text-[#D41514] transition-colors">
+                    <p className="text-base font-bold text-white group-hover:text-[#D41514] transition-colors">
                       <Link href={post.canonicalPath} className="after:absolute after:inset-0">
                         {post.title}
                       </Link>
-                    </h3>
+                    </p>
                     <p className="text-sm text-[#969696]">{post.excerpt}</p>
                   </article>
                 ))}
               </div>
             </div>
           ) : null}
+
+          {/* Embedded Solar / Industry Enquiry Form -> Emails klyiatechnology@gmail.com */}
+          <ServiceEnquiryForm
+            type={isSolar ? 'solar' : 'service'}
+            heading={
+              isSolar
+                ? 'Solar & Renewable Energy Enquiry Form'
+                : `${industry.name} Project Enquiry`
+            }
+            subtitle={
+              isSolar
+                ? 'Submit your rooftop solar EPC, C&I project management, Solar ERP, or local SEO requirements. Enquiries are emailed directly to klyiatechnology@gmail.com.'
+                : `Share your operational software, website, or automation goals for ${industry.name}. Your enquiry goes straight to our Bhilai engineering team.`
+            }
+            defaultService={serviceOptions[0]}
+            serviceOptions={serviceOptions}
+            industry={industry.name}
+            sourceSection={isSolar ? 'Solar & Renewable Energy Page Form' : `${industry.name} Page Form`}
+            submitLabel={isSolar ? 'Send Solar Enquiry' : `Send ${industry.name} Enquiry`}
+            whatsappContextMessage={`Hello Klyia Technology, we are interested in ${serviceOptions[0]} for the ${industry.name} sector.`}
+          />
 
           <VisibleFaqBlock
             heading={`${industry.name} — Frequently Asked Questions`}
@@ -315,3 +439,4 @@ export function IndustryDetailPage({industry, breadcrumbs}: IndustryDetailPagePr
     </>
   );
 }
+

@@ -77,9 +77,9 @@ export function HomeSeoGeoAeoSection() {
                   <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#303030] bg-[#141414] text-[#D41514]">
                     <IconComponent className="w-5 h-5" aria-hidden="true" />
                   </div>
-                  <h3 className="text-lg font-bold text-white group-hover:text-[#D41514] transition-colors">
+                  <p className="text-lg font-bold text-white group-hover:text-[#D41514] transition-colors">
                     {item.title}
-                  </h3>
+                  </p>
                   <p className="text-sm leading-relaxed text-[#969696]">{item.description}</p>
                 </div>
                 <Link

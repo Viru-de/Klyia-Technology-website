@@ -52,6 +52,11 @@ export function IndustriesPage({breadcrumbs}: IndustriesPageProps) {
                   <div className="aspect-[16/10] w-full bg-[#111111]">
                     <MediaFrame
                       src={industry.heroImage || '/src/assets/images/industry_steel_iron_1795005438477.jpg'}
+                      webpSrc={
+                        industry.slug === 'solar-renewable-energy'
+                          ? '/src/assets/images/industry_solar_energy_1795005439181.webp'
+                          : undefined
+                      }
                       alt={industry.heroImageAlt || industry.name}
                       width={800}
                       height={500}
@@ -64,11 +69,11 @@ export function IndustriesPage({breadcrumbs}: IndustriesPageProps) {
                       <span className="text-[11px] font-semibold uppercase tracking-wider text-[#D41514]">
                         {industry.priorityBadge}
                       </span>
-                      <h3 className="text-xl font-bold text-white group-hover:text-[#D41514] transition-colors">
+                      <p className="text-xl font-bold text-white group-hover:text-[#D41514] transition-colors">
                         <Link href={industry.canonicalPath} className="after:absolute after:inset-0">
                           {industry.name}
                         </Link>
-                      </h3>
+                      </p>
                       <p className="text-sm leading-relaxed text-[#969696]">
                         {industry.heroSubtitle}
                       </p>
@@ -109,11 +114,11 @@ export function IndustriesPage({breadcrumbs}: IndustriesPageProps) {
                   </div>
                   <div className="flex flex-1 flex-col justify-between p-5 space-y-3">
                     <div>
-                      <h3 className="text-lg font-bold text-white group-hover:text-[#D41514] transition-colors">
+                      <p className="text-lg font-bold text-white group-hover:text-[#D41514] transition-colors">
                         <Link href={industry.canonicalPath} className="after:absolute after:inset-0">
                           {industry.name}
                         </Link>
-                      </h3>
+                      </p>
                       <p className="mt-2 text-sm leading-relaxed text-[#969696]">
                         {industry.heroSubtitle}
                       </p>

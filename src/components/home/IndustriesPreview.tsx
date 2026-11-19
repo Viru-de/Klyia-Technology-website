@@ -33,6 +33,7 @@ export function IndustriesPreview() {
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#141414]">
                 <MediaFrame
                   src={industry.image}
+                  webpSrc={industry.webpImage}
                   alt={industry.alt}
                   width={800}
                   height={600}
@@ -47,9 +48,9 @@ export function IndustriesPreview() {
 
               <div className="flex flex-1 flex-col justify-between p-5 sm:p-6">
                 <div>
-                  <h3 className="text-lg font-bold text-[#CDCBCA] group-hover:text-white transition-colors">
+                  <p className="text-lg font-bold text-[#CDCBCA] group-hover:text-white transition-colors">
                     {industry.title}
-                  </h3>
+                  </p>
                   <p className="mt-2 text-sm leading-[1.6] text-[#969696]">
                     {industry.summary}
                   </p>
