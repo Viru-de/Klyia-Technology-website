@@ -30,9 +30,9 @@ export function WhyChooseUs() {
                   0{index + 1}
                 </span>
               </div>
-              <h3 className="text-lg font-bold text-[#CDCBCA] group-hover:text-white transition-colors">
+              <p className="text-lg font-bold text-[#CDCBCA] group-hover:text-white transition-colors">
                 {item.title}
-              </h3>
+              </p>
               <p className="mt-2.5 text-sm leading-[1.65] text-[#969696]">
                 {item.description}
               </p>

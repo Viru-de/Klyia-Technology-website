@@ -83,16 +83,17 @@ export function ServicesPage({breadcrumbs}: ServicesPageProps) {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                   {items.map((service) => (
-                    <Link
+                    <article
                       key={service.slug}
-                      href={service.canonicalPath}
-                      className="group flex flex-col justify-between rounded-xl border border-[#303030] bg-[#111111] p-5 sm:p-6 transition-all duration-200 hover:border-[#D41514] hover:shadow-[0_12px_30px_-14px_rgba(212,21,20,0.24)]"
+                      className="relative group flex flex-col justify-between rounded-xl border border-[#303030] bg-[#111111] p-5 sm:p-6 transition-all duration-200 hover:border-[#D41514] hover:shadow-[0_12px_30px_-14px_rgba(212,21,20,0.24)]"
                     >
                       <div>
                         <div className="flex items-start gap-2.5">
                           <CheckCircle2 className="w-4 h-4 text-[#D41514] shrink-0 mt-1" aria-hidden="true" />
                           <h3 className="text-base font-bold text-white group-hover:text-[#D41514] transition-colors">
-                            {service.name}
+                            <Link href={service.canonicalPath} className="after:absolute after:inset-0">
+                              {service.name}
+                            </Link>
                           </h3>
                         </div>
                         <p className="mt-2.5 text-sm leading-relaxed text-[#969696]">
@@ -100,14 +101,14 @@ export function ServicesPage({breadcrumbs}: ServicesPageProps) {
                         </p>
                       </div>
 
-                      <div className="mt-4 pt-3 border-t border-[#303030]/60 inline-flex items-center gap-1.5 text-xs font-semibold text-[#CDCBCA]">
-                        <span>View Detailed Service Guide</span>
-                        <ArrowRight
-                          className="w-3.5 h-3.5 text-[#D41514] transition-transform group-hover:translate-x-0.5"
-                          aria-hidden="true"
-                        />
+                      <div
+                        aria-hidden="true"
+                        className="mt-4 pt-3 border-t border-[#303030]/60 inline-flex items-center gap-1.5 text-xs font-semibold text-[#CDCBCA]"
+                      >
+                        <span>View Service Details</span>
+                        <ArrowRight className="w-3.5 h-3.5 text-[#D41514] transition-transform group-hover:translate-x-0.5" />
                       </div>
-                    </Link>
+                    </article>
                   ))}
                 </div>
 

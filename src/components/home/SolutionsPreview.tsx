@@ -55,14 +55,14 @@ export function SolutionsPreview() {
                   href={solution.href}
                   className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#CDCBCA] hover:text-[#D41514] transition-colors"
                 >
-                  <span>Explore Architecture</span>
+                  <span>{solution.ctaLabel}</span>
                   <ArrowRight className="w-4 h-4 text-[#D41514]" aria-hidden="true" />
                 </Link>
                 <Link
-                  href={ROUTES.GET_A_QUOTE}
+                  href={solution.quoteHref || ROUTES.GET_A_QUOTE}
                   className="text-xs font-semibold text-[#969696] hover:text-white transition-colors"
                 >
-                  Request Scope →
+                  {solution.quoteLabel || 'Request Proposal'}
                 </Link>
               </div>
             </div>
@@ -95,7 +95,7 @@ export function SolutionsPreview() {
                 href={solution.href}
                 className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-[#CDCBCA] hover:text-[#D41514] transition-colors"
               >
-                <span>Learn More</span>
+                <span>{solution.ctaLabel}</span>
                 <ArrowRight className="w-4 h-4 text-[#D41514]" aria-hidden="true" />
               </Link>
             </div>

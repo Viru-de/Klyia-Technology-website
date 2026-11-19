@@ -120,22 +120,26 @@ export function LocationDetailPage({location, breadcrumbs}: LocationDetailPagePr
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {location.deliveredServices.map((item) => (
-                <Link
+                <article
                   key={item.title}
-                  href={`/services/${item.serviceSlug}/`}
-                  className="group rounded-xl border border-[#303030] bg-[#111111] p-5 hover:border-[#D41514] transition-colors flex flex-col justify-between gap-3"
+                  className="relative group rounded-xl border border-[#303030] bg-[#111111] p-5 hover:border-[#D41514] transition-colors flex flex-col justify-between gap-3"
                 >
                   <div>
                     <h3 className="text-base font-bold text-white group-hover:text-[#D41514] transition-colors">
-                      {item.title}
+                      <Link href={`/services/${item.serviceSlug}/`} className="after:absolute after:inset-0">
+                        {item.title}
+                      </Link>
                     </h3>
                     <p className="mt-2 text-sm text-[#969696]">{item.detail}</p>
                   </div>
-                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#CDCBCA]">
-                    <span>Explore Service</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-[#D41514]" aria-hidden="true" />
+                  <span
+                    aria-hidden="true"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#CDCBCA]"
+                  >
+                    <span>View {item.title}</span>
+                    <ArrowRight className="w-3.5 h-3.5 text-[#D41514]" />
                   </span>
-                </Link>
+                </article>
               ))}
             </div>
           </div>

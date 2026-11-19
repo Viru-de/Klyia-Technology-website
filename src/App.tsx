@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import {Footer} from './components/layout/Footer.tsx';
 import {Header} from './components/layout/Header.tsx';
+import {BRAND} from './config/brand.ts';
 import {ROUTES, extractRouteSlug, normalizePathname} from './config/routes.ts';
 import {resolvePageSeo} from './config/seo.ts';
 import {
@@ -58,12 +59,16 @@ function AppShell() {
     updateClientMetaTag('meta[name="twitter:title"]', 'name', 'twitter:title', seo.title);
     updateClientMetaTag('meta[name="twitter:description"]', 'name', 'twitter:description', seo.description);
 
-    const canonicalUrl = `${window.location.origin}${seo.canonicalPath}`;
-    let canonicalLink = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    const canonicalUrl = `${BRAND.domain}${seo.canonicalPath}`;
+    const canonicalTags = document.head.querySelectorAll<HTMLLinkElement>('link[rel="canonical"]');
+    let canonicalLink = canonicalTags[0];
     if (!canonicalLink) {
       canonicalLink = document.createElement('link');
       canonicalLink.setAttribute('rel', 'canonical');
       document.head.appendChild(canonicalLink);
+    }
+    for (let i = 1; i < canonicalTags.length; i += 1) {
+      canonicalTags[i].remove();
     }
     canonicalLink.setAttribute('href', canonicalUrl);
   }, [seo]);

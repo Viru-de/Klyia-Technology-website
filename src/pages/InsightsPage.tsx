@@ -69,10 +69,9 @@ export function InsightsPage({breadcrumbs}: InsightsPageProps) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {visibleArticles.map((article) => (
-              <Link
+              <article
                 key={article.slug}
-                href={article.canonicalPath}
-                className="group flex flex-col justify-between rounded-xl border border-[#303030] bg-[#111111] p-6 transition-all duration-200 hover:border-[#D41514] hover:shadow-[0_14px_34px_-16px_rgba(212,21,20,0.24)]"
+                className="relative group flex flex-col justify-between rounded-xl border border-[#303030] bg-[#111111] p-6 transition-all duration-200 hover:border-[#D41514] hover:shadow-[0_14px_34px_-16px_rgba(212,21,20,0.24)]"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 text-xs font-semibold text-[#D41514]">
@@ -87,7 +86,9 @@ export function InsightsPage({breadcrumbs}: InsightsPageProps) {
                   </div>
 
                   <h3 className="mt-3 text-lg font-bold leading-snug text-white group-hover:text-[#D41514] transition-colors">
-                    {article.title}
+                    <Link href={article.canonicalPath} className="after:absolute after:inset-0">
+                      {article.title}
+                    </Link>
                   </h3>
                   <p className="mt-2.5 text-sm leading-[1.65] text-[#969696]">
                     {article.excerpt}
@@ -99,12 +100,12 @@ export function InsightsPage({breadcrumbs}: InsightsPageProps) {
                     <Calendar className="w-3.5 h-3.5" aria-hidden="true" />
                     <time dateTime={article.updatedAt}>{article.updatedAt}</time>
                   </span>
-                  <span className="inline-flex items-center gap-1 font-semibold text-white">
+                  <span aria-hidden="true" className="inline-flex items-center gap-1 font-semibold text-white">
                     <span>Read Guide</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-[#D41514]" aria-hidden="true" />
+                    <ArrowRight className="w-3.5 h-3.5 text-[#D41514]" />
                   </span>
                 </div>
-              </Link>
+              </article>
             ))}
           </div>
         </Container>

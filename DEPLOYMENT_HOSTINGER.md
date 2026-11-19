@@ -59,12 +59,18 @@ Configure these environment variables in your Hostinger Node.js application sett
 3. Add the environment variables listed in Section 6 inside Hostinger's Environment Variables panel.
 4. Trigger **Build & Deploy** from hPanel (or via SSH: `npm ci && npm run build && npm start`).
 
-## 9. Domain Configuration
-1. Point `klyiatechnology.com` and `www.klyiatechnology.com` DNS `A` / `CNAME` records to your Hostinger hosting IP/target as shown in hPanel.
-2. Configure `www` -> apex (`https://klyiatechnology.com`) redirect rule in Hostinger or DNS/reverse-proxy settings so canonical URLs stay consistent.
+## 9. Domain & Canonical `www` Redirect Configuration (Hostinger hPanel)
+1. In **Hostinger hPanel -> Domains -> DNS / Nameservers**:
+   - Point apex `@` (`klyiatechnology.com`) `A` record to your Hostinger VPS/hosting IPv4 address (and `AAAA` if applicable).
+   - Point `www` (`www.klyiatechnology.com`) `CNAME` record to `klyiatechnology.com` (or `A` record to the same Hostinger IP) so both hostnames resolve to your Node.js app.
+2. In **Hostinger hPanel -> Websites -> Domains / Redirects** (or Nginx/Apache reverse proxy if using VPS):
+   - Do **not** configure a conflicting non-www-to-www redirect. The preferred canonical domain is `https://klyiatechnology.com/`.
+   - Ensure Hostinger passes `Host` / `X-Forwarded-Host` and `X-Forwarded-Proto` headers to the Node.js application.
+   - `server.ts` enforces a permanent single-hop HTTP `301` redirect from `https://www.klyiatechnology.com/*` to `https://klyiatechnology.com/*` (preserving path and query parameters, without redirecting `/api/*` or `/health`).
+   - If you also add a Hostinger edge rule for `www.klyiatechnology.com` -> `https://klyiatechnology.com`, ensure it forwards path + query string (`$request_uri`) so only 1 redirect hop occurs.
 
 ## 10. SSL Setup
-1. In **Hostinger hPanel -> Security -> SSL**, enable and install Let's Encrypt / Auto-SSL for `klyiatechnology.com` and `www.klyiatechnology.com`.
+1. In **Hostinger hPanel -> Security -> SSL**, enable and install Let's Encrypt / Auto-SSL for **both** `klyiatechnology.com` and `www.klyiatechnology.com` (required so HTTPS requests to `www.klyiatechnology.com` complete TLS before the 301 redirect).
 2. Enable **Force HTTPS** in Hostinger hPanel. `server.ts` sets `app.set('trust proxy', 1)` so `x-forwarded-proto` is respected behind Hostinger's reverse proxy.
 
 ## 11. Post-Deployment Verification

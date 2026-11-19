@@ -10,6 +10,7 @@ const SEARCH_PILLARS = [
     description:
       'Server-rendered HTML, fast mobile Core Web Vitals, clean canonical URLs, and structured internal architecture built to earn sustained Google Search visibility.',
     href: '/services/search-engine-optimization/',
+    ctaLabel: 'Explore SEO Services',
     icon: Search,
   },
   {
@@ -17,6 +18,7 @@ const SEARCH_PILLARS = [
     description:
       'Capture regional buyers searching across Bhilai, Durg, Raipur, and Chhattisgarh through accurate NAP signals, optimized Maps categories, and verified location pages.',
     href: '/services/local-seo-services/',
+    ctaLabel: 'Local SEO Services',
     icon: MapPin,
   },
   {
@@ -24,6 +26,7 @@ const SEARCH_PILLARS = [
     description:
       'Structure clear company facts, entity context, and service authority so AI-assisted search summaries recognize and cite your business accurately.',
     href: '/services/geo-generative-engine-optimization/',
+    ctaLabel: 'GEO Optimization Services',
     icon: Sparkles,
   },
   {
@@ -31,6 +34,7 @@ const SEARCH_PILLARS = [
     description:
       'Publish concise definitions, comparison tables, and visible Schema-backed FAQs helping answer engines surface direct answers about your offerings.',
     href: '/services/aeo-answer-engine-optimization/',
+    ctaLabel: 'AEO Optimization Services',
     icon: Compass,
   },
 ];
@@ -65,10 +69,9 @@ export function HomeSeoGeoAeoSection() {
           {SEARCH_PILLARS.map((item) => {
             const IconComponent = item.icon;
             return (
-              <Link
+              <article
                 key={item.title}
-                href={item.href}
-                className="group flex flex-col justify-between rounded-xl border border-[#303030] bg-[#111111] p-6 transition-all duration-200 hover:border-[#D41514]"
+                className="relative group flex flex-col justify-between rounded-xl border border-[#303030] bg-[#111111] p-6 transition-all duration-200 hover:border-[#D41514]"
               >
                 <div className="space-y-3">
                   <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#303030] bg-[#141414] text-[#D41514]">
@@ -79,11 +82,14 @@ export function HomeSeoGeoAeoSection() {
                   </h3>
                   <p className="text-sm leading-relaxed text-[#969696]">{item.description}</p>
                 </div>
-                <span className="mt-5 pt-3 border-t border-[#303030] inline-flex items-center gap-1.5 text-xs font-semibold text-[#CDCBCA]">
-                  <span>Explore Capability</span>
+                <Link
+                  href={item.href}
+                  className="mt-5 pt-3 border-t border-[#303030] inline-flex items-center gap-1.5 text-xs font-semibold text-[#CDCBCA] group-hover:text-white after:absolute after:inset-0"
+                >
+                  <span>{item.ctaLabel}</span>
                   <ArrowRight className="w-3.5 h-3.5 text-[#D41514]" aria-hidden="true" />
-                </span>
-              </Link>
+                </Link>
+              </article>
             );
           })}
         </div>

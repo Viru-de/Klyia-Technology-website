@@ -19,9 +19,9 @@ export function CTASection() {
 
       <Container className="relative z-10">
         <div className="mx-auto max-w-3xl text-center space-y-5">
-          <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl font-bold leading-[1.2] tracking-[-0.02em] text-white">
+          <p className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl font-bold leading-[1.2] tracking-[-0.02em] text-white">
             Have a Business Idea? <span className="text-[#D41514]">Let&apos;s Make It Happen.</span>
-          </h2>
+          </p>
           <p className="text-base sm:text-lg leading-relaxed text-[#CDCBCA] max-w-2xl mx-auto">
             Let&apos;s discuss your business requirements and find the right technology solution.
           </p>

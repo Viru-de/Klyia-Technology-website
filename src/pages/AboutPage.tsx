@@ -1,9 +1,10 @@
 import React from 'react';
-import {ArrowRight, Building2, CheckCircle2, MapPin} from 'lucide-react';
+import {ArrowRight, Building2, CheckCircle2, ExternalLink, MapPin} from 'lucide-react';
 import {CTASection} from '../components/home/CTASection.tsx';
 import {InnerPageBanner} from '../components/layout/InnerPageBanner.tsx';
 import {Button} from '../components/ui/Button.tsx';
 import {Container} from '../components/ui/Container.tsx';
+import {SocialLinks} from '../components/ui/SocialLinks.tsx';
 import {STATIC_PAGE_BANNERS} from '../config/banners.ts';
 import {BRAND} from '../config/brand.ts';
 import {ROUTES} from '../config/routes.ts';
@@ -61,7 +62,7 @@ export function AboutPage({breadcrumbs}: AboutPageProps) {
                 Technology Built Around Real Industrial &amp; Commercial Operations
               </h2>
               <p className="text-base leading-[1.7] text-[#CDCBCA]">
-                Klyia Technology partners with manufacturers, industrial suppliers, solar EPC companies, distributors, healthcare providers, and service enterprises to replace fragmented workflows with dependable software and digital growth systems.
+                As an engineering-led IT and software development company in Bhilai, Klyia Technology partners with manufacturers, industrial suppliers, solar EPC companies, distributors, healthcare providers, and service enterprises across Chhattisgarh and India to replace fragmented workflows with dependable digital systems.
               </p>
               <p className="text-[15px] leading-[1.7] text-[#969696]">
                 Rather than treating software development and digital visibility as disconnected silos, we align custom ERP and web engineering with technical SEO, Generative Engine Optimization (GEO), Answer Engine Optimization (AEO), and practical workflow automation.
@@ -112,13 +113,39 @@ export function AboutPage({breadcrumbs}: AboutPageProps) {
                 </ul>
               </div>
 
-              <div className="rounded-xl border border-[#303030] bg-[#111111] p-5 flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-[#D41514] shrink-0 mt-0.5" aria-hidden="true" />
-                <div className="text-sm">
-                  <p className="font-bold text-[#CDCBCA]">Bhilai Office</p>
-                  <address className="not-italic text-[#969696] mt-0.5">
-                    {BRAND.address.full}
-                  </address>
+              <div className="rounded-xl border border-[#303030] bg-[#111111] p-5 space-y-4">
+                <div className="flex items-start gap-3">
+                  <MapPin className="w-5 h-5 text-[#D41514] shrink-0 mt-0.5" aria-hidden="true" />
+                  <div className="text-sm space-y-1.5">
+                    <p className="font-bold text-[#CDCBCA]">{BRAND.name} — Bhilai Office</p>
+                    <address className="not-italic text-[#969696]">
+                      {BRAND.address.full}
+                    </address>
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-0.5 text-xs">
+                      <a
+                        href={BRAND.phoneHref}
+                        className="font-semibold text-[#CDCBCA] hover:text-[#D41514] transition-colors tabular-nums"
+                      >
+                        {BRAND.phoneDisplay}
+                      </a>
+                      <a
+                        href={BRAND.googleMapsUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 font-semibold text-[#D41514] hover:text-white transition-colors"
+                      >
+                        <span>Directions on Google Maps</span>
+                        <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-[#303030] space-y-2.5">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-[#969696]">
+                    Connect With Klyia Technology
+                  </p>
+                  <SocialLinks variant="card" />
                 </div>
               </div>
             </div>

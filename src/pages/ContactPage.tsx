@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
-import {CheckCircle2, Mail, MapPin, MessageCircle, Phone} from 'lucide-react';
+import {Building2, CheckCircle2, ExternalLink, Mail, MapPin, MessageCircle, Phone} from 'lucide-react';
 import {InnerPageBanner} from '../components/layout/InnerPageBanner.tsx';
 import {Button} from '../components/ui/Button.tsx';
 import {Container} from '../components/ui/Container.tsx';
+import {SocialLinks} from '../components/ui/SocialLinks.tsx';
 import {STATIC_PAGE_BANNERS} from '../config/banners.ts';
 import {BRAND} from '../config/brand.ts';
 import type {BreadcrumbEntry} from '../config/seo.ts';
@@ -111,6 +112,16 @@ export function ContactPage({breadcrumbs}: ContactPageProps) {
 
               <div className="rounded-xl border border-[#303030] bg-[#111111] p-6 space-y-5">
                 <div className="flex items-start gap-3.5">
+                  <Building2 className="w-5 h-5 text-[#D41514] shrink-0 mt-0.5" aria-hidden="true" />
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-[#969696]">
+                      Business Name
+                    </p>
+                    <p className="text-base font-bold text-[#CDCBCA]">{BRAND.name}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3.5">
                   <Phone className="w-5 h-5 text-[#D41514] shrink-0 mt-0.5" aria-hidden="true" />
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-wider text-[#969696]">
@@ -142,17 +153,23 @@ export function ContactPage({breadcrumbs}: ContactPageProps) {
 
                 <div className="flex items-start gap-3.5">
                   <MapPin className="w-5 h-5 text-[#D41514] shrink-0 mt-0.5" aria-hidden="true" />
-                  <div>
+                  <div className="space-y-2">
                     <p className="text-xs font-semibold uppercase tracking-wider text-[#969696]">
                       Office Address
                     </p>
                     <address className="not-italic text-sm leading-relaxed text-[#CDCBCA] mt-0.5">
-                      {BRAND.address.line1}
-                      <br />
-                      {BRAND.address.line2}
-                      <br />
-                      {BRAND.address.cityStateCountry}
+                      {BRAND.address.full}
                     </address>
+                    <a
+                      href={BRAND.googleMapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Get directions to Klyia Technology Bhilai office on Google Maps"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#D41514] hover:text-white transition-colors"
+                    >
+                      <span>Get Directions on Google Maps</span>
+                      <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+                    </a>
                   </div>
                 </div>
 
@@ -161,11 +178,18 @@ export function ContactPage({breadcrumbs}: ContactPageProps) {
                     href={BRAND.whatsappHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-[#303030] bg-[#1B1B1B] px-4 py-2.5 text-sm font-semibold text-[#CDCBCA] hover:border-[#D41514] hover:bg-[#D41514] hover:text-white transition-colors"
+                    className="group inline-flex w-full items-center justify-center gap-2 rounded-lg border border-[#303030] bg-[#1B1B1B] px-4 py-2.5 text-sm font-semibold text-[#CDCBCA] hover:border-[#D41514] hover:bg-[#D41514] hover:text-white transition-colors"
                   >
                     <MessageCircle className="w-4 h-4 text-[#D41514] group-hover:text-white" aria-hidden="true" />
                     <span>Message on WhatsApp</span>
                   </a>
+                </div>
+
+                <div className="pt-4 border-t border-[#303030] space-y-2.5">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-[#969696]">
+                    Official Social Profiles
+                  </p>
+                  <SocialLinks variant="card" />
                 </div>
               </div>
             </div>

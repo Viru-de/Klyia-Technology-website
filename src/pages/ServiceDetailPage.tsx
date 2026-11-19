@@ -83,7 +83,7 @@ export function ServiceDetailPage({service, breadcrumbs}: ServiceDetailPageProps
             <aside className="lg:col-span-4 rounded-xl border border-[#303030] bg-[#141414] p-6 space-y-4">
               <h3 className="text-lg font-bold text-white">Request a Project Consultation</h3>
               <p className="text-sm leading-relaxed text-[#969696]">
-                Speak with our engineering team in Risali, Bhilai (+91 8296887643) for honest requirement scoping—serving Bhilai, Durg, Raipur, Chhattisgarh, and all of India.
+                Speak with our engineering team in Risali, Bhilai ({BRAND.phoneDisplay}) for honest requirement scoping—serving Bhilai, Durg, Raipur, Chhattisgarh, and all of India.
               </p>
               <div className="flex flex-col gap-3">
                 <Button href={`${ROUTES.GET_A_QUOTE}?service=${encodeURIComponent(service.name)}`} variant="primary" size="md">
@@ -241,16 +241,17 @@ export function ServiceDetailPage({service, breadcrumbs}: ServiceDetailPageProps
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {service.industriesBenefiting.map((ind) => (
-                  <Link
+                  <article
                     key={ind.slug}
-                    href={`/industries/${ind.slug}/`}
-                    className="group rounded-xl border border-[#303030] bg-[#111111] p-5 hover:border-[#D41514] transition-colors space-y-2"
+                    className="relative group rounded-xl border border-[#303030] bg-[#111111] p-5 hover:border-[#D41514] transition-colors space-y-2"
                   >
                     <h3 className="text-sm font-bold text-white group-hover:text-[#D41514] transition-colors">
-                      {ind.label}
+                      <Link href={`/industries/${ind.slug}/`} className="after:absolute after:inset-0">
+                        {ind.label}
+                      </Link>
                     </h3>
                     <p className="text-xs leading-relaxed text-[#969696]">{ind.note}</p>
-                  </Link>
+                  </article>
                 ))}
               </div>
             </div>
@@ -280,24 +281,28 @@ export function ServiceDetailPage({service, breadcrumbs}: ServiceDetailPageProps
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {relatedServices.map((rel) => (
-                      <Link
+                      <article
                         key={rel.slug}
-                        href={rel.canonicalPath}
-                        className="group rounded-xl border border-[#303030] bg-[#111111] p-5 hover:border-[#D41514] transition-colors flex flex-col justify-between gap-3"
+                        className="relative group rounded-xl border border-[#303030] bg-[#111111] p-5 hover:border-[#D41514] transition-colors flex flex-col justify-between gap-3"
                       >
                         <div>
                           <span className="text-[11px] font-semibold uppercase tracking-wider text-[#D41514]">
                             {rel.categoryLabel}
                           </span>
                           <h3 className="mt-1 text-base font-bold text-white group-hover:text-[#D41514] transition-colors">
-                            {rel.name}
+                            <Link href={rel.canonicalPath} className="after:absolute after:inset-0">
+                              {rel.name}
+                            </Link>
                           </h3>
                         </div>
-                        <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#CDCBCA]">
-                          <span>Explore Service</span>
-                          <ArrowRight className="w-3.5 h-3.5 text-[#D41514]" aria-hidden="true" />
+                        <span
+                          aria-hidden="true"
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#CDCBCA]"
+                        >
+                          <span>View Service</span>
+                          <ArrowRight className="w-3.5 h-3.5 text-[#D41514]" />
                         </span>
-                      </Link>
+                      </article>
                     ))}
                   </div>
                 </div>
@@ -305,22 +310,23 @@ export function ServiceDetailPage({service, breadcrumbs}: ServiceDetailPageProps
 
               {relatedBlogs.length > 0 ? (
                 <div className="space-y-4">
-                  <h3 className="font-[family-name:var(--font-display)] text-xl font-bold text-white">
+                  <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-white">
                     Recommended Reading
-                  </h3>
+                  </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {relatedBlogs.map((post) => (
-                      <Link
+                      <article
                         key={post.slug}
-                        href={post.canonicalPath}
-                        className="group rounded-xl border border-[#303030] bg-[#141414] p-5 hover:border-[#D41514] transition-colors space-y-2"
+                        className="relative group rounded-xl border border-[#303030] bg-[#141414] p-5 hover:border-[#D41514] transition-colors space-y-2"
                       >
                         <span className="text-xs font-semibold text-[#D41514]">{post.category}</span>
-                        <h4 className="text-base font-bold text-white group-hover:text-[#D41514] transition-colors">
-                          {post.title}
-                        </h4>
+                        <h3 className="text-base font-bold text-white group-hover:text-[#D41514] transition-colors">
+                          <Link href={post.canonicalPath} className="after:absolute after:inset-0">
+                            {post.title}
+                          </Link>
+                        </h3>
                         <p className="text-sm text-[#969696]">{post.excerpt}</p>
-                      </Link>
+                      </article>
                     ))}
                   </div>
                 </div>

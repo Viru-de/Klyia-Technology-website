@@ -48,7 +48,7 @@ export function ServicesPreview() {
                 href={service.href}
                 className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-[#CDCBCA] group-hover:text-[#D41514] transition-colors"
               >
-                <span>Learn More</span>
+                <span>{service.ctaLabel}</span>
                 <ArrowRight
                   className="w-4 h-4 text-[#D41514] transition-transform duration-150 group-hover:translate-x-0.5"
                   aria-hidden="true"

@@ -6,6 +6,7 @@ import {ROUTES} from '../../config/routes.ts';
 import {Link} from '../../lib/router.tsx';
 import {Container} from '../ui/Container.tsx';
 import {Logo} from '../ui/Logo.tsx';
+import {SocialLinks} from '../ui/SocialLinks.tsx';
 import {VisitorCounter} from './VisitorCounter.tsx';
 
 export function Footer() {
@@ -68,13 +69,20 @@ export function Footer() {
                 </address>
               </li>
             </ul>
+
+            <div className="pt-1 space-y-2.5">
+              <p className="text-xs font-semibold uppercase tracking-wider text-[#CDCBCA]">
+                Follow Us
+              </p>
+              <SocialLinks variant="footer" />
+            </div>
           </div>
 
           {/* Services Column */}
-          <div className="lg:col-span-2">
-            <h3 className="text-sm font-semibold text-[#CDCBCA] tracking-wide mb-4">
+          <nav aria-label="Main Services" className="lg:col-span-2">
+            <p className="text-sm font-semibold text-[#CDCBCA] tracking-wide mb-4">
               Main Services
-            </h3>
+            </p>
             <ul className="space-y-2.5 text-xs sm:text-sm">
               {FOOTER_COLUMNS.services.map((item) => (
                 <li key={item.label}>
@@ -87,13 +95,13 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
 
           {/* Industries Column */}
-          <div className="lg:col-span-2">
-            <h3 className="text-sm font-semibold text-[#CDCBCA] tracking-wide mb-4">
+          <nav aria-label="Industries" className="lg:col-span-2">
+            <p className="text-sm font-semibold text-[#CDCBCA] tracking-wide mb-4">
               Industries
-            </h3>
+            </p>
             <ul className="space-y-2.5 text-xs sm:text-sm">
               {FOOTER_COLUMNS.industries.map((item) => (
                 <li key={item.label}>
@@ -106,13 +114,13 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
 
           {/* Locations Served Column */}
-          <div className="lg:col-span-2">
-            <h3 className="text-sm font-semibold text-[#CDCBCA] tracking-wide mb-4">
+          <nav aria-label="Locations Served" className="lg:col-span-2">
+            <p className="text-sm font-semibold text-[#CDCBCA] tracking-wide mb-4">
               Locations Served
-            </h3>
+            </p>
             <ul className="space-y-2.5 text-xs sm:text-sm">
               {FOOTER_COLUMNS.locations.map((item) => (
                 <li key={item.label}>
@@ -125,13 +133,13 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
 
           {/* Quick Company Links */}
-          <div className="lg:col-span-2">
-            <h3 className="text-sm font-semibold text-[#CDCBCA] tracking-wide mb-4">
+          <nav aria-label="Quick Links" className="lg:col-span-2">
+            <p className="text-sm font-semibold text-[#CDCBCA] tracking-wide mb-4">
               Quick Links
-            </h3>
+            </p>
             <ul className="space-y-2.5 text-xs sm:text-sm">
               {FOOTER_COLUMNS.company.map((item) => (
                 <li key={item.label}>
@@ -144,7 +152,7 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
         </div>
 
         {/* Live Website Visitor Counter */}

@@ -15,6 +15,7 @@ export interface CoreServiceItem {
   title: string;
   description: string;
   href: string;
+  ctaLabel: string;
   icon: ServiceIconKey;
 }
 
@@ -25,6 +26,7 @@ export interface IndustryCardItem {
   image: string;
   alt: string;
   href: string;
+  ctaLabel: string;
 }
 
 export interface TechnologySolutionItem {
@@ -33,6 +35,9 @@ export interface TechnologySolutionItem {
   summary: string;
   capabilities: string[];
   href: string;
+  ctaLabel: string;
+  quoteHref?: string;
+  quoteLabel?: string;
   featured?: boolean;
 }
 
@@ -128,6 +133,7 @@ export const CORE_SERVICES: CoreServiceItem[] = [
     description:
       'Fast, server-rendered corporate websites, B2B portals, and e-commerce platforms built for credibility, accessibility, and lead conversion.',
     href: '/services/website-development-services/',
+    ctaLabel: 'Website Development Services',
     icon: 'globe',
   },
   {
@@ -136,6 +142,7 @@ export const CORE_SERVICES: CoreServiceItem[] = [
     description:
       'Tailored web applications, internal portals, and operational tools engineered to fit your exact business logic and compliance needs.',
     href: '/services/custom-software-development/',
+    ctaLabel: 'Custom Software Solutions',
     icon: 'code',
   },
   {
@@ -144,6 +151,7 @@ export const CORE_SERVICES: CoreServiceItem[] = [
     description:
       'Integrated modules for procurement, inventory, production planning, GST billing, dispatch, and financial oversight.',
     href: '/services/erp-software-development/',
+    ctaLabel: 'ERP Software',
     icon: 'layers',
   },
   {
@@ -152,6 +160,7 @@ export const CORE_SERVICES: CoreServiceItem[] = [
     description:
       'Technical search optimization, regional keyword architecture, and Google Business Profile strategies that bring qualified local and national inquiries.',
     href: '/services/search-engine-optimization/',
+    ctaLabel: 'Explore SEO Services',
     icon: 'search',
   },
   {
@@ -160,6 +169,7 @@ export const CORE_SERVICES: CoreServiceItem[] = [
     description:
       'Structured entities, schema architecture, and authoritative content designed for AI search engines and answer-first discovery.',
     href: '/services/geo-generative-engine-optimization/',
+    ctaLabel: 'GEO & AEO Services',
     icon: 'compass',
   },
   {
@@ -168,6 +178,7 @@ export const CORE_SERVICES: CoreServiceItem[] = [
     description:
       'Practical AI workflows for document processing, customer inquiry triage, knowledge retrieval, and operational task automation.',
     href: '/services/business-ai-integration/',
+    ctaLabel: 'AI Integration Services',
     icon: 'cpu',
   },
   {
@@ -176,6 +187,7 @@ export const CORE_SERVICES: CoreServiceItem[] = [
     description:
       'Automated order alerts, dispatch notifications, lead qualification flows, and catalog support integrated directly with your systems.',
     href: '/services/whatsapp-business-automation/',
+    ctaLabel: 'WhatsApp Automation Services',
     icon: 'message',
   },
   {
@@ -184,6 +196,7 @@ export const CORE_SERVICES: CoreServiceItem[] = [
     description:
       'Measurable B2B and regional growth campaigns connecting high-intent search traffic with structured landing experiences.',
     href: '/services/digital-marketing-services/',
+    ctaLabel: 'Digital Marketing Services',
     icon: 'trending',
   },
 ];
@@ -196,6 +209,7 @@ export const HOME_INDUSTRIES: IndustryCardItem[] = [
     image: '/src/assets/images/industry_steel_iron_1795005438477.jpg',
     alt: 'Modern steel and iron rolling plant with precision-rolled steel coils and structural beams',
     href: '/industries/steel-iron-industry/',
+    ctaLabel: 'Steel Industry Solutions',
   },
   {
     id: 'manufacturing',
@@ -204,6 +218,7 @@ export const HOME_INDUSTRIES: IndustryCardItem[] = [
     image: '/src/assets/images/industry_manufacturing_1795005439101.jpg',
     alt: 'Clean precision engineering and CNC manufacturing facility floor',
     href: '/industries/manufacturing-engineering/',
+    ctaLabel: 'Manufacturing Solutions',
   },
   {
     id: 'solar-renewable-energy',
@@ -212,6 +227,7 @@ export const HOME_INDUSTRIES: IndustryCardItem[] = [
     image: '/src/assets/images/industry_solar_energy_1795005439181.jpg',
     alt: 'Commercial utility-scale solar photovoltaic array under clear morning light',
     href: '/industries/solar-renewable-energy/',
+    ctaLabel: 'Solar EPC Solutions',
   },
   {
     id: 'industrial-suppliers',
@@ -220,6 +236,7 @@ export const HOME_INDUSTRIES: IndustryCardItem[] = [
     image: '/src/assets/images/industry_suppliers_1795005439442.jpg',
     alt: 'Organized industrial hardware and engineering parts supply warehouse',
     href: '/industries/industrial-suppliers-traders/',
+    ctaLabel: 'Industrial Supplier Solutions',
   },
   {
     id: 'wholesale-distribution',
@@ -228,6 +245,7 @@ export const HOME_INDUSTRIES: IndustryCardItem[] = [
     image: '/src/assets/images/industry_wholesale_1795005440370.jpg',
     alt: 'Wholesale logistics and high-bay distribution center aisles',
     href: '/industries/wholesale-distribution/',
+    ctaLabel: 'Wholesale Distribution Solutions',
   },
   {
     id: 'agriculture-mandi',
@@ -236,6 +254,7 @@ export const HOME_INDUSTRIES: IndustryCardItem[] = [
     image: '/src/assets/images/industry_agriculture_mandi_1795005439749.jpg',
     alt: 'Agricultural commodity trading yard and grain storage silos in daylight',
     href: '/industries/fruit-vegetable-mandis/',
+    ctaLabel: 'Mandi Software Solutions',
   },
   {
     id: 'healthcare',
@@ -244,6 +263,7 @@ export const HOME_INDUSTRIES: IndustryCardItem[] = [
     image: '/src/assets/images/industry_healthcare_1795005440398.jpg',
     alt: 'Clean modern hospital diagnostic center and reception interior',
     href: '/industries/healthcare-clinics/',
+    ctaLabel: 'Healthcare Digital Solutions',
   },
   {
     id: 'education',
@@ -252,6 +272,7 @@ export const HOME_INDUSTRIES: IndustryCardItem[] = [
     image: '/src/assets/images/industry_education_1795005440945.jpg',
     alt: 'Modern university academic building and digital learning library',
     href: '/industries/education-training-institutes/',
+    ctaLabel: 'Education Portal Solutions',
   },
   {
     id: 'real-estate',
@@ -260,6 +281,7 @@ export const HOME_INDUSTRIES: IndustryCardItem[] = [
     image: '/src/assets/images/industry_real_estate_1795005441185.jpg',
     alt: 'Contemporary commercial and residential architectural complex with landscaped courtyard',
     href: '/industries/real-estate-construction/',
+    ctaLabel: 'Real Estate Digital Solutions',
   },
 ];
 
@@ -275,6 +297,9 @@ export const TECHNOLOGY_SOLUTIONS: TechnologySolutionItem[] = [
       'Weighbridge, e-Way bill & GST dispatch',
     ],
     href: '/industries/steel-iron-industry/',
+    ctaLabel: 'Steel ERP Architecture',
+    quoteHref: '/get-a-quote/?service=Industrial+ERP',
+    quoteLabel: 'Scope Industrial ERP',
     featured: true,
   },
   {
@@ -288,6 +313,9 @@ export const TECHNOLOGY_SOLUTIONS: TechnologySolutionItem[] = [
       'Installation milestones & AMC alerts',
     ],
     href: '/services/solar-erp-software/',
+    ctaLabel: 'Solar ERP',
+    quoteHref: '/get-a-quote/?service=Solar+ERP',
+    quoteLabel: 'Scope Solar ERP',
     featured: true,
   },
   {
@@ -301,6 +329,7 @@ export const TECHNOLOGY_SOLUTIONS: TechnologySolutionItem[] = [
       'Automated reporting dashboards',
     ],
     href: '/services/business-management-software/',
+    ctaLabel: 'Business Management Software',
   },
   {
     id: 'custom-web-applications',
@@ -313,6 +342,7 @@ export const TECHNOLOGY_SOLUTIONS: TechnologySolutionItem[] = [
       'Clean TypeScript & modular codebases',
     ],
     href: '/services/custom-web-application-development/',
+    ctaLabel: 'Custom Web Applications',
   },
   {
     id: 'ai-powered-automation',
@@ -325,6 +355,7 @@ export const TECHNOLOGY_SOLUTIONS: TechnologySolutionItem[] = [
       'Automated invoice & data extraction',
     ],
     href: '/services/ai-powered-business-solutions/',
+    ctaLabel: 'AI Business Automation',
   },
   {
     id: 'digital-growth-solutions',
@@ -337,6 +368,7 @@ export const TECHNOLOGY_SOLUTIONS: TechnologySolutionItem[] = [
       'Conversion-focused landing systems',
     ],
     href: '/services/search-engine-optimization/',
+    ctaLabel: 'SEO & Search Growth',
   },
 ];
 

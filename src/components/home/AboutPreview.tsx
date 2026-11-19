@@ -49,9 +49,9 @@ export function AboutPreview() {
                   0{index + 1}
                 </span>
                 <div>
-                  <h3 className="text-base sm:text-lg font-bold text-[#CDCBCA]">
+                  <p className="text-base sm:text-lg font-bold text-[#CDCBCA]">
                     {point.title}
-                  </h3>
+                  </p>
                   <p className="mt-1.5 text-sm leading-[1.65] text-[#969696]">
                     {point.description}
                   </p>

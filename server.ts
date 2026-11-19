@@ -136,11 +136,35 @@ async function createAppServer() {
     '/blog': ROUTES.INSIGHTS,
   };
 
+  // Permanent 301 canonical domain redirect: www.klyiatechnology.com -> https://klyiatechnology.com
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    if (req.path.startsWith('/api/') || req.path === '/health') {
+      next();
+      return;
+    }
+
+    const rawHost = (req.get('x-forwarded-host') || req.get('host') || '').split(',')[0].trim();
+    const hostname = rawHost.replace(/:\d+$/, '').toLowerCase();
+
+    if (hostname === 'www.klyiatechnology.com') {
+      const legacyTarget = REDIRECT_MAP[req.path];
+      const queryIndex = req.originalUrl.indexOf('?');
+      const querySuffix = queryIndex >= 0 ? req.originalUrl.slice(queryIndex) : '';
+      const destination = legacyTarget ? `${legacyTarget}${querySuffix}` : req.originalUrl;
+      res.redirect(301, `https://klyiatechnology.com${destination}`);
+      return;
+    }
+
+    next();
+  });
+
   app.use((req: Request, res: Response, next: NextFunction) => {
     const cleanPath = req.path;
     const redirectTarget = REDIRECT_MAP[cleanPath];
     if (redirectTarget && redirectTarget !== cleanPath) {
-      res.redirect(301, redirectTarget);
+      const queryIndex = req.originalUrl.indexOf('?');
+      const querySuffix = queryIndex >= 0 ? req.originalUrl.slice(queryIndex) : '';
+      res.redirect(301, `${redirectTarget}${querySuffix}`);
       return;
     }
     next();

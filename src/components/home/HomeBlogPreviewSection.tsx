@@ -46,10 +46,9 @@ export function HomeBlogPreviewSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {featured.map((article) => (
-            <Link
+            <article
               key={article.slug}
-              href={article.canonicalPath}
-              className="group flex flex-col justify-between rounded-xl border border-[#303030] bg-[#111111] p-6 hover:border-[#D41514] transition-colors"
+              className="relative group flex flex-col justify-between rounded-xl border border-[#303030] bg-[#111111] p-6 hover:border-[#D41514] transition-colors"
             >
               <div className="space-y-2.5">
                 <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#D41514]">
@@ -57,15 +56,20 @@ export function HomeBlogPreviewSection() {
                   <span>{article.category}</span>
                 </span>
                 <h3 className="text-lg font-bold leading-snug text-white group-hover:text-[#D41514] transition-colors">
-                  {article.title}
+                  <Link href={article.canonicalPath} className="after:absolute after:inset-0">
+                    {article.title}
+                  </Link>
                 </h3>
                 <p className="text-sm leading-relaxed text-[#969696]">{article.excerpt}</p>
               </div>
-              <span className="mt-5 pt-3 border-t border-[#303030] inline-flex items-center gap-1.5 text-xs font-semibold text-[#CDCBCA]">
+              <span
+                aria-hidden="true"
+                className="mt-5 pt-3 border-t border-[#303030] inline-flex items-center gap-1.5 text-xs font-semibold text-[#CDCBCA]"
+              >
                 <span>Read Guide ({article.readTime})</span>
-                <ArrowRight className="w-3.5 h-3.5 text-[#D41514]" aria-hidden="true" />
+                <ArrowRight className="w-3.5 h-3.5 text-[#D41514]" />
               </span>
-            </Link>
+            </article>
           ))}
         </div>
       </Container>

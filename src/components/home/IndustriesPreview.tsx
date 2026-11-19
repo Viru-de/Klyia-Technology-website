@@ -26,10 +26,9 @@ export function IndustriesPreview() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {HOME_INDUSTRIES.map((industry) => (
-            <Link
+            <article
               key={industry.id}
-              href={industry.href}
-              className="group flex flex-col overflow-hidden rounded-xl border border-[#303030] bg-[#111111] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#D41514]/55 hover:shadow-[0_14px_34px_-16px_rgba(212,21,20,0.28)]"
+              className="relative group flex flex-col overflow-hidden rounded-xl border border-[#303030] bg-[#111111] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#D41514]/55 hover:shadow-[0_14px_34px_-16px_rgba(212,21,20,0.28)]"
             >
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#141414]">
                 <MediaFrame
@@ -56,15 +55,18 @@ export function IndustriesPreview() {
                   </p>
                 </div>
 
-                <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#CDCBCA] group-hover:text-[#D41514] transition-colors">
-                  <span>Explore Sector</span>
+                <Link
+                  href={industry.href}
+                  className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#CDCBCA] group-hover:text-[#D41514] transition-colors after:absolute after:inset-0"
+                >
+                  <span>{industry.ctaLabel}</span>
                   <ArrowRight
                     className="w-4 h-4 text-[#D41514] transition-transform duration-150 group-hover:translate-x-0.5"
                     aria-hidden="true"
                   />
-                </span>
+                </Link>
               </div>
-            </Link>
+            </article>
           ))}
         </div>
       </Container>

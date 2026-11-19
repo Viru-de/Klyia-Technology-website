@@ -14,6 +14,9 @@ const PRIORITY_SPOTLIGHTS = [
     image: '/src/assets/images/industry_steel_iron_1795005438477.jpg',
     alt: 'Steel rolling mill and structural steel yard technology solutions',
     href: '/industries/steel-iron-industry/',
+    ctaLabel: 'Steel Industry Solutions',
+    secondaryLabel: 'View Industry Solutions',
+    secondaryHref: '/industries/',
     bullets: [
       'TMT Bars, Structural Steel, MS Plates, Angles, Channels, Beams, Pipes & Coils',
       'Dual weight (MT/kg) & bundle/piece inventory plus credit limit controls',
@@ -28,6 +31,9 @@ const PRIORITY_SPOTLIGHTS = [
     image: '/src/assets/images/industry_solar_energy_1795005439181.jpg',
     alt: 'Commercial and rooftop solar EPC engineering software and portals',
     href: '/industries/solar-renewable-energy/',
+    ctaLabel: 'Solar Industry Solutions',
+    secondaryLabel: 'Solar ERP Software',
+    secondaryHref: '/services/solar-erp-software/',
     bullets: [
       'Residential Rooftop & Commercial C&I project trackers',
       'Panel/Inverter serial & warranty BOM inventory control',
@@ -93,14 +99,14 @@ export function HomeFeaturedIndustriesSection() {
 
                 <div className="pt-4 border-t border-[#303030] flex flex-wrap items-center justify-between gap-3">
                   <Button href={item.href} variant="primary" size="md">
-                    <span>Open Industry Playbook</span>
+                    <span>{item.ctaLabel}</span>
                     <ArrowRight className="w-4 h-4" aria-hidden="true" />
                   </Button>
                   <Link
-                    href={`/industries/`}
+                    href={item.secondaryHref}
                     className="text-xs font-semibold text-[#CDCBCA] hover:text-[#D41514] transition-colors"
                   >
-                    See all 13 industries
+                    {item.secondaryLabel}
                   </Link>
                 </div>
               </div>

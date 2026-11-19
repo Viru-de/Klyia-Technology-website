@@ -94,7 +94,7 @@ const LOCATION_SEEDS: LocationSeed[] = [
       {
         question: 'Where is Klyia Technology located in Bhilai?',
         answer:
-          'Our office is at First Floor, Bajrang Hardware, Krishna Talkies Road, Risali, Bhilai, Chhattisgarh. You can schedule an in-person or on-site consultation at +91 8296887643.',
+          'Our office is at First Floor, Bajrang Hardware, Krishna Talkies Road, Risali, Bhilai, Chhattisgarh. You can schedule an in-person or on-site consultation at +91 82968 87643.',
       },
       {
         question: 'How long does it take to build a corporate website in Bhilai?',
@@ -107,16 +107,16 @@ const LOCATION_SEEDS: LocationSeed[] = [
     slug: 'software-development-company-in-bhilai',
     city: 'Bhilai',
     regionLabel: 'Headquarters · Custom Engineering in Bhilai',
-    serviceFocus: 'Software Development Company',
-    h1: 'Custom Software Development Company in Bhilai',
+    serviceFocus: 'Software & IT Company',
+    h1: 'Software & IT Company for Custom Software Development in Bhilai',
     heroSubtitle:
-      'Tailored business software, dealer portals, CRM systems, and workflow automation built by our engineering team in Risali, Bhilai.',
-    seoTitle: 'Software Development Company in Bhilai | Klyia Technology',
+      'Tailored business software, dealer portals, CRM systems, and workflow automation engineered by our IT team in Risali, Bhilai.',
+    seoTitle: 'Software & IT Company in Bhilai | Custom Software Development | Klyia Technology',
     metaDescription:
-      'Klyia Technology is a custom software development company in Bhilai building tailored CRM, billing, inventory, and automation systems.',
+      'Klyia Technology is an IT and custom software development company in Bhilai building tailored CRM, ERP, billing, inventory, and automation systems.',
     localContext: [
       'Growing enterprises in Bhilai often outgrow disconnected spreadsheets and rigid off-the-shelf software that forces staff into manual workarounds.',
-      'Our Bhilai engineering team conducts on-site workflow discovery at your plant, warehouse, or office to design reliable custom software that fits how your business actually operates.',
+      'As an engineering-focused IT and software company in Risali, Bhilai, we conduct on-site workflow discovery at your plant, warehouse, or office to design reliable custom software that fits how your business actually operates.',
     ],
     officeTransparencyNote:
       'Serving Bhilai Steel Plant ancillaries, Light Industrial Area, Heavy Industrial Area, and commercial offices directly from Risali, Bhilai.',
@@ -156,6 +156,8 @@ const LOCATION_SEEDS: LocationSeed[] = [
     relatedLocationSlugs: [
       'website-development-company-in-bhilai',
       'erp-software-development-in-bhilai',
+      'website-development-company-in-durg',
+      'website-development-company-in-raipur',
       'it-software-solutions-in-chhattisgarh',
     ],
     faqs: [
@@ -163,6 +165,11 @@ const LOCATION_SEEDS: LocationSeed[] = [
         question: 'Can your team visit our plant or office in Bhilai to study our workflow?',
         answer:
           'Yes. Because our office is in Risali, Bhilai, we conduct direct on-site workflow audits across Bhilai, Durg, and Raipur.',
+      },
+      {
+        question: 'What kind of custom software and IT systems do you build in Bhilai?',
+        answer:
+          'We engineer bespoke CRM platforms, multi-godown inventory and GST billing software, dealer portals, Solar and Steel ERPs, and WhatsApp/AI workflow automation.',
       },
     ],
   },
@@ -422,16 +429,16 @@ const LOCATION_SEEDS: LocationSeed[] = [
     slug: 'it-software-solutions-in-chhattisgarh',
     city: 'Chhattisgarh',
     regionLabel: 'Statewide · Bilaspur, Korba, Raigarh, Rajnandgaon & Beyond',
-    serviceFocus: 'IT & Software Solutions',
-    h1: 'IT, Software, ERP & Web Solutions Across Chhattisgarh',
+    serviceFocus: 'Software Development & IT Solutions',
+    h1: 'Software Development & IT Solutions Across Chhattisgarh',
     heroSubtitle:
-      'Serving industrial, mining-ancillary, agro-trade, and commercial enterprises across Bilaspur, Korba, Raigarh, Rajnandgaon, and Jagdalpur.',
-    seoTitle: 'IT & Software Solutions in Chhattisgarh | Klyia Technology',
+      'Custom software, ERP, and web engineering serving industrial, agro-trade, and commercial enterprises across Bilaspur, Korba, Raigarh, Rajnandgaon, and Jagdalpur.',
+    seoTitle: 'Software Development & IT Solutions in Chhattisgarh | Klyia Technology',
     metaDescription:
-      'Custom software, ERP, website development, and SEO/GEO services across Chhattisgarh including Bilaspur, Korba, Raigarh, and Rajnandgaon.',
+      'Custom software development, ERP, website development, and SEO/GEO services in Chhattisgarh across Bhilai, Durg, Raipur, Bilaspur, Korba, and Raigarh.',
     localContext: [
-      'From power and industrial hubs in Korba and Raigarh to commercial and agro-trading centers in Bilaspur, Rajnandgaon, and Dhamtari, Chhattisgarh businesses need modern software that reflects local operational realities.',
-      'From our Bhilai headquarters, we combine structured remote delivery with scheduled regional visits to modernize websites, ERPs, and digital growth across the state.',
+      'From power and industrial hubs in Korba and Raigarh to commercial and agro-trading centers in Bilaspur, Rajnandgaon, and Dhamtari, Chhattisgarh businesses need modern software development that reflects local operational realities.',
+      'From our Risali, Bhilai headquarters, we combine structured remote delivery with scheduled regional visits to modernize custom software, websites, ERPs, and digital growth across the state.',
     ],
     officeTransparencyNote:
       'Headquartered in Risali, Bhilai—serving all districts of Chhattisgarh with structured engineering and responsive support.',
@@ -470,6 +477,9 @@ const LOCATION_SEEDS: LocationSeed[] = [
     ],
     relatedLocationSlugs: [
       'website-development-company-in-bhilai',
+      'software-development-company-in-bhilai',
+      'erp-software-development-in-bhilai',
+      'website-development-company-in-durg',
       'website-development-company-in-raipur',
       'custom-software-development-services-in-india',
     ],

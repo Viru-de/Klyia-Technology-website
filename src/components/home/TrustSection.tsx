@@ -29,9 +29,9 @@ export function TrustSection() {
                 <span className="font-[family-name:var(--font-mono)] text-xs font-semibold text-[#D41514] tabular-nums">
                   0{index + 1}
                 </span>
-                <h3 className="mt-2 text-lg font-bold text-[#CDCBCA]">
+                <p className="mt-2 text-lg font-bold text-[#CDCBCA]">
                   {pillar.title}
-                </h3>
+                </p>
                 <p className="mt-2 text-sm leading-[1.65] text-[#969696]">
                   {pillar.description}
                 </p>

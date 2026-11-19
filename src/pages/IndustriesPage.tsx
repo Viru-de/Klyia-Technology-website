@@ -45,10 +45,9 @@ export function IndustriesPage({breadcrumbs}: IndustriesPageProps) {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {priorityIndustries.map((industry) => (
-                <Link
+                <article
                   key={industry.slug}
-                  href={industry.canonicalPath}
-                  className="group flex flex-col overflow-hidden rounded-xl border border-[#303030] bg-[#141414] transition-all duration-200 hover:border-[#D41514] hover:shadow-[0_16px_38px_-16px_rgba(212,21,20,0.28)]"
+                  className="relative group flex flex-col overflow-hidden rounded-xl border border-[#303030] bg-[#141414] transition-all duration-200 hover:border-[#D41514] hover:shadow-[0_16px_38px_-16px_rgba(212,21,20,0.28)]"
                 >
                   <div className="aspect-[16/10] w-full bg-[#111111]">
                     <MediaFrame
@@ -66,18 +65,23 @@ export function IndustriesPage({breadcrumbs}: IndustriesPageProps) {
                         {industry.priorityBadge}
                       </span>
                       <h3 className="text-xl font-bold text-white group-hover:text-[#D41514] transition-colors">
-                        {industry.name}
+                        <Link href={industry.canonicalPath} className="after:absolute after:inset-0">
+                          {industry.name}
+                        </Link>
                       </h3>
                       <p className="text-sm leading-relaxed text-[#969696]">
                         {industry.heroSubtitle}
                       </p>
                     </div>
-                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-white pt-3 border-t border-[#303030]">
+                    <span
+                      aria-hidden="true"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-white pt-3 border-t border-[#303030]"
+                    >
                       <span>Explore {industry.name} Playbook</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-[#D41514]" aria-hidden="true" />
+                      <ArrowRight className="w-3.5 h-3.5 text-[#D41514]" />
                     </span>
                   </div>
-                </Link>
+                </article>
               ))}
             </div>
           </div>
@@ -89,10 +93,9 @@ export function IndustriesPage({breadcrumbs}: IndustriesPageProps) {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {otherIndustries.map((industry) => (
-                <Link
+                <article
                   key={industry.slug}
-                  href={industry.canonicalPath}
-                  className="group flex flex-col sm:flex-row overflow-hidden rounded-xl border border-[#303030] bg-[#111111] transition-all duration-200 hover:border-[#D41514]"
+                  className="relative group flex flex-col sm:flex-row overflow-hidden rounded-xl border border-[#303030] bg-[#111111] transition-all duration-200 hover:border-[#D41514]"
                 >
                   <div className="sm:w-44 shrink-0 bg-[#141414] aspect-[4/3] sm:aspect-auto">
                     <MediaFrame
@@ -107,18 +110,23 @@ export function IndustriesPage({breadcrumbs}: IndustriesPageProps) {
                   <div className="flex flex-1 flex-col justify-between p-5 space-y-3">
                     <div>
                       <h3 className="text-lg font-bold text-white group-hover:text-[#D41514] transition-colors">
-                        {industry.name}
+                        <Link href={industry.canonicalPath} className="after:absolute after:inset-0">
+                          {industry.name}
+                        </Link>
                       </h3>
                       <p className="mt-2 text-sm leading-relaxed text-[#969696]">
                         {industry.heroSubtitle}
                       </p>
                     </div>
-                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#CDCBCA] pt-3 border-t border-[#303030]">
-                      <span>Open Solution Architecture</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-[#D41514]" aria-hidden="true" />
+                    <span
+                      aria-hidden="true"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#CDCBCA] pt-3 border-t border-[#303030]"
+                    >
+                      <span>View {industry.name} Solutions</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-[#D41514]" />
                     </span>
                   </div>
-                </Link>
+                </article>
               ))}
             </div>
           </div>

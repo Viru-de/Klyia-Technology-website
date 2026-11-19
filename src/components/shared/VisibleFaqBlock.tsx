@@ -33,20 +33,20 @@ export function VisibleFaqBlock({
         <p className="text-sm sm:text-base leading-relaxed text-[#969696]">{subtitle}</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {faqs.map((item) => (
           <div
             key={item.question}
             className="rounded-xl border border-[#303030] bg-[#111111] p-5 space-y-2.5"
           >
-            <h3 className="flex items-start gap-2.5 text-base font-semibold leading-snug text-white">
+            <dt className="flex items-start gap-2.5 text-base font-semibold leading-snug text-white">
               <HelpCircle className="w-4 h-4 text-[#D41514] shrink-0 mt-1" aria-hidden="true" />
               <span>{item.question}</span>
-            </h3>
-            <p className="pl-6 text-sm leading-[1.65] text-[#969696]">{item.answer}</p>
+            </dt>
+            <dd className="pl-6 text-sm leading-[1.65] text-[#969696]">{item.answer}</dd>
           </div>
         ))}
-      </div>
+      </dl>
     </section>
   );
 }

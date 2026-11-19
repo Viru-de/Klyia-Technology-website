@@ -32,9 +32,9 @@ export function ProcessSection() {
                   <span className="relative z-10 inline-flex h-12 w-12 items-center justify-center rounded-xl border border-[#D41514]/50 bg-[#111111] font-[family-name:var(--font-mono)] text-sm font-bold text-[#D41514] tabular-nums shadow-[0_0_20px_-6px_rgba(212,21,20,0.45)]">
                     {item.step}
                   </span>
-                  <h3 className="text-lg font-bold text-[#CDCBCA] lg:mt-5">
+                  <p className="text-lg font-bold text-[#CDCBCA] lg:mt-5">
                     {item.title}
-                  </h3>
+                  </p>
                 </div>
                 <p className="mt-2.5 text-sm leading-[1.6] text-[#969696]">
                   {item.description}

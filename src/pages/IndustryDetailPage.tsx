@@ -252,25 +252,29 @@ export function IndustryDetailPage({industry, breadcrumbs}: IndustryDetailPagePr
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {relatedServices.map((srv) => (
-                  <Link
+                  <article
                     key={srv.slug}
-                    href={srv.canonicalPath}
-                    className="group rounded-xl border border-[#303030] bg-[#111111] p-5 hover:border-[#D41514] transition-colors flex flex-col justify-between gap-2"
+                    className="relative group rounded-xl border border-[#303030] bg-[#111111] p-5 hover:border-[#D41514] transition-colors flex flex-col justify-between gap-2"
                   >
                     <div>
                       <span className="text-[11px] font-semibold uppercase tracking-wider text-[#D41514]">
                         {srv.categoryLabel}
                       </span>
                       <h3 className="mt-1 text-base font-bold text-white group-hover:text-[#D41514] transition-colors">
-                        {srv.name}
+                        <Link href={srv.canonicalPath} className="after:absolute after:inset-0">
+                          {srv.name}
+                        </Link>
                       </h3>
                       <p className="mt-1 text-xs text-[#969696] line-clamp-2">{srv.heroSubtitle}</p>
                     </div>
-                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#CDCBCA] pt-2">
+                    <span
+                      aria-hidden="true"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#CDCBCA] pt-2"
+                    >
                       <span>View Service Details</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-[#D41514]" aria-hidden="true" />
+                      <ArrowRight className="w-3.5 h-3.5 text-[#D41514]" />
                     </span>
-                  </Link>
+                  </article>
                 ))}
               </div>
             </div>
@@ -283,17 +287,18 @@ export function IndustryDetailPage({industry, breadcrumbs}: IndustryDetailPagePr
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {relatedBlogs.map((post) => (
-                  <Link
+                  <article
                     key={post.slug}
-                    href={post.canonicalPath}
-                    className="group rounded-xl border border-[#303030] bg-[#141414] p-5 hover:border-[#D41514] transition-colors space-y-2"
+                    className="relative group rounded-xl border border-[#303030] bg-[#141414] p-5 hover:border-[#D41514] transition-colors space-y-2"
                   >
                     <span className="text-xs font-semibold text-[#D41514]">{post.category}</span>
                     <h3 className="text-base font-bold text-white group-hover:text-[#D41514] transition-colors">
-                      {post.title}
+                      <Link href={post.canonicalPath} className="after:absolute after:inset-0">
+                        {post.title}
+                      </Link>
                     </h3>
                     <p className="text-sm text-[#969696]">{post.excerpt}</p>
-                  </Link>
+                  </article>
                 ))}
               </div>
             </div>

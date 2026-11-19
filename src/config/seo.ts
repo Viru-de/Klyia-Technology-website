@@ -76,18 +76,18 @@ export const HOME_VISIBLE_FAQS: FaqEntry[] = [
 
 const ROUTE_SEO_MAP: Record<string, PageSeoMetadata> = {
   [ROUTES.HOME]: {
-    title: 'Klyia Technology | Custom Software, ERP, Web & SEO/GEO/AEO in Bhilai & India',
+    title: 'Klyia Technology | Software & ERP Company in Bhilai',
     description:
-      'Klyia Technology in Risali, Bhilai delivers custom software, Steel & Solar ERP, high-speed websites, SEO, GEO, AEO, and AI/WhatsApp automation across Chhattisgarh and India.',
+      'Klyia Technology builds custom software, ERP systems, business websites and digital growth solutions for businesses in Bhilai, Chhattisgarh and across India.',
     canonicalPath: ROUTES.HOME,
     ogType: 'website',
     breadcrumbs: [{name: 'Home', path: ROUTES.HOME}],
     faqs: HOME_VISIBLE_FAQS,
   },
   [ROUTES.ABOUT]: {
-    title: 'About Klyia Technology | Software & Digital Transformation Partner in Bhilai',
+    title: 'About Klyia Technology | IT & Software Company in Risali, Bhilai',
     description:
-      'Learn how Klyia Technology in Risali, Bhilai builds reliable custom software, ERP systems, websites, and search-ready digital ecosystems for Indian companies.',
+      'Learn how Klyia Technology, an IT and software company in Risali, Bhilai, builds reliable custom software, ERP systems, websites, and search-ready digital platforms across Chhattisgarh and India.',
     canonicalPath: ROUTES.ABOUT,
     ogType: 'website',
     breadcrumbs: [
@@ -148,9 +148,9 @@ const ROUTE_SEO_MAP: Record<string, PageSeoMetadata> = {
     ],
   },
   [ROUTES.CONTACT]: {
-    title: 'Contact Klyia Technology | Risali, Bhilai Office, WhatsApp & Email',
+    title: 'Contact Klyia Technology | Risali, Bhilai Office, Phone, WhatsApp & Directions',
     description:
-      'Reach Klyia Technology at First Floor, Bajrang Hardware, Krishna Talkies Road, Risali, Bhilai. Call/WhatsApp +91 8296887643 or email klyiatechnology@gmail.com.',
+      'Reach Klyia Technology at First Floor, Bajrang Hardware, Krishna Talkies Road, Risali, Bhilai. Call/WhatsApp +91 82968 87643 or email klyiatechnology@gmail.com.',
     canonicalPath: ROUTES.CONTACT,
     ogType: 'website',
     breadcrumbs: [
@@ -345,18 +345,21 @@ export function resolvePageSeo(pathname: string): {seo: PageSeoMetadata; isNotFo
   return {seo: NOT_FOUND_SEO, isNotFound: true};
 }
 
-export function resolveBaseUrl(requestOrigin?: string): string {
-  const configured =
-    typeof process !== 'undefined' && process.env
-      ? process.env.SITE_URL || process.env.APP_URL
-      : undefined;
+export function resolveBaseUrl(_requestOrigin?: string): string {
+  const configuredSiteUrl =
+    typeof process !== 'undefined' && process.env ? process.env.SITE_URL : undefined;
 
   const rawBase =
-    configured && configured !== 'MY_APP_URL'
-      ? configured
-      : requestOrigin || BRAND.domain;
+    configuredSiteUrl &&
+    configuredSiteUrl !== 'MY_APP_URL' &&
+    configuredSiteUrl.trim().length > 0
+      ? configuredSiteUrl.trim()
+      : BRAND.domain;
 
-  return rawBase.replace(/\/+$/, '');
+  return rawBase
+    .replace(/^http:\/\/(www\.)?klyiatechnology\.com/i, BRAND.domain)
+    .replace(/^https:\/\/www\.klyiatechnology\.com/i, BRAND.domain)
+    .replace(/\/+$/, '');
 }
 
 function escapeHtmlAttr(value: string): string {
@@ -391,6 +394,10 @@ export function buildStructuredDataJson(seo: PageSeoMetadata, baseUrl: string): 
     '@id': `${baseUrl}/#organization`,
     name: BRAND.name,
     url: baseUrl,
+    logo: {
+      '@type': 'ImageObject',
+      url: `${baseUrl}/favicon.svg`,
+    },
     email: BRAND.email,
     telephone: BRAND.phoneDisplay,
     description: BRAND.footerSummary,
@@ -401,7 +408,9 @@ export function buildStructuredDataJson(seo: PageSeoMetadata, baseUrl: string): 
       addressRegion: 'Chhattisgarh',
       addressCountry: 'IN',
     },
+    hasMap: BRAND.googleMapsUrl,
     areaServed: ['Bhilai', 'Durg', 'Raipur', 'Chhattisgarh', 'India'],
+    sameAs: BRAND.socialProfiles.map((profile) => profile.url),
   };
 
   const websiteSchema = {
