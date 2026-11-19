@@ -14,6 +14,9 @@ export interface CoreServiceItem {
   id: string;
   title: string;
   description: string;
+  image: string;
+  webpImage?: string;
+  alt: string;
   href: string;
   ctaLabel: string;
   icon: ServiceIconKey;
@@ -76,18 +79,120 @@ export interface LocationCoverageItem {
   isHeadquarters?: boolean;
 }
 
-export const HERO_CONTENT = {
-  image: '/src/assets/images/hero_obsidian_tech_1795006489528.jpg',
-  imageAlt:
-    'Architectural 3D representation of Klyia Technology modular ERP systems, enterprise software architecture, and automated industrial data pipelines',
-  headline: 'Technology That Moves Your Business Forward.',
-  supportingText:
-    'Empowering businesses with custom software, intelligent ERP systems, AI-driven solutions, and modern search growth strategies.',
-  description:
-    'From Steel & Solar ERP automation and custom software to fast websites, SEO, GEO, AEO, and AI workflows, Klyia Technology builds digital systems across Bhilai, Chhattisgarh, and India.',
-  primaryCta: {label: 'Explore Our Solutions', href: ROUTES.SERVICES},
-  secondaryCta: {label: 'Discuss Your Project', href: ROUTES.GET_A_QUOTE},
-} as const;
+export interface HeroSlideItem {
+  id: string;
+  eyebrow: string;
+  headline: string;
+  description: string;
+  supportingContext: string;
+  image: string;
+  webpImage: string;
+  imageAlt: string;
+  primaryCta: {
+    label: string;
+    href: string;
+    quotePrefillService?: string;
+    quotePrefillIndustry?: string;
+  };
+  secondaryCta: {
+    label: string;
+    href: string;
+    quotePrefillService?: string;
+    quotePrefillIndustry?: string;
+  };
+}
+
+export const HERO_SLIDES: HeroSlideItem[] = [
+  {
+    id: 'custom-software-erp',
+    eyebrow: 'Klyia Technology · Bhilai · Custom Software & ERP',
+    headline: 'Smart Software Solutions for Growing Businesses',
+    description:
+      'Custom software, ERP systems and business automation solutions designed to simplify operations and improve productivity.',
+    supportingContext:
+      'Headquartered in Risali, Bhilai — serving steel plants, manufacturers, distributors, and enterprises across Chhattisgarh and India with reliable workflow tracking and GST billing.',
+    image: '/src/assets/images/banner_custom_software_1795011262154.jpg',
+    webpImage: '/src/assets/images/banner_custom_software_1795011262154.webp',
+    imageAlt:
+      'Custom software engineering and enterprise ERP dashboard architecture by Klyia Technology in Bhilai',
+    primaryCta: {
+      label: 'Explore Our Services',
+      href: ROUTES.SERVICES,
+    },
+    secondaryCta: {
+      label: 'Request a Quote',
+      href: ROUTES.GET_A_QUOTE,
+      quotePrefillService: 'Custom Software Development',
+    },
+  },
+  {
+    id: 'solar-erp-epc',
+    eyebrow: 'Solar ERP · Solar EPC Software & Project Tracking',
+    headline: 'Powering Solar Businesses with Smarter Technology',
+    description:
+      'Manage solar projects, EPC operations, workflows and business processes with intelligent software solutions.',
+    supportingContext:
+      'Dedicated Solar ERP modules for rooftop site surveys, BOM & panel serial tracking, DISCOM net-metering stages, subsidy logs, and automated AMC alerts.',
+    image: '/src/assets/images/solar_rooftop_installation_1795089423468.jpg',
+    webpImage: '/src/assets/images/solar_rooftop_installation_1795089423468.webp',
+    imageAlt:
+      'Solar EPC rooftop solar installation coordinated with Solar ERP milestone and BOM tracking software',
+    primaryCta: {
+      label: 'Explore Solar ERP',
+      href: '/services/solar-erp-software/',
+    },
+    secondaryCta: {
+      label: 'Request a Quote',
+      href: ROUTES.GET_A_QUOTE,
+      quotePrefillService: 'Solar ERP',
+      quotePrefillIndustry: 'Solar & Renewable Energy',
+    },
+  },
+  {
+    id: 'industrial-manufacturing-erp',
+    eyebrow: 'Industrial ERP · Steel, Rolling Mills & Manufacturing',
+    headline: 'Digital Solutions for Modern Industries',
+    description:
+      'Industry-focused ERP and custom software solutions for manufacturing, steel, wholesale and industrial businesses.',
+    supportingContext:
+      'Built around real shop-floor and yard operations in Bhilai, Raipur, and industrial clusters — covering dual MT/bundle units, BOMs, weighbridge dispatch, and credit controls.',
+    image: '/src/assets/images/industry_steel_iron_1795005438477.jpg',
+    webpImage: '/src/assets/images/industry_steel_iron_1795005438477.webp',
+    imageAlt:
+      'Steel plant, rolling mill, and modern industrial manufacturing ERP systems in Bhilai',
+    primaryCta: {
+      label: 'Explore Our Services',
+      href: ROUTES.SERVICES,
+    },
+    secondaryCta: {
+      label: 'Contact Klyia Technology',
+      href: ROUTES.CONTACT,
+    },
+  },
+  {
+    id: 'web-local-seo-geo',
+    eyebrow: 'Website Development · Local SEO · GEO & Structured Data',
+    headline: 'Build Your Digital Presence. Grow Your Business.',
+    description:
+      'Professional website development, Local SEO, GEO and AI search optimization for businesses.',
+    supportingContext:
+      'Fast server-rendered React websites engineered with clean Structured Data, Local SEO map alignment, GEO entity clarity, and conversion tracking.',
+    image: '/src/assets/images/banner_web_design_ui_1795011263002.jpg',
+    webpImage: '/src/assets/images/banner_web_design_ui_1795011263002.webp',
+    imageAlt:
+      'Responsive corporate website development, Local SEO, GEO, and structured analytics interface',
+    primaryCta: {
+      label: 'Explore Our Services',
+      href: ROUTES.SERVICES,
+    },
+    secondaryCta: {
+      label: 'Contact Klyia Technology',
+      href: ROUTES.CONTACT,
+    },
+  },
+];
+
+export const HERO_CONTENT = HERO_SLIDES[0];
 
 export const TRUST_PILLARS = [
   {
@@ -146,6 +251,9 @@ export const CORE_SERVICES: CoreServiceItem[] = [
     title: 'Website Design & Development',
     description:
       'Fast, server-rendered corporate websites, B2B portals, and e-commerce platforms built for credibility, accessibility, and lead conversion.',
+    image: '/src/assets/images/banner_web_design_ui_1795011263002.jpg',
+    webpImage: '/src/assets/images/banner_web_design_ui_1795011263002.webp',
+    alt: 'Responsive corporate website design and enterprise UI workstation across dual monitors',
     href: '/services/website-development-services/',
     ctaLabel: 'Website Development Services',
     icon: 'globe',
@@ -155,6 +263,9 @@ export const CORE_SERVICES: CoreServiceItem[] = [
     title: 'Custom Software Development',
     description:
       'Tailored web applications, internal portals, and operational tools engineered to fit your exact business logic and compliance needs.',
+    image: '/src/assets/images/banner_custom_software_1795011262154.jpg',
+    webpImage: '/src/assets/images/banner_custom_software_1795011262154.webp',
+    alt: 'Software engineer building custom software architecture and modular API workflows on dual screens',
     href: '/services/custom-software-development/',
     ctaLabel: 'Custom Software Solutions',
     icon: 'code',
@@ -164,6 +275,9 @@ export const CORE_SERVICES: CoreServiceItem[] = [
     title: 'ERP Software Solutions',
     description:
       'Integrated modules for procurement, inventory, production planning, GST billing, dispatch, and financial oversight.',
+    image: '/src/assets/images/banner_erp_dashboard_1795011261980.jpg',
+    webpImage: '/src/assets/images/banner_erp_dashboard_1795011261980.webp',
+    alt: 'Enterprise ERP dashboard displaying resource planning, supply chain telemetry, and inventory controls',
     href: '/services/erp-software-development/',
     ctaLabel: 'ERP Software',
     icon: 'layers',
@@ -172,7 +286,10 @@ export const CORE_SERVICES: CoreServiceItem[] = [
     id: 'seo-local-seo',
     title: 'SEO & Local SEO',
     description:
-      'Technical search optimization, regional keyword architecture, and Google Business Profile strategies that bring qualified local and national inquiries.',
+      'Technical search optimization, Local SEO regional architecture, Google Business Profile alignment, and Google Search Console & conversion tracking.',
+    image: '/src/assets/images/banner_seo_geo_analytics_1795011262658.jpg',
+    webpImage: '/src/assets/images/banner_seo_geo_analytics_1795011262658.webp',
+    alt: 'Local SEO specialists reviewing regional visibility metrics, conversion tracking, and search analytics',
     href: '/services/search-engine-optimization/',
     ctaLabel: 'Explore SEO Services',
     icon: 'search',
@@ -181,7 +298,10 @@ export const CORE_SERVICES: CoreServiceItem[] = [
     id: 'geo-aeo-optimization',
     title: 'GEO & AEO Optimization',
     description:
-      'Structured entities, schema architecture, and authoritative content designed for AI search engines and answer-first discovery.',
+      'Generative Engine Optimization (GEO), Answer Engine Optimization (AEO), and clean Schema.org Structured Data built for AI search clarity.',
+    image: '/src/assets/images/service_geo_ai_search_1795094381846.jpg',
+    webpImage: '/src/assets/images/service_geo_ai_search_1795094381846.webp',
+    alt: 'GEO Generative Engine Optimization and Structured Data knowledge graph analytics monitor',
     href: '/services/geo-generative-engine-optimization/',
     ctaLabel: 'GEO & AEO Services',
     icon: 'compass',
@@ -191,6 +311,9 @@ export const CORE_SERVICES: CoreServiceItem[] = [
     title: 'AI Integration & Automation',
     description:
       'Practical AI workflows for document processing, customer inquiry triage, knowledge retrieval, and operational task automation.',
+    image: '/src/assets/images/banner_ai_automation_1795011264247.jpg',
+    webpImage: '/src/assets/images/banner_ai_automation_1795011264247.webp',
+    alt: 'Modular AI workflow nodes and automated enterprise data processing circuit architecture',
     href: '/services/business-ai-integration/',
     ctaLabel: 'AI Integration Services',
     icon: 'cpu',
@@ -200,6 +323,9 @@ export const CORE_SERVICES: CoreServiceItem[] = [
     title: 'WhatsApp Business Automation',
     description:
       'Automated order alerts, dispatch notifications, lead qualification flows, and catalog support integrated directly with your systems.',
+    image: '/src/assets/images/service_whatsapp_automation_1795094382616.jpg',
+    webpImage: '/src/assets/images/service_whatsapp_automation_1795094382616.webp',
+    alt: 'Automated WhatsApp Business order confirmation and dispatch alert workflow across desktop and smartphone',
     href: '/services/whatsapp-business-automation/',
     ctaLabel: 'WhatsApp Automation Services',
     icon: 'message',
@@ -209,6 +335,9 @@ export const CORE_SERVICES: CoreServiceItem[] = [
     title: 'Digital Marketing',
     description:
       'Measurable B2B and regional growth campaigns connecting high-intent search traffic with structured landing experiences.',
+    image: '/src/assets/images/banner_digital_marketing_1795011263951.jpg',
+    webpImage: '/src/assets/images/banner_digital_marketing_1795011263951.webp',
+    alt: 'Digital marketing team analyzing omnichannel conversion funnels and audience engagement timelines',
     href: '/services/digital-marketing-services/',
     ctaLabel: 'Digital Marketing Services',
     icon: 'trending',
@@ -221,6 +350,7 @@ export const HOME_INDUSTRIES: IndustryCardItem[] = [
     title: 'Steel & Iron',
     summary: 'Plant production logs, weighbridge integration, dispatch tracking, and dealer billing ERP.',
     image: '/src/assets/images/industry_steel_iron_1795005438477.jpg',
+    webpImage: '/src/assets/images/industry_steel_iron_1795005438477.webp',
     alt: 'Modern steel and iron rolling plant with precision-rolled steel coils and structural beams',
     href: '/industries/steel-iron-industry/',
     ctaLabel: 'Steel Industry Solutions',
@@ -230,6 +360,7 @@ export const HOME_INDUSTRIES: IndustryCardItem[] = [
     title: 'Manufacturing',
     summary: 'Bill of Materials, shop-floor scheduling, quality checks, and raw-material inventory control.',
     image: '/src/assets/images/industry_manufacturing_1795005439101.jpg',
+    webpImage: '/src/assets/images/industry_manufacturing_1795005439101.webp',
     alt: 'Clean precision engineering and CNC manufacturing facility floor',
     href: '/industries/manufacturing-engineering/',
     ctaLabel: 'Manufacturing Solutions',
@@ -249,6 +380,7 @@ export const HOME_INDUSTRIES: IndustryCardItem[] = [
     title: 'Industrial Suppliers',
     summary: 'Structured B2B product catalogs, multi-warehouse stock alerts, and RFQ automation.',
     image: '/src/assets/images/industry_suppliers_1795005439442.jpg',
+    webpImage: '/src/assets/images/industry_suppliers_1795005439442.webp',
     alt: 'Organized industrial hardware and engineering parts supply warehouse',
     href: '/industries/industrial-suppliers-traders/',
     ctaLabel: 'Industrial Supplier Solutions',
@@ -258,6 +390,7 @@ export const HOME_INDUSTRIES: IndustryCardItem[] = [
     title: 'Wholesale & Distribution',
     summary: 'Order booking apps, credit limit controls, batch dispatch, and GST-compliant invoicing.',
     image: '/src/assets/images/industry_wholesale_1795005440370.jpg',
+    webpImage: '/src/assets/images/industry_wholesale_1795005440370.webp',
     alt: 'Wholesale logistics and high-bay distribution center aisles',
     href: '/industries/wholesale-distribution/',
     ctaLabel: 'Wholesale Distribution Solutions',
@@ -266,8 +399,9 @@ export const HOME_INDUSTRIES: IndustryCardItem[] = [
     id: 'agriculture-mandi',
     title: 'Fruit & Vegetable Mandis',
     summary: 'Commodity arrival registers, mandi auction billing, crate books, and farmer patti slips.',
-    image: '/src/assets/images/industry_agriculture_mandi_1795005439749.jpg',
-    alt: 'Agricultural commodity trading yard and grain storage silos in daylight',
+    image: '/src/assets/images/industry_fruit_vegetable_mandi_1795094382494.jpg',
+    webpImage: '/src/assets/images/industry_fruit_vegetable_mandi_1795094382494.webp',
+    alt: 'Wholesale fruit and vegetable mandi produce yard with stacked crates and morning trading operations',
     href: '/industries/fruit-vegetable-mandis/',
     ctaLabel: 'Mandi Software Solutions',
   },
@@ -276,6 +410,7 @@ export const HOME_INDUSTRIES: IndustryCardItem[] = [
     title: 'Healthcare',
     summary: 'Appointment portals, diagnostic scheduling, patient communication, and local search growth.',
     image: '/src/assets/images/industry_healthcare_1795005440398.jpg',
+    webpImage: '/src/assets/images/industry_healthcare_1795005440398.webp',
     alt: 'Clean modern hospital diagnostic center and reception interior',
     href: '/industries/healthcare-clinics/',
     ctaLabel: 'Healthcare Digital Solutions',
@@ -285,6 +420,7 @@ export const HOME_INDUSTRIES: IndustryCardItem[] = [
     title: 'Education',
     summary: 'Admissions workflows, institutional portals, fee management, and digital discovery.',
     image: '/src/assets/images/industry_education_1795005440945.jpg',
+    webpImage: '/src/assets/images/industry_education_1795005440945.webp',
     alt: 'Modern university academic building and digital learning library',
     href: '/industries/education-training-institutes/',
     ctaLabel: 'Education Portal Solutions',
@@ -294,6 +430,7 @@ export const HOME_INDUSTRIES: IndustryCardItem[] = [
     title: 'Real Estate',
     summary: 'Project showcase websites, unit availability tracking, CRM follow-ups, and site-visit booking.',
     image: '/src/assets/images/industry_real_estate_1795005441185.jpg',
+    webpImage: '/src/assets/images/industry_real_estate_1795005441185.webp',
     alt: 'Contemporary commercial and residential architectural complex with landscaped courtyard',
     href: '/industries/real-estate-construction/',
     ctaLabel: 'Real Estate Digital Solutions',

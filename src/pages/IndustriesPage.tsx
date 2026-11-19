@@ -4,7 +4,7 @@ import {CTASection} from '../components/home/CTASection.tsx';
 import {InnerPageBanner} from '../components/layout/InnerPageBanner.tsx';
 import {Container} from '../components/ui/Container.tsx';
 import {MediaFrame} from '../components/ui/MediaFrame.tsx';
-import {STATIC_PAGE_BANNERS} from '../config/banners.ts';
+import {STATIC_PAGE_BANNERS, toWebpAssetPath} from '../config/banners.ts';
 import type {BreadcrumbEntry} from '../config/seo.ts';
 import {ALL_INDUSTRIES} from '../data/index.ts';
 import {Link} from '../lib/router.tsx';
@@ -52,11 +52,7 @@ export function IndustriesPage({breadcrumbs}: IndustriesPageProps) {
                   <div className="aspect-[16/10] w-full bg-[#111111]">
                     <MediaFrame
                       src={industry.heroImage || '/src/assets/images/industry_steel_iron_1795005438477.jpg'}
-                      webpSrc={
-                        industry.slug === 'solar-renewable-energy'
-                          ? '/src/assets/images/industry_solar_energy_1795005439181.webp'
-                          : undefined
-                      }
+                      webpSrc={toWebpAssetPath(industry.heroImage || '/src/assets/images/industry_steel_iron_1795005438477.jpg')}
                       alt={industry.heroImageAlt || industry.name}
                       width={800}
                       height={500}
@@ -102,9 +98,10 @@ export function IndustriesPage({breadcrumbs}: IndustriesPageProps) {
                   key={industry.slug}
                   className="relative group flex flex-col sm:flex-row overflow-hidden rounded-xl border border-[#303030] bg-[#111111] transition-all duration-200 hover:border-[#D41514]"
                 >
-                  <div className="sm:w-44 shrink-0 bg-[#141414] aspect-[4/3] sm:aspect-auto">
+                  <div className="sm:w-48 shrink-0 bg-[#141414] aspect-[4/3] sm:aspect-auto">
                     <MediaFrame
                       src={industry.heroImage || '/src/assets/images/banner_obsidian_architecture_1795006490317.jpg'}
+                      webpSrc={toWebpAssetPath(industry.heroImage || '/src/assets/images/banner_obsidian_architecture_1795006490317.jpg')}
                       alt={industry.heroImageAlt || industry.name}
                       width={600}
                       height={450}

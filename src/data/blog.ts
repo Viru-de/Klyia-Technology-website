@@ -17,7 +17,7 @@ export const ALL_BLOG_ARTICLES: BlogArticleData[] = [
     heroImage: BANNER_IMAGES.webDesignUi,
     heroImageAlt: 'Corporate web engineering layout and pricing architecture comparison',
     canonicalPath: '/blog/website-development-cost-in-india-what-affects-pricing/',
-    seoTitle: 'Website Development Cost in India: Honest Scope Breakdown | Klyia Technology',
+    seoTitle: 'Website Development Cost in India | Klyia Technology',
     metaDescription:
       'Learn what genuinely determines website development cost in India—from architecture, SSR SEO, custom portals, and integrations to post-launch support.',
     indexable: true,
@@ -452,7 +452,7 @@ export const ALL_BLOG_ARTICLES: BlogArticleData[] = [
     heroImage: BANNER_IMAGES.agricultureMandi,
     heroImageAlt: 'Wholesale fruit and vegetable mandi billing and crate tracking',
     canonicalPath: '/blog/fruit-vegetable-mandi-billing-and-crate-tracking-software/',
-    seoTitle: 'Fruit & Vegetable Mandi Billing & Crate Tracking Software | Klyia Technology',
+    seoTitle: 'Mandi Billing & Crate Software Guide | Klyia Technology',
     metaDescription:
       'Learn how specialized mandi software streamlines morning lot auctions, farmer patti calculations, and buyer plastic crate ledgers.',
     indexable: true,

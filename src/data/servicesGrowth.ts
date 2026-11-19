@@ -65,13 +65,13 @@ const GROWTH_SEEDS: CompactServiceSeed[] = [
     name: 'Local SEO Services',
     categoryId: 'seo-digital-growth',
     categoryLabel: 'SEO & Digital Growth',
-    seoTitle: 'Local SEO Services | Bhilai, Durg, Raipur & Regional Discovery | Klyia Technology',
+    seoTitle: 'Local SEO Services in Bhilai, Raipur & India | Klyia Technology',
     metaDescription:
-      'Local SEO and regional search optimization helping businesses appear clearly across city, map, and near-me searches without doorway spam.',
+      'Local SEO services in Bhilai, Durg, Raipur, and India featuring LocalBusiness Structured Data, Google Business Profile optimization, and call/enquiry tracking.',
     heroSubtitle:
-      'Strengthen visibility across Bhilai, Durg, Raipur, and your target service cities with authentic local signals and Google Business Profile alignment.',
+      'Strengthen visibility across Bhilai, Durg, Raipur, and your target service cities with authentic Local SEO signals, Structured Data, and Google Business Profile alignment.',
     introFocus:
-      'Local SEO connects nearby buyers and B2B procurement teams with your business across city-modified searches and Google Maps packs—built cleanly through accurate NAP consistency, regional service pages, and verified profile activity.',
+      'Local SEO connects nearby buyers and B2B procurement teams with your business across city-modified searches and Google Maps packs—built cleanly through accurate NAP consistency, Schema.org Structured Data, regional service pages, and transparent enquiry tracking.',
     whyNeeded: [
       'Service buyers, clinics, traders, and solar customers search with city names or "near me" modifiers daily.',
       'Inconsistent phone numbers or old addresses across listings confuse search engines.',
@@ -83,15 +83,15 @@ const GROWTH_SEEDS: CompactServiceSeed[] = [
       'Zero regional context explaining which cities you actually visit or supply.',
     ],
     solutions: [
-      'Accurate LocalBusiness Schema reflecting verified office location and genuine service areas.',
+      'Accurate LocalBusiness Structured Data reflecting verified office location and genuine service areas.',
       'Distinct location pages grounded in real regional industry context—no doorway duplication.',
-      'Aligned Google Business Profile optimization, categories, services, and Q&As.',
+      'Aligned Google Business Profile optimization, categories, services, and UTM call/click tracking.',
     ],
     features: [
       {title: 'NAP & Citation Consistency', detail: 'Uniform Name, Address, Phone, and WhatsApp identity across web properties.'},
       {title: 'Authentic Regional Pages', detail: 'Genuine service corridors without copy-paste keyword spam.'},
-      {title: 'Map & GBP Alignment', detail: 'Linking regional landing pages cleanly with your verified Business Profile.'},
-      {title: 'Local Query Analytics', detail: 'Measuring city impressions, profile calls, and direction clicks.'},
+      {title: 'Structured Data & GBP Sync', detail: 'Linking regional landing pages and LocalBusiness Schema cleanly with Google Business Profile.'},
+      {title: 'Local Query & Call Tracking', detail: 'Measuring city impressions, profile calls, and direction clicks transparently.'},
     ],
     benefits: [
       'Attracts ready-to-buy regional prospects right in your service belt.',
@@ -352,11 +352,11 @@ const GROWTH_SEEDS: CompactServiceSeed[] = [
     categoryLabel: 'SEO & Digital Growth',
     seoTitle: 'GEO (Generative Engine Optimization) Services | Klyia Technology',
     metaDescription:
-      'Structure your company identity, services, factual capabilities, and entity relationships clearly for generative AI search and synthesis platforms.',
+      'GEO services by Klyia Technology structuring factual brand entities, Structured Data, and crawlable service pages for generative AI search platforms.',
     heroSubtitle:
-      'Help AI-driven generative search systems accurately understand who your company is, what you build, and which regions you serve.',
+      'Help AI-driven generative search systems accurately understand who your company is, what you build, and which regions you serve through clean GEO and Structured Data.',
     introFocus:
-      'Generative Engine Optimization (GEO) structures verifiable company facts, service definitions, industry specializations, and consistent entity signals so AI-assisted discovery systems interpret your brand accurately. We never promise guaranteed AI citations—instead, we build genuine factual clarity and authority.',
+      'Generative Engine Optimization (GEO) structures verifiable company facts, service definitions, industry specializations, and Schema.org Structured Data so AI-assisted discovery systems interpret your brand accurately. We never promise guaranteed AI citations—instead, we build genuine factual clarity and authority.',
     whyNeeded: [
       'Buyers increasingly ask conversational AI tools for vendor shortlists and capability comparisons.',
       'Vague marketing slogans give generative models zero concrete facts to interpret.',
@@ -365,17 +365,17 @@ const GROWTH_SEEDS: CompactServiceSeed[] = [
     challenges: [
       'Websites stuffed with buzzwords rather than clear explanations of services and scope.',
       'Unreadable JavaScript-only layouts blocking automated extraction crawlers.',
-      'Missing entity links connecting company, services, industries, and locations.',
+      'Missing Structured Data entity links connecting company, services, industries, and locations.',
     ],
     solutions: [
       'Factual, well-structured service and industry encyclopedias with crisp entity definitions.',
-      'Complete JSON-LD graphs (`Organization`, `LocalBusiness`, `Service`, `WebSite`, `Article`).',
-      'Clean SSR HTML delivery ensuring every crawler reads identical authoritative facts.',
+      'Complete JSON-LD Structured Data graphs (`Organization`, `LocalBusiness`, `Service`, `WebSite`, `Article`).',
+      'Clean SSR HTML delivery and `llms.txt` documentation ensuring every crawler reads identical authoritative facts.',
     ],
     features: [
-      {title: 'Entity Clarity & Consistency', detail: 'Consistent official identity, address, services, and coverage statements.'},
+      {title: 'Entity Clarity & Structured Data', detail: 'Consistent official identity, address, services, and Schema.org JSON-LD alignment.'},
       {title: 'Plain-Language Domain Explanations', detail: 'Clear "what it is / why needed / how it works" prose.'},
-      {title: 'Crawlable SSR & Sitemaps', detail: 'Accessible HTML structure without JS-gated hidden copy.'},
+      {title: 'Crawlable SSR & llms.txt Readiness', detail: 'Accessible HTML structure without JS-gated hidden copy.'},
       {title: 'Interconnected Topic Clusters', detail: 'Contextual links uniting services, industries, and insights.'},
     ],
     benefits: [

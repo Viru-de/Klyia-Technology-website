@@ -9,6 +9,7 @@ import {STATIC_PAGE_BANNERS} from '../config/banners.ts';
 import {BRAND} from '../config/brand.ts';
 import {ROUTES} from '../config/routes.ts';
 import type {BreadcrumbEntry} from '../config/seo.ts';
+import {Link} from '../lib/router.tsx';
 
 interface AboutPageProps {
   breadcrumbs: BreadcrumbEntry[];
@@ -18,22 +19,22 @@ const CORE_PRINCIPLES = [
   {
     title: 'Operational Understanding First',
     detail:
-      'We examine real factory, billing, inventory, and sales workflows before recommending software architecture.',
+      'We examine real factory, billing, inventory, and sales workflows before recommending custom software or ERP architecture.',
   },
   {
     title: 'Custom-Engineered Reliability',
     detail:
-      'Systems are developed in clean, modular TypeScript architectures built to evolve alongside growing business needs.',
+      'Systems are developed in clean, modular TypeScript architectures built with live operational tracking to evolve alongside growing business needs.',
   },
   {
-    title: 'Search & AI-Era Discoverability',
+    title: 'Search, Structured Data & AI-Era Discoverability',
     detail:
-      'Every public web platform integrates semantic HTML, technical SEO, GEO, and AEO clarity from the start.',
+      'Every public web platform integrates semantic HTML, Local SEO, GEO, AEO, and valid Schema.org Structured Data from the start.',
   },
   {
     title: 'Long-Term Partnership Model',
     detail:
-      'Headquartered in Risali, Bhilai, our team stays accountable through deployment, training, and continuous support.',
+      'Headquartered in Risali, Bhilai, our team stays accountable through deployment, training, and continuous technical support across Chhattisgarh and India.',
   },
 ];
 
@@ -42,7 +43,7 @@ export function AboutPage({breadcrumbs}: AboutPageProps) {
     <>
       <InnerPageBanner
         title="About Klyia Technology"
-        subtitle="An IT solutions and digital transformation company building custom software, ERP systems, websites, SEO, GEO, AEO, and AI automation from Bhilai for businesses across India."
+        subtitle="A software development, Solar ERP, website engineering, Local SEO, and GEO company in Bhilai serving businesses across Chhattisgarh and India."
         breadcrumbs={breadcrumbs}
         backgroundImage={STATIC_PAGE_BANNERS.about.image}
         backgroundAlt={STATIC_PAGE_BANNERS.about.alt}
@@ -62,16 +63,39 @@ export function AboutPage({breadcrumbs}: AboutPageProps) {
                 Technology Built Around Real Industrial &amp; Commercial Operations
               </h2>
               <p className="text-base leading-[1.7] text-[#CDCBCA]">
-                As an engineering-led IT and software development company in Bhilai, Klyia Technology partners with manufacturers, industrial suppliers, solar EPC companies, distributors, healthcare providers, and service enterprises across Chhattisgarh and India to replace fragmented workflows with dependable digital systems.
+                Headquartered in Risali, Bhilai, Klyia Technology partners with manufacturers, steel mills, Solar EPC contractors, wholesale distributors, mandis, healthcare clinics, and service enterprises across Bhilai, Durg, Raipur, Chhattisgarh, and India to replace fragmented workflows with dependable software systems.
               </p>
               <p className="text-[15px] leading-[1.7] text-[#969696]">
-                Rather than treating software development and digital visibility as disconnected silos, we align custom ERP and web engineering with technical SEO, Generative Engine Optimization (GEO), Answer Engine Optimization (AEO), and practical workflow automation.
+                Rather than treating custom software and digital visibility as disconnected silos, we align bespoke{' '}
+                <Link href="/services/solar-erp-software/" className="text-[#CDCBCA] underline underline-offset-4 hover:text-[#D41514]">
+                  Solar ERP
+                </Link>
+                ,{' '}
+                <Link href="/services/erp-software-development/" className="text-[#CDCBCA] underline underline-offset-4 hover:text-[#D41514]">
+                  Industrial ERP
+                </Link>
+                , and{' '}
+                <Link href="/services/website-development-services/" className="text-[#CDCBCA] underline underline-offset-4 hover:text-[#D41514]">
+                  website development
+                </Link>{' '}
+                with{' '}
+                <Link href="/services/local-seo-services/" className="text-[#CDCBCA] underline underline-offset-4 hover:text-[#D41514]">
+                  Local SEO
+                </Link>
+                ,{' '}
+                <Link href="/services/geo-generative-engine-optimization/" className="text-[#CDCBCA] underline underline-offset-4 hover:text-[#D41514]">
+                  GEO (Generative Engine Optimization)
+                </Link>
+                , valid Structured Data, and measurable conversion tracking.
               </p>
 
               <div className="pt-2 flex flex-wrap gap-3.5">
                 <Button href={ROUTES.SERVICES} variant="primary" size="md">
                   <span>Explore Our Services</span>
                   <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                </Button>
+                <Button href={ROUTES.INDUSTRIES} variant="outline" size="md">
+                  Industries We Serve
                 </Button>
                 <Button href={ROUTES.CONTACT} variant="outline" size="md">
                   Contact Our Team

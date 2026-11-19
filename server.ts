@@ -21,6 +21,7 @@ import {
   updateLeadEmailStatus,
   type LeadSourceType,
 } from './server/db.ts';
+import {buildLlmsFullTxt, buildLlmsTxt} from './server/llms.ts';
 import {sendEnquiryNotificationEmail} from './server/mailer.ts';
 import {
   checkRateLimit,
@@ -209,6 +210,24 @@ async function createAppServer() {
       .status(200)
       .type('text/plain; charset=utf-8')
       .send(`User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /admin/\nSitemap: ${baseUrl}/sitemap.xml\n`);
+  });
+
+  app.get('/llms.txt', (req: Request, res: Response) => {
+    const baseUrl = resolveBaseUrl(getRequestOrigin(req));
+    res
+      .status(200)
+      .setHeader('Cache-Control', 'public, max-age=3600')
+      .type('text/plain; charset=utf-8')
+      .send(buildLlmsTxt(baseUrl));
+  });
+
+  app.get('/llms-full.txt', (req: Request, res: Response) => {
+    const baseUrl = resolveBaseUrl(getRequestOrigin(req));
+    res
+      .status(200)
+      .setHeader('Cache-Control', 'public, max-age=3600')
+      .type('text/plain; charset=utf-8')
+      .send(buildLlmsFullTxt(baseUrl));
   });
 
   app.get('/sitemap.xml', (req: Request, res: Response) => {

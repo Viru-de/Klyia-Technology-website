@@ -4,7 +4,8 @@ import {CTASection} from '../components/home/CTASection.tsx';
 import {InnerPageBanner} from '../components/layout/InnerPageBanner.tsx';
 import {Button} from '../components/ui/Button.tsx';
 import {Container} from '../components/ui/Container.tsx';
-import {STATIC_PAGE_BANNERS} from '../config/banners.ts';
+import {MediaFrame} from '../components/ui/MediaFrame.tsx';
+import {STATIC_PAGE_BANNERS, toWebpAssetPath} from '../config/banners.ts';
 import {ROUTES} from '../config/routes.ts';
 import type {BreadcrumbEntry} from '../config/seo.ts';
 import {
@@ -87,28 +88,46 @@ export function ServicesPage({breadcrumbs}: ServicesPageProps) {
                   {items.map((service) => (
                     <article
                       key={service.slug}
-                      className="relative group flex flex-col justify-between rounded-xl border border-[#303030] bg-[#111111] p-5 sm:p-6 transition-all duration-200 hover:border-[#D41514] hover:shadow-[0_12px_30px_-14px_rgba(212,21,20,0.24)]"
+                      className="relative group flex flex-col overflow-hidden rounded-xl border border-[#303030] bg-[#111111] transition-all duration-200 hover:border-[#D41514] hover:shadow-[0_12px_30px_-14px_rgba(212,21,20,0.24)]"
                     >
-                      <div>
-                        <div className="flex items-start gap-2.5">
-                          <CheckCircle2 className="w-4 h-4 text-[#D41514] shrink-0 mt-1" aria-hidden="true" />
-                          <p className="text-base font-bold text-white group-hover:text-[#D41514] transition-colors">
-                            <Link href={service.canonicalPath} className="after:absolute after:inset-0">
-                              {service.name}
-                            </Link>
-                          </p>
-                        </div>
-                        <p className="mt-2.5 text-sm leading-relaxed text-[#969696]">
-                          {service.heroSubtitle}
-                        </p>
+                      <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#080808]">
+                        <MediaFrame
+                          src={service.heroImage}
+                          webpSrc={toWebpAssetPath(service.heroImage)}
+                          alt={service.heroImageAlt}
+                          width={640}
+                          height={400}
+                          fallbackLabel={service.name}
+                          imgClassName="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                        />
+                        <div
+                          aria-hidden="true"
+                          className="absolute inset-0 bg-gradient-to-t from-[#111111]/80 via-transparent to-transparent"
+                        />
                       </div>
 
-                      <div
-                        aria-hidden="true"
-                        className="mt-4 pt-3 border-t border-[#303030]/60 inline-flex items-center gap-1.5 text-xs font-semibold text-[#CDCBCA]"
-                      >
-                        <span>Explore {service.name}</span>
-                        <ArrowRight className="w-3.5 h-3.5 text-[#D41514] transition-transform group-hover:translate-x-0.5" />
+                      <div className="flex flex-1 flex-col justify-between p-5 sm:p-6">
+                        <div>
+                          <div className="flex items-start gap-2.5">
+                            <CheckCircle2 className="w-4 h-4 text-[#D41514] shrink-0 mt-1" aria-hidden="true" />
+                            <p className="text-base font-bold text-white group-hover:text-[#D41514] transition-colors">
+                              <Link href={service.canonicalPath} className="after:absolute after:inset-0">
+                                {service.name}
+                              </Link>
+                            </p>
+                          </div>
+                          <p className="mt-2.5 text-sm leading-relaxed text-[#969696]">
+                            {service.heroSubtitle}
+                          </p>
+                        </div>
+
+                        <div
+                          aria-hidden="true"
+                          className="mt-4 pt-3 border-t border-[#303030]/60 inline-flex items-center gap-1.5 text-xs font-semibold text-[#CDCBCA]"
+                        >
+                          <span>Explore {service.name}</span>
+                          <ArrowRight className="w-3.5 h-3.5 text-[#D41514] transition-transform group-hover:translate-x-0.5" />
+                        </div>
                       </div>
                     </article>
                   ))}

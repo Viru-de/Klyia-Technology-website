@@ -13,10 +13,10 @@ const PRIORITY_SPOTLIGHTS = [
     badge: 'Priority Focus 01 · Bhilai Industrial Core',
     title: 'Steel & Iron Industry Solutions',
     summary:
-      'Comprehensive websites, structural steel grade catalogs, rolling yield & dual-unit (MT + bundles) Steel ERP, weighbridge-ready billing, and WhatsApp dispatch alerts.',
+      'Comprehensive websites, structural steel grade catalogs, rolling yield & dual-unit (MT + bundles) Steel ERP, weighbridge-ready billing, and WhatsApp dispatch tracking.',
     image: '/src/assets/images/industry_steel_iron_1795005438477.jpg',
-    webpImage: undefined,
-    alt: 'Steel rolling mill and structural steel yard technology solutions',
+    webpImage: '/src/assets/images/industry_steel_iron_1795005438477.webp',
+    alt: 'Steel rolling mill and structural steel yard ERP and tracking solutions in Bhilai',
     href: '/industries/steel-iron-industry/',
     ctaLabel: 'Explore Steel & Iron Playbook',
     secondaryLabel: 'Compare Industry Capabilities',
@@ -34,7 +34,7 @@ const PRIORITY_SPOTLIGHTS = [
       'Lead-to-commissioning Solar EPC websites, mobile site-survey CRMs, kW proposal/BOM generators, DISCOM net-metering status logs, serial tracking, and AMC schedules.',
     image: '/src/assets/images/industry_solar_energy_1795005439181.jpg',
     webpImage: '/src/assets/images/industry_solar_energy_1795005439181.webp',
-    alt: 'Commercial and rooftop solar EPC engineering software and portals',
+    alt: 'Commercial and rooftop Solar EPC engineering software and Solar ERP portals',
     href: '/industries/solar-renewable-energy/',
     ctaLabel: 'Explore Solar EPC Playbook',
     secondaryLabel: 'Inspect Solar ERP Features',
@@ -60,7 +60,7 @@ export function HomeFeaturedIndustriesSection() {
             Deep Engineering for Steel &amp; Solar EPC Enterprises
           </h2>
           <p className="text-base leading-relaxed text-[#969696]">
-            Beyond general IT websites, our Bhilai team designs deeply tailored digital workflows for Chhattisgarh’s industrial backbone and fast-growing solar EPC sector.
+            Beyond general IT websites, our Bhilai team designs deeply tailored digital workflows for Chhattisgarh’s industrial backbone and fast-growing Solar EPC sector.
           </p>
         </div>
 
@@ -131,7 +131,7 @@ export function HomeFeaturedIndustriesSection() {
                 Core Services for Solar &amp; Renewable Energy
               </h3>
               <p className="text-sm sm:text-base leading-relaxed text-[#969696]">
-                Dedicated engineering covering solar panel installation pipelines, commercial &amp; industrial solar EPC execution, Solar ERP project dashboards, and post-commissioning monitoring and maintenance.
+                Dedicated engineering covering solar panel installation pipelines, commercial &amp; industrial Solar EPC execution, Solar ERP project dashboards, and post-commissioning monitoring and maintenance tracking.
               </p>
             </div>
             <Button
@@ -165,9 +165,9 @@ export function HomeFeaturedIndustriesSection() {
                     />
                   </div>
                   <div className="p-5 space-y-2.5">
-                    <p className="text-[16px] font-bold leading-snug text-white group-hover:text-[#D41514] transition-colors">
+                    <h4 className="text-[16px] font-bold leading-snug text-white group-hover:text-[#D41514] transition-colors">
                       {solarItem.title}
-                    </p>
+                    </h4>
                     <p className="text-xs sm:text-sm leading-relaxed text-[#969696]">
                       {solarItem.summary}
                     </p>

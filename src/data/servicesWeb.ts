@@ -126,32 +126,32 @@ const WEB_SEEDS: CompactServiceSeed[] = [
     name: 'Website Development Services',
     categoryId: 'web-solutions',
     categoryLabel: 'Web Solutions',
-    seoTitle: 'Website Development Services | Fast, SSR & SEO-Ready Sites | Klyia Technology',
+    seoTitle: 'Website Development Services in Bhilai & India | Klyia Technology',
     metaDescription:
-      'Production-grade website development in Bhilai, Chhattisgarh and India using clean TypeScript, SSR HTML rendering, fast load times, and technical SEO.',
+      'Fast server-rendered website development in Bhilai, Chhattisgarh and India using TypeScript, clean Structured Data, Local SEO readiness, and enquiry tracking.',
     heroSubtitle:
-      'Engineered websites with server-rendered HTML, clean semantic structure, security headers, and reliable database lead capture.',
+      'Engineered websites with server-rendered HTML, Structured Data, clean semantic hierarchy, conversion tracking, and reliable database lead capture.',
     introFocus:
-      'Website development converts strategy and design into dependable production code that search crawlers index cleanly and customers navigate effortlessly. Klyia Technology builds fast TypeScript & Node.js SSR platforms engineered for long-term commercial reliability.',
+      'Website development converts strategy and design into dependable production code that search crawlers index cleanly and customers navigate effortlessly. Klyia Technology builds fast TypeScript & Node.js SSR platforms engineered in Bhilai for long-term commercial reliability.',
     whyNeeded: [
       'Client-side-only scripts often serve blank initial HTML to search bots.',
       'Bloated templates suffer from plugin conflicts, security gaps, and sluggish mobile loading.',
-      'Businesses need enquiry forms backed by persistent databases rather than unreliable mail relays.',
+      'Businesses need enquiry forms backed by persistent databases and conversion tracking rather than unreliable mail relays.',
     ],
     challenges: [
       'Undocumented codebases breaking when content or pages grow.',
       'Poor Core Web Vitals driven by unoptimized scripts and oversized images.',
-      'Disconnected enquiry forms with no spam controls or logging.',
+      'Disconnected enquiry forms with no spam controls or analytics tracking.',
     ],
     solutions: [
       'Full-stack React + Express SSR outputting complete, crawlable HTML on every public URL.',
-      'Canonical URLs, multi-sitemap XML indexing, and Schema.org structured data.',
+      'Canonical URLs, multi-sitemap XML indexing, Schema.org Structured Data, and GA4/Search Console tracking readiness.',
       'Database-saved enquiry workflows with validation, rate limiting, and WhatsApp handoff.',
     ],
     features: [
-      {title: 'Crawlable SSR Output', detail: 'Bots receive full HTML headings, links, copy, and structured schema immediately.'},
+      {title: 'Crawlable SSR Output', detail: 'Bots receive full HTML headings, links, copy, and Structured Data immediately.'},
       {title: 'Core Web Vitals Focus', detail: 'Lazy-loaded secondary UI, clean CSS, and lean client hydration.'},
-      {title: 'Persistent Lead Storage', detail: 'Enquiries save safely with confirmation reference IDs.'},
+      {title: 'Persistent Lead Tracking', detail: 'Enquiries save safely with confirmation reference IDs and analytics hooks.'},
       {title: 'Deployment & SSL Readiness', detail: 'Ready for Node.js hosting, HTTPS proxies, and clean redirects.'},
     ],
     benefits: [

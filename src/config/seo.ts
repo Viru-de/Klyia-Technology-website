@@ -45,49 +45,49 @@ export const HOME_VISIBLE_FAQS: FaqEntry[] = [
   {
     question: 'What core services does Klyia Technology provide?',
     answer:
-      'Klyia Technology provides custom website design and development, custom software development, modular ERP & CRM systems, business automation, SEO, Local SEO, GEO, AEO, WhatsApp Business automation, AI integration, creative branding, and cloud/website support.',
+      'Klyia Technology provides Solar ERP and Solar EPC software, custom software development, modular Industrial ERP & CRM systems, website development, Local SEO, GEO (Generative Engine Optimization), AEO, Structured Data implementation, conversion tracking, WhatsApp Business automation, and AI integration.',
   },
   {
     question: 'Where is Klyia Technology located and which cities do you serve?',
     answer:
-      'Our physical office is at First Floor, Bajrang Hardware, Krishna Talkies Road, Risali, Bhilai, Chhattisgarh, India. We offer direct on-site meetings across Bhilai, Durg, and Raipur, serve Bilaspur, Korba, Raigarh, and all of Chhattisgarh, and deliver remotely for businesses across India.',
+      'Our physical office is at First Floor, Bajrang Hardware, Krishna Talkies Road, Risali, Bhilai, Chhattisgarh, India. We conduct direct on-site consultations across Bhilai, Durg, and Raipur, serve Bilaspur, Korba, Raigarh, and all of Chhattisgarh, and deliver remotely across India.',
   },
   {
-    question: 'Do you build software and websites specifically for steel mills, traders, and solar EPC firms?',
+    question: 'Do you build Solar ERP and custom software for Solar EPC and steel companies?',
     answer:
-      'Yes. Steel & Iron (TMT, structural steel, plates, angles, channels, beams, pipes, coils, sheets) and Solar EPC workflows are two of our strongest specializations, covering dual weight/piece units, yield tracking, BOM inventory, subsidy logs, dealer portals, and B2B websites.',
+      'Yes. Solar EPC workflows (rooftop surveys, BOM serial tracking, DISCOM/subsidy logs, AMC schedules) and Steel & Iron ERP (dual MT/bundle units, rolling yield, weighbridge dispatch, dealer portals) are two of our core specializations.',
   },
   {
-    question: 'What is the difference between SEO, GEO, and AEO?',
+    question: 'How do SEO, Local SEO, GEO, and Structured Data work together?',
     answer:
-      'SEO improves organic search rankings on Google; GEO (Generative Engine Optimization) structures clear brand entities and facts so generative AI tools recognize and recommend your business; AEO (Answer Engine Optimization) uses structured answers and Schema markup for direct factual answers.',
+      'Technical SEO and Structured Data (Schema.org JSON-LD) help search engines crawl and understand your business, Local SEO strengthens visibility across Bhilai and regional map searches, and GEO structures clear company facts so AI search tools recognize your services accurately.',
   },
   {
-    question: 'Can you integrate WhatsApp Business automation with our website or ERP?',
+    question: 'Do your websites and ERPs include analytics and operational tracking?',
     answer:
-      'Yes. Using official WhatsApp Business API architecture, enquiry forms can confirm instantly and dispatch challans, invoices, or AMC reminders can trigger cleanly from your CRM or ERP.',
+      'Yes. Our web platforms support Google Search Console and GA4 conversion tracking alongside privacy-safe visitor tracking, while our ERP systems provide live inventory, dispatch, project milestone, and enquiry status tracking.',
   },
   {
-    question: 'How does pricing work for custom websites or software?',
+    question: 'How does pricing work for custom websites, Solar ERP, or business software?',
     answer:
-      'Because a 6-page company site and a multi-godown ERP differ substantially, we scope exact workflows, pages, and integrations transparently before quoting—never quoting deceptive one-price gimmicks.',
+      'Because a corporate website, a Solar ERP system, and a multi-godown industrial ERP differ substantially, we scope exact workflows, modules, and integrations transparently before quoting—without deceptive one-price claims.',
   },
 ];
 
 const ROUTE_SEO_MAP: Record<string, PageSeoMetadata> = {
   [ROUTES.HOME]: {
-    title: 'Klyia Technology | Software & ERP Company in Bhilai',
+    title: 'Klyia Technology | Software, Solar ERP & SEO Company in Bhilai',
     description:
-      'Klyia Technology builds custom software, ERP systems, business websites and digital growth solutions for businesses in Bhilai, Chhattisgarh and across India.',
+      'Klyia Technology provides Solar ERP, Solar EPC software, custom ERP, website development, Local SEO and GEO solutions in Bhilai, Chhattisgarh and across India.',
     canonicalPath: ROUTES.HOME,
     ogType: 'website',
     breadcrumbs: [{name: 'Home', path: ROUTES.HOME}],
     faqs: HOME_VISIBLE_FAQS,
   },
   [ROUTES.ABOUT]: {
-    title: 'About Klyia Technology | IT & Software Company in Risali, Bhilai',
+    title: 'About Klyia Technology | Software & ERP Company in Bhilai',
     description:
-      'Learn how Klyia Technology, an IT and software company in Risali, Bhilai, builds reliable custom software, ERP systems, websites, and search-ready digital platforms across Chhattisgarh and India.',
+      'Klyia Technology in Risali, Bhilai builds custom software, Solar ERP, Industrial ERP, fast websites, Local SEO, GEO, and structured data systems across India.',
     canonicalPath: ROUTES.ABOUT,
     ogType: 'website',
     breadcrumbs: [
@@ -96,8 +96,8 @@ const ROUTE_SEO_MAP: Record<string, PageSeoMetadata> = {
     ],
   },
   [ROUTES.SERVICES]: {
-    title: 'IT Services | Web, Custom Software, ERP, SEO, GEO, AEO, AI & Cloud | Klyia Technology',
-    description: `Explore ${ALL_SERVICES.length} specialized technology & growth services across Web Solutions, Software & ERP, SEO/GEO/AEO, AI Automation, Branding, and IT Cloud Support.`,
+    title: 'IT Services | Software, Solar ERP, Web & GEO | Klyia Technology',
+    description: `Explore ${ALL_SERVICES.length} specialized technology & growth services across Website Development, Custom Software, Solar ERP, Local SEO, GEO, AEO, AI Automation, and Cloud Support.`,
     canonicalPath: ROUTES.SERVICES,
     ogType: 'website',
     breadcrumbs: [
@@ -106,8 +106,8 @@ const ROUTE_SEO_MAP: Record<string, PageSeoMetadata> = {
     ],
   },
   [ROUTES.INDUSTRIES]: {
-    title: 'Industry Digital Solutions | Steel, Solar, Manufacturing, Mandi & More | Klyia Technology',
-    description: `Dedicated ERP, CRM, website, and growth systems tailored across ${ALL_INDUSTRIES.length} industries including Steel & Iron, Solar EPC, Manufacturing, Wholesale, Mandis, and Healthcare.`,
+    title: 'Industries Served | Steel, Solar EPC & ERP | Klyia Technology',
+    description: `Dedicated ERP, CRM, website & growth systems across ${ALL_INDUSTRIES.length} industries: Steel & Iron, Solar EPC, Manufacturing, Wholesale, Mandis & Healthcare.`,
     canonicalPath: ROUTES.INDUSTRIES,
     ogType: 'website',
     breadcrumbs: [
@@ -116,9 +116,9 @@ const ROUTE_SEO_MAP: Record<string, PageSeoMetadata> = {
     ],
   },
   [ROUTES.LOCATIONS]: {
-    title: 'Locations Served | Bhilai, Durg, Raipur, Chhattisgarh & India | Klyia Technology',
+    title: 'Locations | Bhilai, Durg, Raipur & India | Klyia Technology',
     description:
-      'Headquartered in Risali, Bhilai, Klyia Technology delivers on-site consulting across Bhilai, Durg, and Raipur and builds digital systems across Chhattisgarh and India.',
+      'Based in Risali, Bhilai, Klyia Technology provides on-site consulting in Bhilai, Durg & Raipur and software, Solar ERP & SEO delivery across India.',
     canonicalPath: ROUTES.LOCATIONS,
     ogType: 'website',
     breadcrumbs: [
@@ -127,7 +127,7 @@ const ROUTE_SEO_MAP: Record<string, PageSeoMetadata> = {
     ],
   },
   [ROUTES.OUR_WORK]: {
-    title: 'Our Work & Architecture Blueprints | ERP, Web & AI Systems | Klyia Technology',
+    title: 'Our Work | ERP, Web & AI Architectures | Klyia Technology',
     description:
       'Explore Klyia Technology system architectures across Industrial Steel ERP, Solar EPC platforms, Custom Web Applications, and WhatsApp/AI automation.',
     canonicalPath: ROUTES.OUR_WORK,
@@ -138,7 +138,7 @@ const ROUTE_SEO_MAP: Record<string, PageSeoMetadata> = {
     ],
   },
   [ROUTES.INSIGHTS]: {
-    title: 'Blog & Knowledge Centre | Software, ERP, SEO, GEO & AEO Guides | Klyia Technology',
+    title: 'Knowledge Centre | ERP, Solar EPC & SEO Guides | Klyia Technology',
     description: `Read ${ALL_BLOG_ARTICLES.length} practical engineering and digital growth articles on website cost in India, Steel & Solar ERP, SEO vs GEO vs AEO, GBP, and WhatsApp automation.`,
     canonicalPath: ROUTES.INSIGHTS,
     ogType: 'website',
@@ -148,7 +148,7 @@ const ROUTE_SEO_MAP: Record<string, PageSeoMetadata> = {
     ],
   },
   [ROUTES.CONTACT]: {
-    title: 'Contact Klyia Technology | Risali, Bhilai Office, Phone, WhatsApp & Directions',
+    title: 'Contact Klyia Technology | Risali, Bhilai Office & Support',
     description:
       'Reach Klyia Technology at First Floor, Bajrang Hardware, Krishna Talkies Road, Risali, Bhilai. Call/WhatsApp +91 82968 87643 or email klyiatechnology@gmail.com.',
     canonicalPath: ROUTES.CONTACT,
@@ -159,7 +159,7 @@ const ROUTE_SEO_MAP: Record<string, PageSeoMetadata> = {
     ],
   },
   [ROUTES.GET_A_QUOTE]: {
-    title: 'Get a Quote | Scope Your Website, Software, ERP or SEO Project | Klyia Technology',
+    title: 'Get a Quote | Software, Solar ERP & SEO | Klyia Technology',
     description:
       'Share your service scope, industry workflows, and timelines for an honest engineering consultation from Klyia Technology in Bhilai, Chhattisgarh.',
     canonicalPath: ROUTES.GET_A_QUOTE,
@@ -192,7 +192,7 @@ const ROUTE_SEO_MAP: Record<string, PageSeoMetadata> = {
     ],
   },
   [ROUTES.SITEMAP]: {
-    title: 'HTML Sitemap | All Services, Industries, Locations & Guides | Klyia Technology',
+    title: 'HTML Sitemap | Klyia Technology',
     description:
       'Complete directory of every public page across Klyia Technology: all core sections, services, industries, Chhattisgarh/India locations, and knowledge articles.',
     canonicalPath: ROUTES.SITEMAP,
@@ -394,12 +394,20 @@ export function buildStructuredDataJson(seo: PageSeoMetadata, baseUrl: string): 
     '@id': `${baseUrl}/#organization`,
     name: BRAND.name,
     url: baseUrl,
+    image: `${baseUrl}${HERO_OG_IMAGE_PATH}`,
     logo: {
       '@type': 'ImageObject',
       url: `${baseUrl}/favicon.svg`,
     },
     email: BRAND.email,
     telephone: BRAND.phoneDisplay,
+    contactPoint: {
+      '@type': 'ContactPoint',
+      telephone: BRAND.phoneDisplay,
+      email: BRAND.email,
+      contactType: 'customer service',
+      areaServed: 'IN',
+    },
     description: BRAND.footerSummary,
     address: {
       '@type': 'PostalAddress',
@@ -466,11 +474,13 @@ export function buildStructuredDataJson(seo: PageSeoMetadata, baseUrl: string): 
       '@id': `${canonicalUrl}#article`,
       headline: seo.articleSchema.headline,
       description: seo.description,
+      image: [`${baseUrl}${seo.heroImage || HERO_OG_IMAGE_PATH}`],
       datePublished: seo.articleSchema.datePublished,
       dateModified: seo.articleSchema.dateModified,
       author: {
         '@type': 'Organization',
         name: seo.articleSchema.authorName,
+        url: baseUrl,
       },
       publisher: {'@id': `${baseUrl}/#organization`},
       mainEntityOfPage: canonicalUrl,

@@ -6,9 +6,9 @@ import {Container} from '../ui/Container.tsx';
 
 const SEARCH_PILLARS = [
   {
-    title: 'SEO & Technical Crawlability',
+    title: 'SEO, Technical Crawlability & Analytics Tracking',
     description:
-      'Server-rendered HTML, fast mobile Core Web Vitals, clean canonical URLs, and structured internal architecture built to earn sustained Google Search visibility.',
+      'Server-rendered HTML, fast mobile Core Web Vitals, clean canonical URLs, and Search Console & GA4 conversion tracking built for sustained Google Search visibility.',
     href: '/services/search-engine-optimization/',
     ctaLabel: 'Explore SEO Services',
     icon: Search,
@@ -16,7 +16,7 @@ const SEARCH_PILLARS = [
   {
     title: 'Local SEO & Google Business Profile',
     description:
-      'Capture regional buyers searching across Bhilai, Durg, Raipur, and Chhattisgarh through accurate NAP signals, optimized Maps categories, and verified location pages.',
+      'Capture regional buyers searching across Bhilai, Durg, Raipur, and Chhattisgarh through accurate NAP signals, Local SEO categories, and verified location pages.',
     href: '/services/local-seo-services/',
     ctaLabel: 'Local SEO Services',
     icon: MapPin,
@@ -24,15 +24,15 @@ const SEARCH_PILLARS = [
   {
     title: 'GEO (Generative Engine Optimization)',
     description:
-      'Structure clear company facts, entity context, and service authority so AI-assisted search summaries recognize and cite your business accurately.',
+      'Structure clear Klyia Technology or client entity context, factual capabilities, and regional coverage so generative AI search interfaces interpret your business accurately.',
     href: '/services/geo-generative-engine-optimization/',
     ctaLabel: 'GEO Optimization Services',
     icon: Sparkles,
   },
   {
-    title: 'AEO (Answer Engine Optimization)',
+    title: 'AEO & Schema.org Structured Data',
     description:
-      'Publish concise definitions, comparison tables, and visible Schema-backed FAQs helping answer engines surface direct answers about your offerings.',
+      'Publish concise definitions, comparison tables, and valid Organization, LocalBusiness, Service, and FAQ Structured Data so search and answer systems read facts cleanly.',
     href: '/services/aeo-answer-engine-optimization/',
     ctaLabel: 'AEO Optimization Services',
     icon: Compass,
@@ -50,10 +50,10 @@ export function HomeSeoGeoAeoSection() {
               <span>Modern Search Architecture</span>
             </p>
             <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl font-bold text-white leading-[1.18]">
-              Engineered for Google Search, Local Maps &amp; AI Discovery (SEO, GEO &amp; AEO)
+              Engineered for Local SEO, Structured Data, GEO &amp; Performance Tracking
             </h2>
             <p className="text-base leading-relaxed text-[#969696]">
-              Modern buyers research suppliers across Google links, Map packs, and conversational AI tools. We build every digital platform from scratch for all three layers—ethically and transparently without fake ranking guarantees.
+              Modern buyers research suppliers across Google Search, Local SEO map packs, and AI assistants. We build every website from Bhilai with valid Structured Data, ethical GEO clarity, and transparent enquiry tracking—never making fake ranking guarantees.
             </p>
           </div>
           <Link
@@ -77,9 +77,9 @@ export function HomeSeoGeoAeoSection() {
                   <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#303030] bg-[#141414] text-[#D41514]">
                     <IconComponent className="w-5 h-5" aria-hidden="true" />
                   </div>
-                  <p className="text-lg font-bold text-white group-hover:text-[#D41514] transition-colors">
+                  <h3 className="text-lg font-bold text-white group-hover:text-[#D41514] transition-colors">
                     {item.title}
-                  </p>
+                  </h3>
                   <p className="text-sm leading-relaxed text-[#969696]">{item.description}</p>
                 </div>
                 <Link

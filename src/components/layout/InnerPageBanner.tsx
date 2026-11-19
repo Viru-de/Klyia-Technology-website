@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {ArrowRight, ChevronRight} from 'lucide-react';
 import {motion, useReducedMotion} from 'motion/react';
+import {toWebpAssetPath} from '../../config/banners.ts';
 import type {BreadcrumbEntry} from '../../config/seo.ts';
 import {Link} from '../../lib/router.tsx';
 import {Button} from '../ui/Button.tsx';
@@ -38,11 +39,7 @@ export function InnerPageBanner({
     setImageError(false);
   }, [backgroundImage]);
 
-  const resolvedWebp =
-    backgroundWebpImage ??
-    (backgroundImage === '/src/assets/images/industry_solar_energy_1795005439181.jpg'
-      ? '/src/assets/images/industry_solar_energy_1795005439181.webp'
-      : undefined);
+  const resolvedWebp = backgroundWebpImage ?? toWebpAssetPath(backgroundImage);
 
   return (
     <section className="relative flex min-h-[240px] sm:min-h-[290px] lg:min-h-[340px] w-full items-center overflow-hidden bg-[#080808] text-[#CDCBCA] border-b border-[#303030]">

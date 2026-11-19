@@ -54,13 +54,14 @@ function AppShell() {
     }
 
     document.title = seo.title;
+    const canonicalUrl = `${BRAND.domain}${seo.canonicalPath}`;
     updateClientMetaTag('meta[name="description"]', 'name', 'description', seo.description);
     updateClientMetaTag('meta[property="og:title"]', 'property', 'og:title', seo.title);
     updateClientMetaTag('meta[property="og:description"]', 'property', 'og:description', seo.description);
+    updateClientMetaTag('meta[property="og:url"]', 'property', 'og:url', canonicalUrl);
     updateClientMetaTag('meta[name="twitter:title"]', 'name', 'twitter:title', seo.title);
     updateClientMetaTag('meta[name="twitter:description"]', 'name', 'twitter:description', seo.description);
 
-    const canonicalUrl = `${BRAND.domain}${seo.canonicalPath}`;
     const canonicalTags = document.head.querySelectorAll<HTMLLinkElement>('link[rel="canonical"]');
     let canonicalLink = canonicalTags[0];
     if (!canonicalLink) {

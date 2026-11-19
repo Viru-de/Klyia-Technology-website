@@ -14,9 +14,9 @@ export const ALL_INDUSTRIES: IndustryPageData[] = [
     heroImageAlt: 'Steel rolling mill coils, structural beams, and industrial plant operations',
     canonicalPath: '/industries/steel-iron-industry/',
     priorityBadge: 'Priority Industrial Specialization',
-    seoTitle: 'Steel & Iron Industry ERP, Software & Websites | Bhilai & India | Klyia Technology',
+    seoTitle: 'Steel & Iron ERP, Software & Web | Bhilai | Klyia Technology',
     metaDescription:
-      'Custom Steel ERP, TMT & structural steel inventory (MT/pieces), weighbridge dispatch, dealer portals, and B2B websites by Klyia Technology in Bhilai.',
+      'Custom Steel ERP, TMT & structural steel inventory (MT/pieces), weighbridge tracking, dealer portals, and B2B websites by Klyia Technology in Bhilai.',
     indexable: true,
     updatedAt: UPDATED_DATE,
     introduction: [
@@ -129,7 +129,7 @@ export const ALL_INDUSTRIES: IndustryPageData[] = [
     priorityBadge: 'Priority CleanTech Specialization',
     seoTitle: 'Solar EPC ERP, CRM & Website Development | Klyia Technology',
     metaDescription:
-      'Purpose-built Solar ERP & CRM software, subsidy & DISCOM milestone tracking, BOM inventory, and Solar EPC lead-gen websites across India.',
+      'Dedicated Solar ERP & Solar EPC CRM software, DISCOM & subsidy tracking, BOM serials, and Local SEO websites by Klyia Technology in Bhilai & India.',
     indexable: true,
     updatedAt: UPDATED_DATE,
     introduction: [
@@ -299,9 +299,9 @@ export const ALL_INDUSTRIES: IndustryPageData[] = [
     heroImage: BANNER_IMAGES.suppliers,
     heroImageAlt: 'Industrial engineering parts, bearings, valves, and hardware supply warehouse',
     canonicalPath: '/industries/industrial-suppliers-traders/',
-    seoTitle: 'Software & Websites for Industrial Suppliers & Traders | Klyia Technology',
+    seoTitle: 'Industrial Supplier Websites & ERP | Klyia Technology',
     metaDescription:
-      'Multi-SKU B2B catalogs, fast RFQ billing, inventory software, and SEO/GEO visibility for industrial suppliers and hardware traders.',
+      'Multi-SKU B2B catalogs, fast RFQ billing, inventory tracking software, and Local SEO/GEO visibility for industrial suppliers and hardware traders.',
     indexable: true,
     updatedAt: UPDATED_DATE,
     introduction: [
@@ -357,9 +357,9 @@ export const ALL_INDUSTRIES: IndustryPageData[] = [
     heroImage: BANNER_IMAGES.wholesale,
     heroImageAlt: 'High-bay wholesale distribution warehouse and pallet logistics',
     canonicalPath: '/industries/wholesale-distribution/',
-    seoTitle: 'Wholesale & Distribution ERP & Ordering Portals | Klyia Technology',
+    seoTitle: 'Wholesale & Distribution ERP Portals | Klyia Technology',
     metaDescription:
-      'Wholesale distribution ERP, field salesman order booking, dealer credit controls, and GST dispatch software across Chhattisgarh & India.',
+      'Wholesale distribution ERP, field salesman order tracking, dealer credit controls, and GST dispatch software across Chhattisgarh & India.',
     indexable: true,
     updatedAt: UPDATED_DATE,
     introduction: [
@@ -411,12 +411,12 @@ export const ALL_INDUSTRIES: IndustryPageData[] = [
     h1: 'High-Speed Mandi Auction Billing, Patti & Crate Tracking Software',
     heroSubtitle:
       'Built for commission agents (arhatiyas) and wholesale fruit/vegetable traders: rapid auction entry, farmer patti slips, and crate ledgers.',
-    heroImage: BANNER_IMAGES.agricultureMandi,
-    heroImageAlt: 'Agricultural commodity market and fresh produce trading hub',
+    heroImage: BANNER_IMAGES.fruitVegetableMandi,
+    heroImageAlt: 'Wholesale fruit and vegetable mandi produce market with stacked crates and trader auction stalls',
     canonicalPath: '/industries/fruit-vegetable-mandis/',
-    seoTitle: 'Fruit & Vegetable Mandi Billing & Crate Software | Klyia Technology',
+    seoTitle: 'Mandi Billing & Crate Tracking Software | Klyia Technology',
     metaDescription:
-      'High-speed mandi auction billing, farmer patti printing, commission & hammali calculations, and plastic crate tracking software.',
+      'High-speed mandi auction billing, farmer patti printing, commission & hammali calculations, and plastic crate tracking software in Chhattisgarh.',
     indexable: true,
     updatedAt: UPDATED_DATE,
     introduction: [
@@ -478,7 +478,7 @@ export const ALL_INDUSTRIES: IndustryPageData[] = [
     heroImage: BANNER_IMAGES.agritechFarming,
     heroImageAlt: 'Modern agribusiness supply chain, grain storage, and precision farming operations',
     canonicalPath: '/industries/agriculture-agribusiness/',
-    seoTitle: 'Agribusiness, Rice Mill & Cold Storage Software | Klyia Technology',
+    seoTitle: 'Agribusiness & Rice Mill Software | Klyia Technology',
     metaDescription:
       'Custom software for rice mills, cold storages, seed & agro-input distributors, plus B2B agribusiness websites across Chhattisgarh & India.',
     indexable: true,
@@ -592,9 +592,9 @@ export const ALL_INDUSTRIES: IndustryPageData[] = [
     heroImage: BANNER_IMAGES.healthcare,
     heroImageAlt: 'Modern diagnostic healthcare center and clinical reception',
     canonicalPath: '/industries/healthcare-clinics/',
-    seoTitle: 'Healthcare Websites, Clinic Portals & Local SEO | Klyia Technology',
+    seoTitle: 'Healthcare Websites & Clinic Local SEO | Klyia Technology',
     metaDescription:
-      'Fast medical clinic and hospital websites, OPD appointment booking, patient WhatsApp reminders, and ethical Local SEO.',
+      'Fast medical clinic and hospital websites, OPD appointment scheduling, patient WhatsApp alerts, and compliant Local SEO by Klyia Technology.',
     indexable: true,
     updatedAt: UPDATED_DATE,
     introduction: [
@@ -706,9 +706,9 @@ export const ALL_INDUSTRIES: IndustryPageData[] = [
     heroImage: BANNER_IMAGES.retailEcommerce,
     heroImageAlt: 'Modern retail showroom and omnichannel e-commerce fulfillment',
     canonicalPath: '/industries/retail-ecommerce/',
-    seoTitle: 'Retail & E-commerce Website & Inventory Solutions | Klyia Technology',
+    seoTitle: 'Retail & E-commerce Web & ERP Systems | Klyia Technology',
     metaDescription:
-      'Custom e-commerce storefronts, POS/inventory sync, E-commerce SEO, and WhatsApp order updates for Indian retail brands.',
+      'Custom e-commerce storefronts, POS & stock tracking, Structured Data SEO, and WhatsApp order alerts for Indian retail brands.',
     indexable: true,
     updatedAt: UPDATED_DATE,
     introduction: [
@@ -820,9 +820,9 @@ export const ALL_INDUSTRIES: IndustryPageData[] = [
     heroImage: BANNER_IMAGES.professionalAdvisory,
     heroImageAlt: 'Executive corporate advisory and consulting boardroom',
     canonicalPath: '/industries/professional-services/',
-    seoTitle: 'Websites & Client Portals for Professional Services | Klyia Technology',
+    seoTitle: 'Advisory Websites & Client Portals | Klyia Technology',
     metaDescription:
-      'Authoritative websites, client workflow trackers, and SEO/GEO/AEO content systems for advisory, engineering, and consulting firms.',
+      'Authoritative websites, client workflow trackers, Structured Data, and GEO/AEO content systems for advisory, engineering, and consulting firms.',
     indexable: true,
     updatedAt: UPDATED_DATE,
     introduction: [

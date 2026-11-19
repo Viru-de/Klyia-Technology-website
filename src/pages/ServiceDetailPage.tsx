@@ -17,6 +17,7 @@ import {Button} from '../components/ui/Button.tsx';
 import {Container} from '../components/ui/Container.tsx';
 import {MediaFrame} from '../components/ui/MediaFrame.tsx';
 import {WhatsAppIcon} from '../components/ui/WhatsAppIcon.tsx';
+import {toWebpAssetPath} from '../config/banners.ts';
 import {BRAND, buildWhatsAppHref} from '../config/brand.ts';
 import {SOLAR_CORE_VISUAL_SERVICES} from '../config/homeData.ts';
 import {ROUTES} from '../config/routes.ts';
@@ -244,6 +245,25 @@ export function ServiceDetailPage({service, breadcrumbs}: ServiceDetailPageProps
             </div>
 
             <div className="lg:col-span-5 space-y-6">
+              {!isSolarService && service.heroImage ? (
+                <figure className="overflow-hidden rounded-xl border border-[#303030] bg-[#111111]">
+                  <div className="aspect-[16/9] w-full bg-[#080808]">
+                    <MediaFrame
+                      src={service.heroImage}
+                      webpSrc={toWebpAssetPath(service.heroImage)}
+                      alt={service.heroImageAlt}
+                      width={800}
+                      height={450}
+                      fallbackLabel={service.name}
+                      imgClassName="h-full w-full object-cover"
+                    />
+                  </div>
+                  <figcaption className="px-4 py-3 text-xs leading-relaxed text-[#969696] border-t border-[#303030]">
+                    {service.heroImageAlt}
+                  </figcaption>
+                </figure>
+              ) : null}
+
               <div className="rounded-xl border border-[#303030] bg-[#111111] p-6 space-y-4">
                 <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-white">
                   Practical Business Benefits

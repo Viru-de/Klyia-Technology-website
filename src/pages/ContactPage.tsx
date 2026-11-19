@@ -129,7 +129,7 @@ export function ContactPage({breadcrumbs}: ContactPageProps) {
     <>
       <InnerPageBanner
         title="Contact Klyia Technology"
-        subtitle="Connect with our team in Bhilai to discuss custom software, ERP systems, websites, SEO, GEO, AEO, or automation."
+        subtitle="Connect with our team in Risali, Bhilai for custom software, Solar ERP, Solar EPC systems, website development, Local SEO, GEO, and automation across Bhilai, Durg, Raipur, Chhattisgarh, and India."
         breadcrumbs={breadcrumbs}
         backgroundImage={STATIC_PAGE_BANNERS.contact.image}
         backgroundAlt={STATIC_PAGE_BANNERS.contact.alt}
@@ -146,10 +146,18 @@ export function ContactPage({breadcrumbs}: ContactPageProps) {
                   <span>Direct Channels</span>
                 </p>
                 <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-[#CDCBCA]">
-                  Speak Directly With Our Team
+                  Speak Directly With Our Bhilai Team
                 </h2>
                 <p className="text-sm leading-relaxed text-[#969696]">
-                  Reach us by phone, WhatsApp, or email, or visit our Bhilai office for an in-person consultation.
+                  Reach Klyia Technology by phone, WhatsApp, or email for on-site consultations in Bhilai, Durg, and Raipur or remote delivery across India. Need detailed module scoping?{' '}
+                  <Link href={ROUTES.GET_A_QUOTE} className="text-white underline underline-offset-4 hover:text-[#D41514]">
+                    Request a Project Quote
+                  </Link>{' '}
+                  or browse{' '}
+                  <Link href={ROUTES.SERVICES} className="text-white underline underline-offset-4 hover:text-[#D41514]">
+                    Our Services
+                  </Link>
+                  .
                 </p>
               </div>
 

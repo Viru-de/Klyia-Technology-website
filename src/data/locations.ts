@@ -111,9 +111,9 @@ const LOCATION_SEEDS: LocationSeed[] = [
     h1: 'Software & IT Company for Custom Software Development in Bhilai',
     heroSubtitle:
       'Tailored business software, dealer portals, CRM systems, and workflow automation engineered by our IT team in Risali, Bhilai.',
-    seoTitle: 'Software & IT Company in Bhilai | Custom Software Development | Klyia Technology',
+    seoTitle: 'Software & IT Company in Bhilai | Klyia Technology',
     metaDescription:
-      'Klyia Technology is an IT and custom software development company in Bhilai building tailored CRM, ERP, billing, inventory, and automation systems.',
+      'Klyia Technology is an IT and custom software development company in Bhilai building tailored CRM, ERP, billing, inventory tracking, and automation.',
     localContext: [
       'Growing enterprises in Bhilai often outgrow disconnected spreadsheets and rigid off-the-shelf software that forces staff into manual workarounds.',
       'As an engineering-focused IT and software company in Risali, Bhilai, we conduct on-site workflow discovery at your plant, warehouse, or office to design reliable custom software that fits how your business actually operates.',
@@ -181,9 +181,9 @@ const LOCATION_SEEDS: LocationSeed[] = [
     h1: 'ERP Software Development in Bhilai for Steel, Solar & Manufacturing',
     heroSubtitle:
       'Modular ERP systems covering rolling yield, dual MT/piece steel stock, weighbridge dispatch, Solar EPC workflows, and manufacturing BOMs.',
-    seoTitle: 'ERP Software Development in Bhilai | Steel & Solar ERP | Klyia Technology',
+    seoTitle: 'Industrial ERP Software in Bhilai | Klyia Technology',
     metaDescription:
-      'Custom ERP software development in Bhilai for steel rolling mills, industrial manufacturers, solar EPCs, and wholesale distributors.',
+      'Custom ERP software development in Bhilai for steel rolling mills, manufacturing, Solar EPC tracking, and wholesale distribution by Klyia Technology.',
     localContext: [
       'Bhilai’s industrial ecosystem—from rolling mills and foundries to fabrication units and solar EPC contractors—requires ERP software built for real shop-floor and yard conditions.',
       'Klyia Technology develops modular ERPs that unify inward raw material GRNs, production yield, weighbridge gate passes, and dealer credit controls.',
@@ -433,9 +433,9 @@ const LOCATION_SEEDS: LocationSeed[] = [
     h1: 'Software Development & IT Solutions Across Chhattisgarh',
     heroSubtitle:
       'Custom software, ERP, and web engineering serving industrial, agro-trade, and commercial enterprises across Bilaspur, Korba, Raigarh, Rajnandgaon, and Jagdalpur.',
-    seoTitle: 'Software Development & IT Solutions in Chhattisgarh | Klyia Technology',
+    seoTitle: 'IT & Software Solutions Chhattisgarh | Klyia Technology',
     metaDescription:
-      'Custom software development, ERP, website development, and SEO/GEO services in Chhattisgarh across Bhilai, Durg, Raipur, Bilaspur, Korba, and Raigarh.',
+      'Custom software, Solar ERP, website development, Local SEO & GEO across Chhattisgarh—Bhilai, Durg, Raipur, Bilaspur, Korba & Raigarh.',
     localContext: [
       'From power and industrial hubs in Korba and Raigarh to commercial and agro-trading centers in Bilaspur, Rajnandgaon, and Dhamtari, Chhattisgarh businesses need modern software development that reflects local operational realities.',
       'From our Risali, Bhilai headquarters, we combine structured remote delivery with scheduled regional visits to modernize custom software, websites, ERPs, and digital growth across the state.',

@@ -131,9 +131,41 @@ interface ServiceSeed {
   industriesBenefiting?: {slug: string; label: string; note: string}[];
 }
 
+function buildServiceMetaDescription(seed: ServiceSeed): string {
+  if (seed.metaDescription) {
+    return seed.metaDescription;
+  }
+  const base = `${seed.name} in Bhilai by Klyia Technology. ${seed.heroSubtitle}`;
+  if (base.length <= 160) {
+    return base;
+  }
+  const compact = `${seed.name} by Klyia Technology (Bhilai): ${seed.heroSubtitle}`;
+  if (compact.length <= 160) {
+    return compact;
+  }
+  return compact.slice(0, 157).replace(/\s+\S*$/, '') + '...';
+}
+
+function buildServiceSeoTitle(seed: ServiceSeed): string {
+  if (seed.seoTitle) {
+    return seed.seoTitle;
+  }
+  const withBhilai = `${seed.name} in Bhilai | Klyia Technology`;
+  if (withBhilai.length <= 62) {
+    return withBhilai;
+  }
+  const standard = `${seed.name} | Klyia Technology`;
+  if (standard.length <= 64) {
+    return standard;
+  }
+  return standard;
+}
+
 function buildServicePage(seed: ServiceSeed): ServicePageData {
   const banner = resolveServiceBanner(seed.slug, seed.categoryId, seed.name);
   const canonicalPath = `/services/${seed.slug}/`;
+  const seoTitle = buildServiceSeoTitle(seed);
+  const metaDescription = buildServiceMetaDescription(seed);
 
   return {
     slug: seed.slug,
@@ -145,15 +177,13 @@ function buildServicePage(seed: ServiceSeed): ServicePageData {
     canonicalPath,
     categoryId: seed.categoryId,
     categoryLabel: seed.categoryLabel,
-    seoTitle: seed.seoTitle ?? `${seed.name} in Bhilai, Chhattisgarh & India | Klyia Technology`,
-    metaDescription:
-      seed.metaDescription ??
-      `${seed.name} by Klyia Technology in Risali, Bhilai. ${seed.heroSubtitle}`,
+    seoTitle,
+    metaDescription,
     indexable: true,
     updatedAt: UPDATED_DATE,
     introduction: [
-      `${seed.name} requires clear operational scoping before a single line of code or design layout is finalized. At Klyia Technology in Risali, Bhilai, we engineer solutions built around your actual team workflows, customer buying journey, and long-term maintainability.`,
-      `Whether your organization operates in Bhilai, Durg, Raipur, across Chhattisgarh, or anywhere in India, our delivery focuses on clean architecture, transparent milestones, and measurable commercial outcomes rather than generic templates.`,
+      `${seed.name} requires clear operational scoping before a single line of code or design layout is finalized. At Klyia Technology in Risali, Bhilai, we engineer solutions built around your actual team workflows, performance tracking, and long-term maintainability.`,
+      `Whether your organization operates in Bhilai, Durg, Raipur, across Chhattisgarh, or anywhere in India, our delivery focuses on clean architecture, Schema.org Structured Data where applicable, and measurable commercial outcomes rather than generic templates.`,
     ],
     complianceNote: seed.complianceNote,
     whyNeeded: [
@@ -265,7 +295,12 @@ const SERVICE_SEEDS: ServiceSeed[] = [
     name: 'Website Development Services',
     categoryId: 'web-solutions',
     categoryLabel: 'Web Solutions',
-    heroSubtitle: 'Fast, server-rendered business websites built with clean code, technical SEO foundations, and scalable CMS/API support.',
+    seoTitle: 'Website Development in Bhilai | SEO & GEO | Klyia Technology',
+    metaDescription:
+      'Klyia Technology in Bhilai builds fast server-rendered websites with Structured Data, Local SEO, GEO readiness, and GA4 conversion tracking across India.',
+    heroSubtitle:
+      'Fast, server-rendered business websites engineered with clean Structured Data, Local SEO foundations, GEO clarity, and conversion tracking.',
+    technologies: ['React SSR', 'TypeScript', 'Node.js', 'Schema.org Structured Data', 'GA4 & GSC Tracking', 'Tailwind CSS'],
     relatedServiceSlugs: ['website-design-services', 'react-website-development', 'search-engine-optimization', 'website-speed-optimization'],
     relatedBlogSlugs: ['website-development-cost-in-india-what-affects-pricing', 'seo-vs-geo-vs-aeo-difference-explained'],
   },
@@ -339,7 +374,11 @@ const SERVICE_SEEDS: ServiceSeed[] = [
     name: 'Custom Software Development',
     categoryId: 'software-development',
     categoryLabel: 'Software & ERP',
-    heroSubtitle: 'Bespoke operational software engineered around your exact pricing rules, approvals, and reporting workflows.',
+    seoTitle: 'Custom Software Development in Bhilai | Klyia Technology',
+    metaDescription:
+      'Custom software development in Bhilai by Klyia Technology. Tailored ERP modules, Solar EPC workflows, approval tracking, and GST-ready systems for India.',
+    heroSubtitle:
+      'Bespoke operational software engineered around your exact pricing rules, workflow tracking, approvals, and reporting dashboards.',
     relatedServiceSlugs: ['erp-software-development', 'business-management-software', 'crm-software-development', 'workflow-automation'],
     relatedBlogSlugs: ['custom-software-vs-ready-made-software', 'erp-software-for-steel-trading-and-manufacturing'],
   },
@@ -348,14 +387,18 @@ const SERVICE_SEEDS: ServiceSeed[] = [
     name: 'ERP Software Development',
     categoryId: 'software-development',
     categoryLabel: 'Software & ERP',
-    heroSubtitle: 'Modular ERP suites unifying procurement, multi-godown inventory, production, GST billing, and dispatch control.',
+    seoTitle: 'ERP Software Development in Bhilai | Klyia Technology',
+    metaDescription:
+      'Modular ERP software development in Bhilai by Klyia Technology for Steel, Solar EPC, manufacturing, inventory tracking, GST billing, and dispatch control.',
+    heroSubtitle:
+      'Modular ERP suites unifying procurement, multi-godown inventory tracking, production, GST billing, and dispatch control.',
     complianceNote: 'We engineer GST-ready invoicing structures, e-Way bill data exports, and audit trails aligned with your CA and accounting workflows.',
     relatedServiceSlugs: ['manufacturing-erp', 'solar-erp-software', 'wholesale-distribution-erp', 'inventory-management-software'],
     relatedBlogSlugs: ['erp-software-for-steel-trading-and-manufacturing', 'solar-epc-erp-and-crm-software-guide'],
     industriesBenefiting: [
-      {slug: 'steel-iron-industry', label: 'Steel & Iron Industry', note: 'Dual MT/piece units, rolling yield, and weighbridge dispatch.'},
-      {slug: 'solar-renewable-energy', label: 'Solar & Renewable Energy', note: 'Survey-to-commissioning BOM, subsidy, and AMC logs.'},
-      {slug: 'manufacturing-engineering', label: 'Manufacturing & Engineering', note: 'BOM, shop-floor WIP, and raw material reconciliation.'},
+      {slug: 'steel-iron-industry', label: 'Steel & Iron Industry', note: 'Dual MT/piece units, rolling yield, and weighbridge dispatch tracking.'},
+      {slug: 'solar-renewable-energy', label: 'Solar & Renewable Energy', note: 'Solar EPC survey tracking, BOM serials, DISCOM, and AMC logs.'},
+      {slug: 'manufacturing-engineering', label: 'Manufacturing & Engineering', note: 'BOM, shop-floor WIP tracking, and raw material reconciliation.'},
     ],
   },
   {
@@ -372,11 +415,16 @@ const SERVICE_SEEDS: ServiceSeed[] = [
     name: 'Solar ERP Software',
     categoryId: 'software-development',
     categoryLabel: 'Software & ERP',
-    heroSubtitle: 'Purpose-built ERP & CRM for Solar EPC firms covering site surveys, BOM, subsidy tracking, net-metering, and AMC schedules.',
+    seoTitle: 'Solar ERP & Solar EPC Software in Bhilai | Klyia Technology',
+    metaDescription:
+      'Dedicated Solar ERP software by Klyia Technology in Bhilai for Solar EPC teams—site surveys, BOM & serial tracking, DISCOM stages, subsidy logs, and AMC.',
+    heroSubtitle:
+      'Purpose-built Solar ERP & CRM for Solar EPC firms covering site surveys, BOM & panel serial tracking, DISCOM subsidy milestones, and AMC schedules.',
+    technologies: ['Solar EPC CRM', 'BOM & Serial Tracking', 'DISCOM Stage Tracker', 'React & Node.js', 'Relational SQL', 'WhatsApp Alerts'],
     relatedServiceSlugs: ['crm-software-development', 'erp-software-development', 'whatsapp-business-automation', 'inventory-management-software'],
     relatedBlogSlugs: ['solar-epc-erp-and-crm-software-guide', 'how-whatsapp-business-automation-helps-increase-lead-response'],
     industriesBenefiting: [
-      {slug: 'solar-renewable-energy', label: 'Solar & Renewable Energy', note: 'Residential rooftop, PM Surya Ghar, and C&I EPC workflows.'},
+      {slug: 'solar-renewable-energy', label: 'Solar & Renewable Energy', note: 'Residential rooftop, PM Surya Ghar, and C&I Solar EPC workflows.'},
       {slug: 'manufacturing-engineering', label: 'Manufacturing & Engineering', note: 'Module mounting and electrical panel fabrication.'},
       {slug: 'industrial-suppliers-traders', label: 'Industrial Suppliers', note: 'Inverter, cable, and solar structure distribution.'},
     ],
@@ -447,7 +495,12 @@ const SERVICE_SEEDS: ServiceSeed[] = [
     name: 'Search Engine Optimization (SEO)',
     categoryId: 'seo-digital-growth',
     categoryLabel: 'SEO, GEO & AEO',
-    heroSubtitle: 'Technical crawl hygiene, high-intent service architecture, and authoritative content built for sustainable Google rankings.',
+    seoTitle: 'SEO, Local SEO & Structured Data in Bhilai | Klyia Technology',
+    metaDescription:
+      'Technical SEO, Local SEO, GEO alignment, Structured Data (JSON-LD), and Search Console tracking by Klyia Technology in Bhilai for Indian businesses.',
+    heroSubtitle:
+      'Technical crawl hygiene, Structured Data, Local SEO architecture, and Search Console tracking built for sustainable rankings.',
+    technologies: ['Schema.org Structured Data', 'Google Search Console', 'GA4 Tracking', 'Core Web Vitals', 'React SSR HTML', 'XML Sitemaps'],
     relatedServiceSlugs: ['local-seo-services', 'geo-generative-engine-optimization', 'aeo-answer-engine-optimization', 'website-speed-optimization'],
     relatedBlogSlugs: ['seo-vs-geo-vs-aeo-difference-explained', 'google-business-profile-optimization-for-local-indian-businesses'],
   },
@@ -456,7 +509,12 @@ const SERVICE_SEEDS: ServiceSeed[] = [
     name: 'Local SEO Services',
     categoryId: 'seo-digital-growth',
     categoryLabel: 'SEO, GEO & AEO',
-    heroSubtitle: 'City-level search visibility, Google Business Profile signals, and localized service landing pages across Chhattisgarh and India.',
+    seoTitle: 'Local SEO Services in Bhilai & Chhattisgarh | Klyia Technology',
+    metaDescription:
+      'Local SEO services in Bhilai, Durg, and Raipur by Klyia Technology. Google Business Profile signals, LocalBusiness Structured Data, and call/enquiry tracking.',
+    heroSubtitle:
+      'City-level Local SEO, Google Business Profile signals, LocalBusiness Structured Data, and call/enquiry tracking across Bhilai, Durg, Raipur, and India.',
+    technologies: ['Google Business Profile', 'LocalBusiness Structured Data', 'NAP Consistency', 'Call & Enquiry Tracking', 'City Landing Architecture', 'GSC Local Insights'],
     relatedServiceSlugs: ['google-business-profile-optimization', 'search-engine-optimization', 'geo-generative-engine-optimization', 'website-development-services'],
     relatedBlogSlugs: ['google-business-profile-optimization-for-local-indian-businesses', 'seo-vs-geo-vs-aeo-difference-explained'],
   },
@@ -465,7 +523,12 @@ const SERVICE_SEEDS: ServiceSeed[] = [
     name: 'GEO (Generative Engine Optimization)',
     categoryId: 'seo-digital-growth',
     categoryLabel: 'SEO, GEO & AEO',
-    heroSubtitle: 'Entity clarity, verifiable facts, and structured authority so AI platforms (ChatGPT, Gemini, Perplexity) cite and recommend your brand.',
+    seoTitle: 'GEO (Generative Engine Optimization) | Klyia Technology',
+    metaDescription:
+      'GEO services in Bhilai & India by Klyia Technology. Entity clarity, Structured Data, and llms.txt architecture for ChatGPT, Gemini, and AI Overviews.',
+    heroSubtitle:
+      'Entity clarity, Structured Data, and verifiable factual architecture helping AI platforms (ChatGPT, Gemini, Perplexity) understand and represent your business.',
+    technologies: ['Schema.org Structured Data', 'llms.txt Standards', 'Entity Mapping', 'SSR Semantic HTML', 'Verification Tracking', 'FAQPage Markup'],
     relatedServiceSlugs: ['aeo-answer-engine-optimization', 'search-engine-optimization', 'corporate-website-development', 'content-marketing'],
     relatedBlogSlugs: ['seo-vs-geo-vs-aeo-difference-explained'],
   },
@@ -474,7 +537,12 @@ const SERVICE_SEEDS: ServiceSeed[] = [
     name: 'AEO (Answer Engine Optimization)',
     categoryId: 'seo-digital-growth',
     categoryLabel: 'SEO, GEO & AEO',
-    heroSubtitle: 'Direct factual Q&A structuring, Schema.org FAQPage/Service graphs, and comparison tables built for zero-click and voice answers.',
+    seoTitle: 'AEO (Answer Engine Optimization) | Klyia Technology',
+    metaDescription:
+      'Answer Engine Optimization (AEO) by Klyia Technology: direct Q&A formatting, FAQPage & Service Structured Data, and comparison tables for AI & voice search.',
+    heroSubtitle:
+      'Direct factual Q&A structuring, Schema.org FAQPage & Service Structured Data, and comparison tables built for zero-click and voice answers.',
+    technologies: ['FAQPage Structured Data', 'Service Schema JSON-LD', 'Semantic Comparison Tables', 'React SSR', 'Search Snippet Tracking', 'Entity Copywriting'],
     relatedServiceSlugs: ['geo-generative-engine-optimization', 'search-engine-optimization', 'content-marketing', 'website-development-services'],
     relatedBlogSlugs: ['seo-vs-geo-vs-aeo-difference-explained'],
   },

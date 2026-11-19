@@ -7,13 +7,13 @@ const SOFTWARE_SEEDS: CompactServiceSeed[] = [
     name: 'Custom Software Development',
     categoryId: 'software-development',
     categoryLabel: 'Software Development',
-    seoTitle: 'Custom Software Development Company | Bhilai, Chhattisgarh & India | Klyia Technology',
+    seoTitle: 'Custom Software Development in Bhilai & India | Klyia Technology',
     metaDescription:
-      'Bespoke custom software development built around your pricing logic, approvals, GST rules, and workflows across Bhilai, Durg, Raipur, and India.',
+      'Custom software development by Klyia Technology in Bhilai, built around pricing logic, approvals, operational tracking, and GST workflows across India.',
     heroSubtitle:
-      'Tailored software engineered specifically around your company’s pricing rules, approvals, stock units, and reporting workflows.',
+      'Tailored software engineered specifically around your company’s pricing rules, approvals, stock tracking, and reporting workflows.',
     introFocus:
-      'Every established business operates with specific commercial nuances—multi-tier discounts, regional unit conversions, multi-stage approvals, or unique plant calculations. Custom software digitizes those exact processes reliably instead of forcing teams into rigid generic tools.',
+      'Every established business operates with specific commercial nuances—multi-tier discounts, regional unit conversions, multi-stage approvals, or real-time status tracking. Custom software digitizes those exact processes reliably instead of forcing teams into rigid generic tools.',
     whyNeeded: [
       'Generic software frequently covers only part of real operations, leaving staff still juggling manual Excel sheets.',
       'Paper registers and informal chat approvals introduce data loss, billing delays, and leakage.',
@@ -64,9 +64,9 @@ const SOFTWARE_SEEDS: CompactServiceSeed[] = [
     name: 'ERP Software Development',
     categoryId: 'software-development',
     categoryLabel: 'Software Development',
-    seoTitle: 'ERP Software Development | Bhilai, Raipur, Chhattisgarh & India | Klyia Technology',
+    seoTitle: 'ERP Software Development in Bhilai & India | Klyia Technology',
     metaDescription:
-      'Modular custom ERP software for procurement, inventory, production, dispatch, GST billing, and management reporting across Indian industries.',
+      'Modular custom ERP software for procurement, inventory tracking, production yield, dispatch, GST billing, and management reporting across India.',
     heroSubtitle:
       'Unify procurement, multi-warehouse inventory, manufacturing or EPC stages, dispatch, GST billing, and owner oversight in one reliable platform.',
     introFocus:
@@ -348,9 +348,9 @@ const SOFTWARE_SEEDS: CompactServiceSeed[] = [
     categoryLabel: 'Software Development',
     seoTitle: 'Solar ERP Software for Solar EPC Companies | Klyia Technology',
     metaDescription:
-      'Dedicated Solar ERP software managing leads, rooftop site surveys, subsidy/DISCOM stages, BOM serials, installations, and AMC scheduling.',
+      'Dedicated Solar ERP software by Klyia Technology in Bhilai for Solar EPC teams—managing leads, site surveys, DISCOM tracking, BOM serials, and AMC.',
     heroSubtitle:
-      'End-to-end project control built specifically for solar EPC companies—from initial kW lead and site survey to net metering and AMC care.',
+      'End-to-end Solar EPC project tracking built specifically for solar companies—from initial kW lead and site survey to net metering and AMC care.',
     introFocus:
       'Solar EPC teams juggle sales leads, rooftop engineering surveys, subsidy and net-metering filings, inverter/panel serial tracking, installation crews, and long-term AMC cleaning/service alerts—all across scattered spreadsheets unless unified inside a Solar ERP.',
     whyNeeded: [

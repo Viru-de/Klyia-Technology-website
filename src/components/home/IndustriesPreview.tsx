@@ -1,5 +1,6 @@
 import React from 'react';
 import {ArrowRight} from 'lucide-react';
+import {toWebpAssetPath} from '../../config/banners.ts';
 import {HOME_INDUSTRIES} from '../../config/homeData.ts';
 import {ROUTES} from '../../config/routes.ts';
 import {Link} from '../../lib/router.tsx';
@@ -33,7 +34,7 @@ export function IndustriesPreview() {
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#141414]">
                 <MediaFrame
                   src={industry.image}
-                  webpSrc={industry.webpImage}
+                  webpSrc={industry.webpImage ?? toWebpAssetPath(industry.image)}
                   alt={industry.alt}
                   width={800}
                   height={600}

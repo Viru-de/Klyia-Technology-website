@@ -79,9 +79,9 @@ export function SolutionsPreview() {
               className="lg:col-span-3 sm:col-span-1 flex flex-col justify-between rounded-xl border border-[#303030] bg-[#111111] p-6 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#D41514]/55 hover:shadow-[0_14px_34px_-16px_rgba(212,21,20,0.24)]"
             >
               <div>
-                <p className="text-lg font-bold text-[#CDCBCA]">
+                <h3 className="text-lg font-bold text-[#CDCBCA]">
                   {solution.title}
-                </p>
+                </h3>
                 <p className="mt-2.5 text-sm leading-[1.6] text-[#969696]">
                   {solution.summary}
                 </p>

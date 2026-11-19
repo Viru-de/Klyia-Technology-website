@@ -17,6 +17,7 @@ import {Button} from '../components/ui/Button.tsx';
 import {Container} from '../components/ui/Container.tsx';
 import {MediaFrame} from '../components/ui/MediaFrame.tsx';
 import {WhatsAppIcon} from '../components/ui/WhatsAppIcon.tsx';
+import {toWebpAssetPath} from '../config/banners.ts';
 import {BRAND, buildWhatsAppHref} from '../config/brand.ts';
 import {SOLAR_CORE_VISUAL_SERVICES} from '../config/homeData.ts';
 import {ROUTES} from '../config/routes.ts';
@@ -208,6 +209,31 @@ export function IndustryDetailPage({industry, breadcrumbs}: IndustryDetailPagePr
                     </div>
                   </article>
                 ))}
+              </div>
+            </div>
+          ) : industry.heroImage ? (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch rounded-2xl border border-[#303030] bg-[#111111] overflow-hidden">
+              <div className="lg:col-span-6 aspect-[16/10] w-full bg-[#080808]">
+                <MediaFrame
+                  src={industry.heroImage}
+                  webpSrc={toWebpAssetPath(industry.heroImage)}
+                  alt={industry.heroImageAlt}
+                  width={800}
+                  height={500}
+                  fallbackLabel={industry.name}
+                  imgClassName="h-full w-full object-cover"
+                />
+              </div>
+              <div className="lg:col-span-6 flex flex-col justify-center p-6 sm:p-8 space-y-3">
+                <p className="text-xs font-semibold uppercase tracking-wider text-[#D41514]">
+                  Industry Digital Blueprint
+                </p>
+                <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-white">
+                  Built Around Real {industry.name} Workflows
+                </h2>
+                <p className="text-sm sm:text-base leading-relaxed text-[#969696]">
+                  {industry.heroSubtitle}
+                </p>
               </div>
             </div>
           ) : null}
