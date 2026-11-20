@@ -98,7 +98,7 @@ export const ALL_BLOG_ARTICLES: BlogArticleData[] = [
     heroImage: BANNER_IMAGES.steelIron,
     heroImageAlt: 'Industrial steel rolling plant and inventory management workflow',
     canonicalPath: '/blog/erp-software-for-steel-trading-and-manufacturing/',
-    seoTitle: 'ERP Software for Steel Trading & Manufacturing | Klyia Technology',
+    seoTitle: 'Steel Trading & Manufacturing ERP Guide | Klyia Technology',
     metaDescription:
       'Explore essential modules in Steel ERP software: dual MT/piece units, rolling yield, scrap control, weighbridge gate-passes, and dealer credit locks.',
     indexable: true,
@@ -341,7 +341,7 @@ export const ALL_BLOG_ARTICLES: BlogArticleData[] = [
     heroImage: BANNER_IMAGES.aiAutomation,
     heroImageAlt: 'Automated WhatsApp Business API and enterprise CRM workflow',
     canonicalPath: '/blog/how-whatsapp-business-automation-helps-increase-lead-response/',
-    seoTitle: 'WhatsApp Business Automation for Lead Response | Klyia Technology',
+    seoTitle: 'WhatsApp Automation for Faster Leads | Klyia Technology',
     metaDescription:
       'Learn how official WhatsApp Business API automation connects website inquiries, CRM follow-ups, and ERP dispatch alerts for faster conversions.',
     indexable: true,
@@ -397,7 +397,7 @@ export const ALL_BLOG_ARTICLES: BlogArticleData[] = [
     heroImage: BANNER_IMAGES.bhilaiChhattisgarh,
     heroImageAlt: 'Local business visibility across Bhilai, Durg, and Raipur corridors',
     canonicalPath: '/blog/google-business-profile-optimization-for-local-indian-businesses/',
-    seoTitle: 'Google Business Profile Optimization Guide | Klyia Technology',
+    seoTitle: 'Google Business Profile SEO Guide | Klyia Technology',
     metaDescription:
       'Practical, policy-compliant Google Business Profile optimization steps for Indian companies to strengthen Maps and Local SEO visibility.',
     indexable: true,

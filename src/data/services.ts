@@ -495,7 +495,7 @@ const SERVICE_SEEDS: ServiceSeed[] = [
     name: 'Search Engine Optimization (SEO)',
     categoryId: 'seo-digital-growth',
     categoryLabel: 'SEO, GEO & AEO',
-    seoTitle: 'SEO, Local SEO & Structured Data in Bhilai | Klyia Technology',
+    seoTitle: 'SEO, Local SEO & GEO in Bhilai | Klyia Technology',
     metaDescription:
       'Technical SEO, Local SEO, GEO alignment, Structured Data (JSON-LD), and Search Console tracking by Klyia Technology in Bhilai for Indian businesses.',
     heroSubtitle:
@@ -509,7 +509,7 @@ const SERVICE_SEEDS: ServiceSeed[] = [
     name: 'Local SEO Services',
     categoryId: 'seo-digital-growth',
     categoryLabel: 'SEO, GEO & AEO',
-    seoTitle: 'Local SEO Services in Bhilai & Chhattisgarh | Klyia Technology',
+    seoTitle: 'Local SEO in Bhilai, Chhattisgarh | Klyia Technology',
     metaDescription:
       'Local SEO services in Bhilai, Durg, and Raipur by Klyia Technology. Google Business Profile signals, LocalBusiness Structured Data, and call/enquiry tracking.',
     heroSubtitle:

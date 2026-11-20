@@ -499,7 +499,7 @@ const LOCATION_SEEDS: LocationSeed[] = [
     h1: 'Custom Software, ERP & Web Engineering Services Across India',
     heroSubtitle:
       'Structured remote discovery, TypeScript & React engineering, modular ERP suites, and SEO/GEO/AEO growth programs for businesses across India.',
-    seoTitle: 'Custom Software Development Services in India | Klyia Technology',
+    seoTitle: 'Custom Software Development in India | Klyia Technology',
     metaDescription:
       'Partner with Klyia Technology for custom software development, Solar & Steel ERP, React SSR websites, and AI automation across India.',
     localContext: [

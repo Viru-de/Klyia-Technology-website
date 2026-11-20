@@ -214,7 +214,7 @@ export const ALL_INDUSTRIES: IndustryPageData[] = [
     heroImageAlt: 'Precision CNC machining and modern manufacturing production line',
     canonicalPath: '/industries/manufacturing-engineering/',
     priorityBadge: 'Priority Manufacturing Specialization',
-    seoTitle: 'Manufacturing ERP & Engineering Web Solutions | Klyia Technology',
+    seoTitle: 'Manufacturing ERP & Web Solutions | Klyia Technology',
     metaDescription:
       'Manufacturing ERP software, multi-level BOM, shop-floor WIP, QC logs, and B2B industrial websites built by Klyia Technology.',
     indexable: true,
@@ -535,7 +535,7 @@ export const ALL_INDUSTRIES: IndustryPageData[] = [
     heroImage: BANNER_IMAGES.realEstate,
     heroImageAlt: 'Contemporary residential and commercial real estate architecture',
     canonicalPath: '/industries/real-estate-construction/',
-    seoTitle: 'Real Estate Websites, CRM & Lead Automation | Klyia Technology',
+    seoTitle: 'Real Estate CRM & Web Solutions | Klyia Technology',
     metaDescription:
       'High-converting real estate project websites, unit availability CRM, and WhatsApp brochure automation for builders and developers.',
     indexable: true,
@@ -649,7 +649,7 @@ export const ALL_INDUSTRIES: IndustryPageData[] = [
     heroImage: BANNER_IMAGES.education,
     heroImageAlt: 'Modern academic campus and digital learning center',
     canonicalPath: '/industries/education-training-institutes/',
-    seoTitle: 'Education Websites, Admission CRM & Local SEO | Klyia Technology',
+    seoTitle: 'Education Websites & Admission CRM | Klyia Technology',
     metaDescription:
       'Institutional websites, admission inquiry CRM, fee management portals, and SEO/AEO visibility for schools, colleges, and coaching centers.',
     indexable: true,

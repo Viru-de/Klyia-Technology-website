@@ -1,5 +1,5 @@
-import 'dotenv/config';
-import {randomUUID} from 'node:crypto';
+import dotenv from 'dotenv';
+import {randomUUID, timingSafeEqual} from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
@@ -13,16 +13,25 @@ import {
   findRecentDuplicateLead,
   getChatSessionAuthorized,
   getDatabase,
+  getLeadByReferenceId,
+  getLeadEmailStatusCounts,
   getTotalVisitors,
   hashVisitorIdentifier,
+  listFailedLeadsForRetry,
   recordUniqueVisitor,
   saveLeadRecord,
   updateChatEmailStatus,
   updateLeadEmailStatus,
   type LeadSourceType,
+  type StoredLeadSummary,
 } from './server/db.ts';
 import {buildLlmsFullTxt, buildLlmsTxt} from './server/llms.ts';
-import {sendEnquiryNotificationEmail} from './server/mailer.ts';
+import {
+  inspectSmtpEnvironment,
+  isMailerConfigured,
+  sendEnquiryNotificationEmail,
+  verifySmtpConnection,
+} from './server/mailer.ts';
 import {
   checkRateLimit,
   getClientIp,
@@ -95,12 +104,141 @@ const projectRoot =
   path.basename(__dirname) === 'server' && path.basename(path.dirname(__dirname)) === 'dist'
     ? path.resolve(__dirname, '../..')
     : __dirname;
+
+// Load .env from projectRoot cleanly without overriding existing Hostinger environment variables
+dotenv.config({path: path.resolve(projectRoot, '.env'), override: false});
+
 const isProduction = process.env.NODE_ENV === 'production';
 const rawPort = process.env.PORT;
 const port: number | string =
   rawPort && /^\d+$/.test(rawPort) ? Number(rawPort) : rawPort || 3000;
 const VISITOR_COOKIE_NAME = 'klyia_vid';
 const DEFAULT_SITEMAP_LASTMOD = '2026-11-18';
+
+const SUCCESS_SAVED_AND_EMAILED_MSG =
+  'Your enquiry has been received successfully. Our team will contact you shortly.';
+const SAVED_EMAIL_DELAYED_MSG =
+  'Your enquiry has been received, but email notification is temporarily delayed. Our team will still be able to access your enquiry.';
+const DB_SAVE_FAILED_MSG =
+  'Your enquiry could not be submitted. Please try again or contact us directly.';
+
+const activeRetryRefs = new Set<string>();
+
+function isAdminAuthorized(req: Request): boolean {
+  const configuredKey = (process.env.ADMIN_API_KEY || '').trim();
+  if (!configuredKey || configuredKey.length < 16) {
+    return false;
+  }
+  const authHeader = (req.get('authorization') || '').trim();
+  const provided = authHeader.toLowerCase().startsWith('bearer ')
+    ? authHeader.slice(7).trim()
+    : (req.get('x-admin-key') || '').trim();
+  if (!provided) {
+    return false;
+  }
+  const expectedBuf = Buffer.from(configuredKey, 'utf8');
+  const providedBuf = Buffer.from(provided, 'utf8');
+  if (expectedBuf.length !== providedBuf.length) {
+    return false;
+  }
+  return timingSafeEqual(expectedBuf, providedBuf);
+}
+
+async function deliverSavedLeadEmail(lead: StoredLeadSummary): Promise<{
+  delivered: boolean;
+  errorCode?: string;
+  messageId?: string;
+}> {
+  if (lead.emailStatus === 'sent') {
+    return {delivered: true};
+  }
+  if (activeRetryRefs.has(lead.referenceId)) {
+    return {delivered: false, errorCode: 'DELIVERY_IN_PROGRESS'};
+  }
+  activeRetryRefs.add(lead.referenceId);
+
+  try {
+    const emailKind =
+      lead.source === 'solar'
+        ? 'solar'
+        : lead.source === 'service'
+          ? 'service'
+          : lead.source === 'quote'
+            ? 'quote'
+            : lead.source === 'chat'
+              ? 'chat_lead'
+              : 'contact';
+
+    const mailResult = await sendEnquiryNotificationEmail({
+      kind: emailKind,
+      referenceId: lead.referenceId,
+      name: lead.name,
+      company: lead.company,
+      email: lead.email,
+      phone: lead.phone,
+      city: lead.city,
+      service: lead.service,
+      industry: lead.industry,
+      subject: lead.subject,
+      message: lead.message,
+      sourcePage: lead.sourcePage,
+      sourceSection: lead.sourceSection,
+      submittedAtIso: lead.createdAt,
+      consentGiven: lead.consent,
+    });
+
+    if (mailResult.delivered) {
+      updateLeadEmailStatus(lead.referenceId, 'sent', {
+        messageId: mailResult.messageId,
+        incrementRetry: true,
+      });
+      return {delivered: true, messageId: mailResult.messageId};
+    }
+
+    updateLeadEmailStatus(lead.referenceId, 'failed', {
+      errorMsg: mailResult.error || 'SMTP delivery failed',
+      errorCode: mailResult.errorCode || 'SMTP_ERROR',
+      incrementRetry: true,
+    });
+    return {
+      delivered: false,
+      errorCode: mailResult.errorCode || 'SMTP_ERROR',
+    };
+  } finally {
+    activeRetryRefs.delete(lead.referenceId);
+  }
+}
+
+async function runPendingEnquiryRecoverySweep(): Promise<{
+  attempted: number;
+  delivered: number;
+  failed: number;
+}> {
+  if (!isMailerConfigured()) {
+    return {attempted: 0, delivered: 0, failed: 0};
+  }
+  const pendingLeads = listFailedLeadsForRetry({maxRetries: 5, limit: 5, includeAuthErrors: false});
+  let attempted = 0;
+  let delivered = 0;
+  let failed = 0;
+
+  for (const lead of pendingLeads) {
+    if (lead.lastEmailAttemptAt) {
+      const elapsedMs = Date.now() - new Date(lead.lastEmailAttemptAt).getTime();
+      if (Number.isFinite(elapsedMs) && elapsedMs < 90_000) {
+        continue;
+      }
+    }
+    attempted += 1;
+    const outcome = await deliverSavedLeadEmail(lead);
+    if (outcome.delivered) {
+      delivered += 1;
+    } else {
+      failed += 1;
+    }
+  }
+  return {attempted, delivered, failed};
+}
 
 function getRequestOrigin(req: Request): string {
   const forwardedProto = req.headers['x-forwarded-proto'];
@@ -136,6 +274,13 @@ function buildUrlSetXml(
 
 async function createAppServer() {
   getDatabase();
+
+  const startupEnv = inspectSmtpEnvironment();
+  console.info(
+    `[SMTP Startup Check] configured=${startupEnv.configured} host=${startupEnv.host} port=${startupEnv.port} secure=${startupEnv.secure} user=${startupEnv.userMasked || '(unset)'} to=${startupEnv.toEmail}${
+      startupEnv.missingVars.length > 0 ? ` missing=[${startupEnv.missingVars.join(', ')}]` : ''
+    }`,
+  );
 
   const app = express();
   app.set('trust proxy', 1);
@@ -450,34 +595,91 @@ async function createAppServer() {
 
     try {
       const recentDuplicate = findRecentDuplicateLead(fingerprint, 120);
-      if (recentDuplicate && recentDuplicate.emailStatus === 'sent') {
-        res.status(200).json({
-          ok: true,
-          duplicatePrevented: true,
-          emailDelivered: true,
-          referenceId: recentDuplicate.referenceId,
-          createdAt: recentDuplicate.createdAt,
+      if (recentDuplicate) {
+        if (recentDuplicate.emailStatus === 'sent') {
+          res.status(200).json({
+            ok: true,
+            saved: true,
+            duplicatePrevented: true,
+            emailDelivered: true,
+            emailStatus: 'sent',
+            referenceId: recentDuplicate.referenceId,
+            createdAt: recentDuplicate.createdAt,
+            statusMessage: SUCCESS_SAVED_AND_EMAILED_MSG,
+          });
+          return;
+        }
+
+        const lastAttemptMs = recentDuplicate.lastEmailAttemptAt
+          ? new Date(recentDuplicate.lastEmailAttemptAt).getTime()
+          : 0;
+        const secondsSinceAttempt = lastAttemptMs ? (Date.now() - lastAttemptMs) / 1000 : 999;
+
+        // Avoid duplicate DB rows & rapid retry storms within 20 seconds; otherwise safely re-attempt existing enquiry
+        if (secondsSinceAttempt < 20) {
+          res.status(202).json({
+            ok: true,
+            saved: true,
+            duplicatePrevented: true,
+            emailDelivered: false,
+            emailStatus: recentDuplicate.emailStatus,
+            referenceId: recentDuplicate.referenceId,
+            createdAt: recentDuplicate.createdAt,
+            statusMessage: SAVED_EMAIL_DELAYED_MSG,
+          });
+          return;
+        }
+
+        const existingLead = getLeadByReferenceId(recentDuplicate.referenceId);
+        if (existingLead) {
+          const retryOutcome = await deliverSavedLeadEmail(existingLead);
+          res.status(retryOutcome.delivered ? 200 : 202).json({
+            ok: true,
+            saved: true,
+            duplicatePrevented: true,
+            emailDelivered: retryOutcome.delivered,
+            emailStatus: retryOutcome.delivered ? 'sent' : 'failed',
+            referenceId: existingLead.referenceId,
+            createdAt: existingLead.createdAt,
+            statusMessage: retryOutcome.delivered
+              ? SUCCESS_SAVED_AND_EMAILED_MSG
+              : SAVED_EMAIL_DELAYED_MSG,
+          });
+          return;
+        }
+      }
+
+      // Step 2: Persist enquiry permanently in SQLite BEFORE attempting SMTP delivery
+      let saved: {referenceId: string; createdAt: string};
+      try {
+        saved = saveLeadRecord({
+          source,
+          name,
+          company,
+          phone,
+          email,
+          city,
+          service,
+          industry,
+          subject,
+          message,
+          sourcePage,
+          sourceSection,
+          consentGiven,
+          fingerprint,
+        });
+      } catch (dbError) {
+        console.error('[Lead Database Save Error]', dbError);
+        res.status(500).json({
+          ok: false,
+          saved: false,
+          emailDelivered: false,
+          error: DB_SAVE_FAILED_MSG,
         });
         return;
       }
 
-      const saved = saveLeadRecord({
-        source,
-        name,
-        company,
-        phone,
-        email,
-        city,
-        service,
-        industry,
-        subject,
-        message,
-        sourcePage,
-        sourceSection,
-        consentGiven,
-        fingerprint,
-      });
-
+      // Step 3: Attempt SMTP email delivery (never fail/delete the saved DB record on SMTP errors)
       const emailKind =
         source === 'solar'
           ? 'solar'
@@ -487,68 +689,82 @@ async function createAppServer() {
               ? 'quote'
               : 'contact';
 
-      const mailResult = await sendEnquiryNotificationEmail({
-        kind: emailKind,
-        referenceId: saved.referenceId,
-        name,
-        company,
-        email,
-        phone,
-        city,
-        service,
-        industry,
-        subject,
-        message,
-        sourcePage,
-        sourceSection,
-        submittedAtIso: saved.createdAt,
-        consentGiven,
+      let delivered = false;
+      let messageId: string | undefined;
+      let errorCode = 'SMTP_ERROR';
+      let errorMsg = 'SMTP delivery failed.';
+
+      try {
+        const mailResult = await sendEnquiryNotificationEmail({
+          kind: emailKind,
+          referenceId: saved.referenceId,
+          name,
+          company,
+          email,
+          phone,
+          city,
+          service,
+          industry,
+          subject,
+          message,
+          sourcePage,
+          sourceSection,
+          submittedAtIso: saved.createdAt,
+          consentGiven,
+        });
+        delivered = mailResult.delivered;
+        messageId = mailResult.messageId;
+        errorCode = mailResult.errorCode || (mailResult.configured ? 'SMTP_ERROR' : 'SMTP_NOT_CONFIGURED');
+        errorMsg = mailResult.error || errorMsg;
+      } catch (transportError) {
+        errorCode = 'SMTP_UNEXPECTED_ERROR';
+        errorMsg = transportError instanceof Error ? transportError.message : 'Unexpected SMTP transport error';
+      }
+
+      // Step 4: Record email delivery outcome & return truthful response (zero SMTP error leakage)
+      if (delivered) {
+        updateLeadEmailStatus(saved.referenceId, 'sent', {
+          messageId,
+          incrementRetry: true,
+        });
+        console.info(
+          `[Lead Delivered] ${saved.referenceId} | source=${source} | service=${service || 'general'} | page=${sourcePage}`,
+        );
+
+        res.status(201).json({
+          ok: true,
+          saved: true,
+          emailDelivered: true,
+          emailStatus: 'sent',
+          referenceId: saved.referenceId,
+          createdAt: saved.createdAt,
+          statusMessage: SUCCESS_SAVED_AND_EMAILED_MSG,
+        });
+        return;
+      }
+
+      updateLeadEmailStatus(saved.referenceId, 'failed', {
+        errorMsg,
+        errorCode,
+        incrementRetry: true,
       });
 
-      if (!mailResult.configured) {
-        updateLeadEmailStatus(saved.referenceId, 'smtp_unconfigured', mailResult.error);
-        res.status(503).json({
-          ok: false,
-          savedLocally: true,
-          emailDelivered: false,
-          referenceId: saved.referenceId,
-          error:
-            'Your enquiry could not be emailed to klyiatechnology@gmail.com because server SMTP credentials (SMTP_USER / SMTP_PASS) are not configured yet. Please reach us directly via WhatsApp (+91 8296887643) or Call Now.',
-        });
-        return;
-      }
-
-      if (!mailResult.delivered) {
-        updateLeadEmailStatus(saved.referenceId, 'failed', mailResult.error);
-        res.status(502).json({
-          ok: false,
-          savedLocally: true,
-          emailDelivered: false,
-          referenceId: saved.referenceId,
-          error:
-            'Email delivery to klyiatechnology@gmail.com failed due to an SMTP relay error. Please retry or contact us directly via WhatsApp (+91 8296887643) or Call Now.',
-        });
-        return;
-      }
-
-      updateLeadEmailStatus(saved.referenceId, 'sent');
-      console.info(
-        `[Lead Delivered] ${saved.referenceId} | source=${source} | service=${service || 'general'} | page=${sourcePage}`,
-      );
-
-      res.status(201).json({
+      res.status(202).json({
         ok: true,
-        emailDelivered: true,
+        saved: true,
+        emailDelivered: false,
+        emailStatus: 'failed',
         referenceId: saved.referenceId,
         createdAt: saved.createdAt,
+        statusMessage: SAVED_EMAIL_DELAYED_MSG,
       });
     } catch (error) {
-      console.error('[Lead Save Error]', error);
+      console.error('[Lead Submission Error]', error);
       res.status(500).json({
         ok: false,
+        saved: false,
         emailDelivered: false,
-        error:
-          'Unable to process your enquiry right now. Please message us on WhatsApp at +91 8296887643 or Call Now.',
+        error: DB_SAVE_FAILED_MSG,
       });
     }
   };
@@ -559,6 +775,88 @@ async function createAppServer() {
 
   app.post('/api/leads', (req: Request, res: Response) => {
     void handleLeadSubmission(req, res, 'quote');
+  });
+
+  // Protected Admin SMTP Diagnostics & Failed-Enquiry Retry Endpoints
+  app.get('/api/admin/smtp-diagnostics', async (req: Request, res: Response) => {
+    if (!isAdminAuthorized(req)) {
+      res.status(403).json({ok: false, error: 'Unauthorized.'});
+      return;
+    }
+    try {
+      const diagnostics = await verifySmtpConnection();
+      const leadStatusCounts = getLeadEmailStatusCounts();
+      res.setHeader('Cache-Control', 'no-store');
+      res.status(200).json({
+        ok: true,
+        diagnostics,
+        leadStatusCounts,
+      });
+    } catch (error) {
+      console.error('[Admin SMTP Diagnostics Error]', error);
+      res.status(500).json({ok: false, error: 'Unable to run SMTP diagnostics.'});
+    }
+  });
+
+  app.post('/api/admin/enquiries/retry', async (req: Request, res: Response) => {
+    if (!isAdminAuthorized(req)) {
+      res.status(403).json({ok: false, error: 'Unauthorized.'});
+      return;
+    }
+    try {
+      const body = (req.body ?? {}) as {referenceId?: string; includeAuthErrors?: boolean};
+      const targetRef = sanitizeSingleLine(body.referenceId, 64);
+
+      if (targetRef) {
+        const lead = getLeadByReferenceId(targetRef);
+        if (!lead) {
+          res.status(404).json({ok: false, error: 'Enquiry reference not found.'});
+          return;
+        }
+        if (lead.emailStatus === 'sent') {
+          res.status(200).json({
+            ok: true,
+            referenceId: lead.referenceId,
+            alreadySent: true,
+            delivered: true,
+          });
+          return;
+        }
+        const outcome = await deliverSavedLeadEmail(lead);
+        res.status(200).json({
+          ok: true,
+          referenceId: lead.referenceId,
+          delivered: outcome.delivered,
+          errorCode: outcome.errorCode ?? null,
+        });
+        return;
+      }
+
+      const targets = listFailedLeadsForRetry({
+        maxRetries: 10,
+        limit: 20,
+        includeAuthErrors: body.includeAuthErrors === true,
+      });
+      const results: {referenceId: string; delivered: boolean; errorCode?: string}[] = [];
+      for (const lead of targets) {
+        const outcome = await deliverSavedLeadEmail(lead);
+        results.push({
+          referenceId: lead.referenceId,
+          delivered: outcome.delivered,
+          errorCode: outcome.errorCode,
+        });
+      }
+
+      res.status(200).json({
+        ok: true,
+        attempted: results.length,
+        deliveredCount: results.filter((r) => r.delivered).length,
+        results,
+      });
+    } catch (error) {
+      console.error('[Admin Retry Error]', error);
+      res.status(500).json({ok: false, error: 'Unable to retry failed enquiries.'});
+    }
   });
 
   // Website Chatbox API (Mandatory Visitor Gate -> SQLite Session + Gmail SMTP Delivery)
@@ -650,28 +948,28 @@ async function createAppServer() {
         })),
       });
 
-      const emailStatus = !mailResult.configured
-        ? 'smtp_unconfigured'
-        : mailResult.delivered
-          ? 'sent'
-          : 'failed';
+      const emailStatus = mailResult.delivered ? 'sent' : 'failed';
 
-      updateLeadEmailStatus(session.referenceId, emailStatus, mailResult.error);
+      updateLeadEmailStatus(session.referenceId, emailStatus, {
+        errorMsg: mailResult.delivered ? undefined : mailResult.error,
+        errorCode: mailResult.delivered ? undefined : mailResult.errorCode || 'SMTP_ERROR',
+        messageId: mailResult.messageId,
+        incrementRetry: true,
+      });
       updateChatEmailStatus(session.id, emailStatus, initialMessages[0]?.id);
 
       const emailNotice = mailResult.delivered
-        ? 'Your details have been forwarded to klyiatechnology@gmail.com. No agent is currently live in this window; our team reviews enquiries directly and will respond shortly.'
-        : !mailResult.configured
-          ? 'Your enquiry has been logged locally, but automatic Gmail forwarding is awaiting server SMTP credentials. For immediate help, please tap WhatsApp or Call Now below.'
-          : 'Your enquiry has been logged locally, though automatic Gmail delivery encountered a relay issue. Please retry or use WhatsApp / Call Now below.';
+        ? SUCCESS_SAVED_AND_EMAILED_MSG
+        : SAVED_EMAIL_DELAYED_MSG;
 
-      res.status(201).json({
+      res.status(mailResult.delivered ? 201 : 202).json({
         ok: true,
+        saved: true,
         sessionId: session.id,
         sessionToken: session.sessionToken,
         referenceId: session.referenceId,
         emailDelivered: mailResult.delivered,
-        smtpConfigured: mailResult.configured,
+        emailStatus,
         emailNotice,
         messages: initialMessages.map((m) => ({
           ...m,
@@ -682,7 +980,8 @@ async function createAppServer() {
       console.error('[Chat Start Error]', error);
       res.status(500).json({
         ok: false,
-        error: 'Unable to start enquiry chat right now. Please use WhatsApp or Call Now.',
+        saved: false,
+        error: DB_SAVE_FAILED_MSG,
       });
     }
   });
@@ -783,39 +1082,37 @@ async function createAppServer() {
         transcript: fullTranscript,
       });
 
-      const emailStatus = !mailResult.configured
-        ? 'smtp_unconfigured'
-        : mailResult.delivered
-          ? 'sent'
-          : 'failed';
+      const emailStatus = mailResult.delivered ? 'sent' : 'failed';
 
       updateChatEmailStatus(sessionId, emailStatus, savedMsg.id);
 
       if (!mailResult.delivered) {
-        res.status(mailResult.configured ? 502 : 503).json({
-          ok: false,
-          savedLocally: true,
+        res.status(202).json({
+          ok: true,
+          saved: true,
           emailDelivered: false,
-          smtpConfigured: mailResult.configured,
+          emailStatus,
           message: {...savedMsg, emailStatus},
-          error: !mailResult.configured
-            ? 'Message saved locally, but Gmail forwarding requires SMTP credentials on the server. Please use WhatsApp or Call Now for immediate reply.'
-            : 'Message saved locally, but SMTP delivery to klyiatechnology@gmail.com failed. Please retry or use WhatsApp.',
+          statusMessage: SAVED_EMAIL_DELAYED_MSG,
         });
         return;
       }
 
       res.status(201).json({
         ok: true,
+        saved: true,
         emailDelivered: true,
+        emailStatus: 'sent',
         message: {...savedMsg, emailStatus: 'sent'},
+        statusMessage: SUCCESS_SAVED_AND_EMAILED_MSG,
       });
     } catch (error) {
       console.error('[Chat Message Error]', error);
       res.status(500).json({
         ok: false,
+        saved: false,
         emailDelivered: false,
-        error: 'Unable to send chat message right now. Please try WhatsApp or Call Now.',
+        error: DB_SAVE_FAILED_MSG,
       });
     }
   });
@@ -929,7 +1226,15 @@ async function createAppServer() {
     });
   });
 
+  const retryInterval = setInterval(() => {
+    void runPendingEnquiryRecoverySweep().catch((err) => {
+      console.error('[Enquiry Recovery Sweep Error]', err);
+    });
+  }, 120_000);
+  retryInterval.unref();
+
   const shutdown = () => {
+    clearInterval(retryInterval);
     server.close(() => {
       closeDatabase();
       process.exit(0);

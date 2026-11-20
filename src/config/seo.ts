@@ -76,7 +76,7 @@ export const HOME_VISIBLE_FAQS: FaqEntry[] = [
 
 const ROUTE_SEO_MAP: Record<string, PageSeoMetadata> = {
   [ROUTES.HOME]: {
-    title: 'Klyia Technology | Software, Solar ERP & SEO Company in Bhilai',
+    title: 'Klyia Technology | Software & ERP Company in Bhilai',
     description:
       'Klyia Technology provides Solar ERP, Solar EPC software, custom ERP, website development, Local SEO and GEO solutions in Bhilai, Chhattisgarh and across India.',
     canonicalPath: ROUTES.HOME,
@@ -85,7 +85,7 @@ const ROUTE_SEO_MAP: Record<string, PageSeoMetadata> = {
     faqs: HOME_VISIBLE_FAQS,
   },
   [ROUTES.ABOUT]: {
-    title: 'About Klyia Technology | Software & ERP Company in Bhilai',
+    title: 'About Klyia Technology | Bhilai, Chhattisgarh, India',
     description:
       'Klyia Technology in Risali, Bhilai builds custom software, Solar ERP, Industrial ERP, fast websites, Local SEO, GEO, and structured data systems across India.',
     canonicalPath: ROUTES.ABOUT,
@@ -96,7 +96,7 @@ const ROUTE_SEO_MAP: Record<string, PageSeoMetadata> = {
     ],
   },
   [ROUTES.SERVICES]: {
-    title: 'IT Services | Software, Solar ERP, Web & GEO | Klyia Technology',
+    title: 'IT Services, Software & Solar ERP | Klyia Technology',
     description: `Explore ${ALL_SERVICES.length} specialized technology & growth services across Website Development, Custom Software, Solar ERP, Local SEO, GEO, AEO, AI Automation, and Cloud Support.`,
     canonicalPath: ROUTES.SERVICES,
     ogType: 'website',
@@ -106,7 +106,7 @@ const ROUTE_SEO_MAP: Record<string, PageSeoMetadata> = {
     ],
   },
   [ROUTES.INDUSTRIES]: {
-    title: 'Industries Served | Steel, Solar EPC & ERP | Klyia Technology',
+    title: 'Industry Software & ERP Solutions | Klyia Technology',
     description: `Dedicated ERP, CRM, website & growth systems across ${ALL_INDUSTRIES.length} industries: Steel & Iron, Solar EPC, Manufacturing, Wholesale, Mandis & Healthcare.`,
     canonicalPath: ROUTES.INDUSTRIES,
     ogType: 'website',
@@ -138,7 +138,7 @@ const ROUTE_SEO_MAP: Record<string, PageSeoMetadata> = {
     ],
   },
   [ROUTES.INSIGHTS]: {
-    title: 'Knowledge Centre | ERP, Solar EPC & SEO Guides | Klyia Technology',
+    title: 'Knowledge Centre | ERP & SEO Guides | Klyia Technology',
     description: `Read ${ALL_BLOG_ARTICLES.length} practical engineering and digital growth articles on website cost in India, Steel & Solar ERP, SEO vs GEO vs AEO, GBP, and WhatsApp automation.`,
     canonicalPath: ROUTES.INSIGHTS,
     ogType: 'website',
@@ -148,7 +148,7 @@ const ROUTE_SEO_MAP: Record<string, PageSeoMetadata> = {
     ],
   },
   [ROUTES.CONTACT]: {
-    title: 'Contact Klyia Technology | Risali, Bhilai Office & Support',
+    title: 'Contact Klyia Technology | Bhilai Office & Support',
     description:
       'Reach Klyia Technology at First Floor, Bajrang Hardware, Krishna Talkies Road, Risali, Bhilai. Call/WhatsApp +91 82968 87643 or email klyiatechnology@gmail.com.',
     canonicalPath: ROUTES.CONTACT,
@@ -192,7 +192,7 @@ const ROUTE_SEO_MAP: Record<string, PageSeoMetadata> = {
     ],
   },
   [ROUTES.SITEMAP]: {
-    title: 'HTML Sitemap | Klyia Technology',
+    title: 'HTML Website Sitemap | Klyia Technology',
     description:
       'Complete directory of every public page across Klyia Technology: all core sections, services, industries, Chhattisgarh/India locations, and knowledge articles.',
     canonicalPath: ROUTES.SITEMAP,

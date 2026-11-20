@@ -40,7 +40,11 @@ export function ServiceEnquiryForm({
   const [websiteUrl, setWebsiteUrl] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [submittedRef, setSubmittedRef] = useState<string | null>(null);
+  const [submissionResult, setSubmissionResult] = useState<{
+    referenceId: string;
+    emailDelivered: boolean;
+    statusMessage: string;
+  } | null>(null);
 
   const whatsappUrl = buildWhatsAppHref(
     whatsappContextMessage ||
@@ -113,20 +117,32 @@ export function ServiceEnquiryForm({
 
       const payload = (await response.json()) as {
         ok?: boolean;
+        saved?: boolean;
         emailDelivered?: boolean;
         referenceId?: string;
+        statusMessage?: string;
         error?: string;
       };
 
-      if (!response.ok || !payload.ok || !payload.emailDelivered) {
+      const isSaved = Boolean(response.ok && payload.ok && payload.saved !== false && payload.referenceId);
+      if (!isSaved) {
         setErrorMsg(
           payload.error ||
-            'Unable to send your enquiry email right now. Please contact us via WhatsApp or Call Now.',
+            'Your enquiry could not be submitted. Please try again or contact us directly.',
         );
         return;
       }
 
-      setSubmittedRef(payload.referenceId ?? 'RECEIVED');
+      const delivered = payload.emailDelivered === true;
+      setSubmissionResult({
+        referenceId: payload.referenceId ?? 'RECEIVED',
+        emailDelivered: delivered,
+        statusMessage:
+          payload.statusMessage ||
+          (delivered
+            ? 'Your enquiry has been received successfully. Our team will contact you shortly.'
+            : 'Your enquiry has been received, but email notification is temporarily delayed. Our team will still be able to access your enquiry.'),
+      });
       setName('');
       setCompany('');
       setPhone('');
@@ -134,7 +150,7 @@ export function ServiceEnquiryForm({
       setMessage('');
       setConsent(false);
     } catch {
-      setErrorMsg('Network issue while sending enquiry. Please tap WhatsApp or Call Now to connect.');
+      setErrorMsg('Your enquiry could not be submitted. Please try again or contact us directly.');
     } finally {
       setSubmitting(false);
     }
@@ -169,24 +185,33 @@ export function ServiceEnquiryForm({
         </div>
       </div>
 
-      {submittedRef ? (
+      {submissionResult ? (
         <div
           role="status"
           className="rounded-xl border border-[#D41514]/45 bg-[#1B1B1B] p-6 space-y-3"
         >
           <div className="flex items-center gap-2.5 text-white font-bold">
             <CheckCircle2 className="w-5 h-5 text-[#D41514]" aria-hidden="true" />
-            <span>Enquiry Delivered Successfully</span>
+            <span>
+              {submissionResult.emailDelivered
+                ? 'Enquiry Received Successfully'
+                : 'Enquiry Saved — Notification Delayed'}
+            </span>
           </div>
           <p className="text-sm text-[#CDCBCA] leading-relaxed">
-            Thank you. Your enquiry has been emailed to{' '}
-            <span className="font-semibold text-white">{BRAND.email}</span> under reference{' '}
+            {submissionResult.statusMessage}{' '}
+            Reference ID:{' '}
             <span className="font-[family-name:var(--font-mono)] font-semibold text-white">
-              {submittedRef}
+              {submissionResult.referenceId}
             </span>
-            . Our team will respond shortly.
+            .
           </p>
-          <Button type="button" variant="outline" size="sm" onClick={() => setSubmittedRef(null)}>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setSubmissionResult(null)}
+          >
             Send Another Enquiry
           </Button>
         </div>

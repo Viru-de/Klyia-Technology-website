@@ -30,7 +30,11 @@ export function ContactPage({breadcrumbs}: ContactPageProps) {
   const [websiteUrl, setWebsiteUrl] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [submittedRef, setSubmittedRef] = useState<string | null>(null);
+  const [submissionResult, setSubmissionResult] = useState<{
+    referenceId: string;
+    emailDelivered: boolean;
+    statusMessage: string;
+  } | null>(null);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -98,19 +102,31 @@ export function ContactPage({breadcrumbs}: ContactPageProps) {
 
       const payload = (await response.json()) as {
         ok?: boolean;
+        saved?: boolean;
         emailDelivered?: boolean;
         referenceId?: string;
+        statusMessage?: string;
         error?: string;
       };
-      if (!response.ok || !payload.ok || !payload.emailDelivered) {
+      const isSaved = Boolean(response.ok && payload.ok && payload.saved !== false && payload.referenceId);
+      if (!isSaved) {
         setErrorMsg(
           payload.error ||
-            'Unable to send inquiry email right now. Please try WhatsApp or Call Now.',
+            'Your enquiry could not be submitted. Please try again or contact us directly.',
         );
         return;
       }
 
-      setSubmittedRef(payload.referenceId ?? 'RECEIVED');
+      const delivered = payload.emailDelivered === true;
+      setSubmissionResult({
+        referenceId: payload.referenceId ?? 'RECEIVED',
+        emailDelivered: delivered,
+        statusMessage:
+          payload.statusMessage ||
+          (delivered
+            ? 'Your enquiry has been received successfully. Our team will contact you shortly.'
+            : 'Your enquiry has been received, but email notification is temporarily delayed. Our team will still be able to access your enquiry.'),
+      });
       setName('');
       setCompany('');
       setEmail('');
@@ -119,7 +135,7 @@ export function ContactPage({breadcrumbs}: ContactPageProps) {
       setMessage('');
       setConsent(false);
     } catch {
-      setErrorMsg('Network issue while sending inquiry. Please call or message us directly on WhatsApp.');
+      setErrorMsg('Your enquiry could not be submitted. Please try again or contact us directly.');
     } finally {
       setSubmitting(false);
     }
@@ -270,28 +286,31 @@ export function ContactPage({breadcrumbs}: ContactPageProps) {
                 Share your requirements and our team will respond with next steps.
               </p>
 
-              {submittedRef ? (
+              {submissionResult ? (
                 <div
                   role="status"
                   className="mt-6 rounded-xl border border-[#D41514]/45 bg-[#1B1B1B] p-6 space-y-3"
                 >
                   <div className="flex items-center gap-2.5 text-white font-bold">
                     <CheckCircle2 className="w-5 h-5 text-[#D41514]" aria-hidden="true" />
-                    <span>Inquiry Delivered Successfully</span>
+                    <span>
+                      {submissionResult.emailDelivered
+                        ? 'Enquiry Received Successfully'
+                        : 'Enquiry Saved — Notification Delayed'}
+                    </span>
                   </div>
                   <p className="text-sm text-[#CDCBCA]">
-                    Thank you for contacting Klyia Technology. Your message has been sent to{' '}
-                    <span className="font-semibold text-white">{BRAND.email}</span> under reference{' '}
+                    {submissionResult.statusMessage} Reference ID:{' '}
                     <span className="font-[family-name:var(--font-mono)] font-semibold text-white">
-                      {submittedRef}
+                      {submissionResult.referenceId}
                     </span>
-                    . Our team will reach out shortly via phone or email.
+                    .
                   </p>
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => setSubmittedRef(null)}
+                    onClick={() => setSubmissionResult(null)}
                   >
                     Send Another Message
                   </Button>

@@ -29,7 +29,7 @@ interface ChatMessageItem {
   id: number | string;
   sender: 'visitor' | 'system';
   message: string;
-  emailStatus: 'sending' | 'sent' | 'failed' | 'smtp_unconfigured' | 'pending';
+  emailStatus: 'sending' | 'sent' | 'failed' | 'pending';
   createdAt: string;
 }
 
@@ -299,24 +299,19 @@ export function WebsiteChatbox({isOpen, onClose}: WebsiteChatboxProps) {
 
       const payload = (await response.json()) as {
         ok?: boolean;
+        saved?: boolean;
         emailDelivered?: boolean;
         message?: ChatMessageItem;
+        statusMessage?: string;
         error?: string;
       };
 
-      if (!response.ok || !payload.ok) {
+      if (!response.ok || !payload.ok || payload.saved === false) {
         setMessages((prev) =>
-          prev.map((m) =>
-            m.id === tempId
-              ? {
-                  ...(payload.message ?? m),
-                  emailStatus: payload.message?.emailStatus === 'smtp_unconfigured' ? 'smtp_unconfigured' : 'failed',
-                }
-              : m,
-          ),
+          prev.map((m) => (m.id === tempId ? {...m, emailStatus: 'failed'} : m)),
         );
         setChatError(
-          payload.error || 'Could not forward message to klyiatechnology@gmail.com. Try WhatsApp or Call Now.',
+          payload.error || 'Your enquiry could not be submitted. Please try again or contact us directly.',
         );
         return;
       }
@@ -326,11 +321,17 @@ export function WebsiteChatbox({isOpen, onClose}: WebsiteChatboxProps) {
           prev.map((m) => (m.id === tempId ? payload.message! : m)),
         );
       }
+      if (!payload.emailDelivered) {
+        setChatError(
+          payload.statusMessage ||
+            'Your enquiry has been received, but email notification is temporarily delayed. Our team will still be able to access your enquiry.',
+        );
+      }
     } catch {
       setMessages((prev) =>
         prev.map((m) => (m.id === tempId ? {...m, emailStatus: 'failed'} : m)),
       );
-      setChatError('Network error sending message. You can also continue on WhatsApp or Call Now.');
+      setChatError('Your enquiry could not be submitted. Please try again or contact us directly.');
     } finally {
       setSendingMsg(false);
     }
@@ -586,20 +587,16 @@ export function WebsiteChatbox({isOpen, onClose}: WebsiteChatboxProps) {
                 </div>
                 <div className="flex items-center gap-1.5 text-[10px] text-[#969696]">
                   {msg.emailStatus === 'sending' ? (
-                    <span>Sending to team...</span>
+                    <span>Sending enquiry...</span>
                   ) : msg.emailStatus === 'sent' ? (
                     <span className="inline-flex items-center gap-1 text-[#CDCBCA]">
                       <CheckCircle2 className="w-3 h-3 text-[#25D366]" aria-hidden="true" />
-                      <span>Sent to {BRAND.email}</span>
-                    </span>
-                  ) : msg.emailStatus === 'smtp_unconfigured' ? (
-                    <span className="inline-flex items-center gap-1 text-[#CDCBCA]">
-                      <ShieldCheck className="w-3 h-3 text-[#D41514]" aria-hidden="true" />
-                      <span>Saved locally (awaiting SMTP)</span>
+                      <span>Received &amp; delivered</span>
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1.5 text-[#D41514]">
-                      <span>Email failed</span>
+                    <span className="inline-flex items-center gap-1.5 text-[#CDCBCA]">
+                      <ShieldCheck className="w-3 h-3 text-[#D41514]" aria-hidden="true" />
+                      <span>Saved — notification delayed</span>
                       <button
                         type="button"
                         onClick={() => void handleSendMessage(undefined, msg.message)}

@@ -60,21 +60,51 @@ export interface ChatMessageRecord {
   createdAt: string;
 }
 
-function ensureLeadsColumns(db: DatabaseSync) {
-  const columns = db.prepare('PRAGMA table_info(leads)').all() as {name?: string}[];
-  const existing = new Set(columns.map((c) => c.name).filter(Boolean));
+export type EmailDeliveryStatus = 'pending' | 'sent' | 'failed';
 
-  const migrations: [string, string][] = [
+export interface StoredLeadSummary {
+  id: number;
+  referenceId: string;
+  source: LeadSourceType;
+  name: string;
+  company: string;
+  phone: string;
+  email: string;
+  city: string;
+  service: string;
+  industry: string;
+  subject: string;
+  message: string;
+  sourcePage: string;
+  sourceSection: string;
+  consent: boolean;
+  emailStatus: EmailDeliveryStatus;
+  emailErrorCode: string | null;
+  retryCount: number;
+  lastEmailAttemptAt: string | null;
+  createdAt: string;
+}
+
+function ensureColumnMigrations(db: DatabaseSync) {
+  const leadCols = db.prepare('PRAGMA table_info(leads)').all() as {name?: string}[];
+  const existingLeads = new Set(leadCols.map((c) => c.name).filter(Boolean));
+
+  const leadMigrations: [string, string][] = [
     ['consent', 'ALTER TABLE leads ADD COLUMN consent INTEGER NOT NULL DEFAULT 0'],
     ['source_page', 'ALTER TABLE leads ADD COLUMN source_page TEXT'],
     ['source_section', 'ALTER TABLE leads ADD COLUMN source_section TEXT'],
     ['email_status', "ALTER TABLE leads ADD COLUMN email_status TEXT NOT NULL DEFAULT 'pending'"],
     ['email_error', 'ALTER TABLE leads ADD COLUMN email_error TEXT'],
+    ['email_error_code', 'ALTER TABLE leads ADD COLUMN email_error_code TEXT'],
+    ['retry_count', 'ALTER TABLE leads ADD COLUMN retry_count INTEGER NOT NULL DEFAULT 0'],
+    ['last_email_attempt_at', 'ALTER TABLE leads ADD COLUMN last_email_attempt_at TEXT'],
+    ['email_sent_at', 'ALTER TABLE leads ADD COLUMN email_sent_at TEXT'],
+    ['email_message_id', 'ALTER TABLE leads ADD COLUMN email_message_id TEXT'],
     ['submission_fingerprint', 'ALTER TABLE leads ADD COLUMN submission_fingerprint TEXT'],
   ];
 
-  for (const [col, ddl] of migrations) {
-    if (!existing.has(col)) {
+  for (const [col, ddl] of leadMigrations) {
+    if (!existingLeads.has(col)) {
       db.exec(ddl);
     }
   }
@@ -82,6 +112,27 @@ function ensureLeadsColumns(db: DatabaseSync) {
   db.exec(
     'CREATE INDEX IF NOT EXISTS idx_leads_fingerprint_time ON leads (submission_fingerprint, created_at DESC)',
   );
+  db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_leads_email_status ON leads (email_status, retry_count, created_at DESC)',
+  );
+
+  // Normalize any legacy 'smtp_unconfigured' rows to 'failed' with explicit error code
+  db.exec(`
+    UPDATE leads
+    SET email_status = 'failed',
+        email_error_code = COALESCE(email_error_code, 'SMTP_NOT_CONFIGURED')
+    WHERE email_status = 'smtp_unconfigured'
+  `);
+  db.exec(`
+    UPDATE chat_sessions
+    SET email_status = 'failed'
+    WHERE email_status = 'smtp_unconfigured'
+  `);
+  db.exec(`
+    UPDATE chat_messages
+    SET email_status = 'failed'
+    WHERE email_status = 'smtp_unconfigured'
+  `);
 }
 
 export function getDatabase(): DatabaseSync {
@@ -138,6 +189,11 @@ export function getDatabase(): DatabaseSync {
       source_section TEXT,
       email_status TEXT NOT NULL DEFAULT 'pending',
       email_error TEXT,
+      email_error_code TEXT,
+      retry_count INTEGER NOT NULL DEFAULT 0,
+      last_email_attempt_at TEXT,
+      email_sent_at TEXT,
+      email_message_id TEXT,
       submission_fingerprint TEXT,
       created_at TEXT NOT NULL
     );
@@ -175,7 +231,7 @@ export function getDatabase(): DatabaseSync {
       ON chat_messages (session_id, id ASC);
   `);
 
-  ensureLeadsColumns(db);
+  ensureColumnMigrations(db);
 
   dbInstance = db;
   return dbInstance;
@@ -194,28 +250,42 @@ export function computeSubmissionFingerprint(parts: string[]): string {
 export function findRecentDuplicateLead(
   fingerprint: string,
   windowSeconds = 120,
-): {referenceId: string; createdAt: string; emailStatus: string} | null {
+): {
+  referenceId: string;
+  createdAt: string;
+  emailStatus: EmailDeliveryStatus;
+  lastEmailAttemptAt: string | null;
+} | null {
   const db = getDatabase();
   const cutoffIso = new Date(Date.now() - windowSeconds * 1000).toISOString();
   const row = db
     .prepare(
-      `SELECT reference_id, created_at, email_status
+      `SELECT reference_id, created_at, email_status, last_email_attempt_at
        FROM leads
        WHERE submission_fingerprint = ? AND created_at >= ?
        ORDER BY id DESC LIMIT 1`,
     )
     .get(fingerprint, cutoffIso) as
-    | {reference_id?: string; created_at?: string; email_status?: string}
+    | {
+        reference_id?: string;
+        created_at?: string;
+        email_status?: string;
+        last_email_attempt_at?: string | null;
+      }
     | undefined;
 
   if (!row?.reference_id || !row?.created_at) {
     return null;
   }
 
+  const normalizedStatus: EmailDeliveryStatus =
+    row.email_status === 'sent' ? 'sent' : row.email_status === 'failed' ? 'failed' : 'pending';
+
   return {
     referenceId: row.reference_id,
     createdAt: row.created_at,
-    emailStatus: row.email_status || 'pending',
+    emailStatus: normalizedStatus,
+    lastEmailAttemptAt: row.last_email_attempt_at ?? null,
   };
 }
 
@@ -283,15 +353,15 @@ export function saveLeadRecord(input: LeadRecordInput): {referenceId: string; cr
   const db = getDatabase();
   const now = new Date();
   const stamp = `${now.getUTCFullYear()}${String(now.getUTCMonth() + 1).padStart(2, '0')}${String(now.getUTCDate()).padStart(2, '0')}`;
-  const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+  const randomSuffix = randomBytes(3).toString('hex').toUpperCase();
   const referenceId = `KLY-${stamp}-${randomSuffix}`;
   const createdAt = now.toISOString();
 
   db.prepare(
     `INSERT INTO leads (
       reference_id, source, name, company, phone, email, city, service, industry, subject, message,
-      consent, source_page, source_section, email_status, submission_fingerprint, created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      consent, source_page, source_section, email_status, retry_count, submission_fingerprint, created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)`,
   ).run(
     referenceId,
     input.source,
@@ -317,15 +387,119 @@ export function saveLeadRecord(input: LeadRecordInput): {referenceId: string; cr
 
 export function updateLeadEmailStatus(
   referenceId: string,
-  status: 'sent' | 'failed' | 'smtp_unconfigured',
-  errorMsg?: string,
+  status: EmailDeliveryStatus,
+  options?: {
+    errorMsg?: string;
+    errorCode?: string;
+    messageId?: string;
+    incrementRetry?: boolean;
+  },
 ): void {
   const db = getDatabase();
-  db.prepare('UPDATE leads SET email_status = ?, email_error = ? WHERE reference_id = ?').run(
+  const attemptedAt = new Date().toISOString();
+  const safeErrorMsg = options?.errorMsg ? options.errorMsg.slice(0, 500) : null;
+  const safeErrorCode = options?.errorCode ? options.errorCode.slice(0, 64) : null;
+  const sentAt = status === 'sent' ? attemptedAt : null;
+  const retryDelta = options?.incrementRetry ? 1 : 0;
+
+  db.prepare(
+    `UPDATE leads
+     SET email_status = ?,
+         email_error = ?,
+         email_error_code = ?,
+         retry_count = retry_count + ?,
+         last_email_attempt_at = ?,
+         email_sent_at = COALESCE(?, email_sent_at),
+         email_message_id = COALESCE(?, email_message_id)
+     WHERE reference_id = ?`,
+  ).run(
     status,
-    errorMsg ? errorMsg.slice(0, 500) : null,
+    safeErrorMsg,
+    safeErrorCode,
+    retryDelta,
+    attemptedAt,
+    sentAt,
+    options?.messageId ?? null,
     referenceId,
   );
+}
+
+function mapLeadRow(row: Record<string, unknown>): StoredLeadSummary {
+  const rawStatus = String(row.email_status || 'pending');
+  const emailStatus: EmailDeliveryStatus =
+    rawStatus === 'sent' ? 'sent' : rawStatus === 'failed' ? 'failed' : 'pending';
+
+  return {
+    id: Number(row.id),
+    referenceId: String(row.reference_id),
+    source: (String(row.source) as LeadSourceType) || 'contact',
+    name: String(row.name || ''),
+    company: String(row.company || ''),
+    phone: String(row.phone || ''),
+    email: String(row.email || ''),
+    city: String(row.city || ''),
+    service: String(row.service || ''),
+    industry: String(row.industry || ''),
+    subject: String(row.subject || ''),
+    message: String(row.message || ''),
+    sourcePage: String(row.source_page || '/'),
+    sourceSection: String(row.source_section || 'Website Form'),
+    consent: Boolean(row.consent),
+    emailStatus,
+    emailErrorCode: row.email_error_code ? String(row.email_error_code) : null,
+    retryCount: Number(row.retry_count || 0),
+    lastEmailAttemptAt: row.last_email_attempt_at ? String(row.last_email_attempt_at) : null,
+    createdAt: String(row.created_at || ''),
+  };
+}
+
+export function getLeadByReferenceId(referenceId: string): StoredLeadSummary | null {
+  const db = getDatabase();
+  const row = db
+    .prepare('SELECT * FROM leads WHERE reference_id = ? LIMIT 1')
+    .get(referenceId) as Record<string, unknown> | undefined;
+  return row ? mapLeadRow(row) : null;
+}
+
+export function listFailedLeadsForRetry(options?: {
+  maxRetries?: number;
+  limit?: number;
+  includeAuthErrors?: boolean;
+}): StoredLeadSummary[] {
+  const db = getDatabase();
+  const maxRetries = options?.maxRetries ?? 5;
+  const limit = options?.limit ?? 10;
+
+  const query = options?.includeAuthErrors
+    ? `SELECT * FROM leads
+       WHERE email_status IN ('pending', 'failed')
+         AND retry_count < ?
+         AND email IS NOT NULL AND email != ''
+       ORDER BY id ASC LIMIT ?`
+    : `SELECT * FROM leads
+       WHERE email_status IN ('pending', 'failed')
+         AND retry_count < ?
+         AND email IS NOT NULL AND email != ''
+         AND COALESCE(email_error_code, '') NOT IN ('EAUTH', 'SMTP_NOT_CONFIGURED', 'INVALID_RECIPIENT')
+       ORDER BY id ASC LIMIT ?`;
+
+  const rows = db.prepare(query).all(maxRetries, limit) as Record<string, unknown>[];
+  return rows.map(mapLeadRow);
+}
+
+export function getLeadEmailStatusCounts(): Record<EmailDeliveryStatus, number> {
+  const db = getDatabase();
+  const rows = db
+    .prepare('SELECT email_status, COUNT(*) AS cnt FROM leads GROUP BY email_status')
+    .all() as {email_status?: string; cnt?: number}[];
+
+  const counts: Record<EmailDeliveryStatus, number> = {pending: 0, sent: 0, failed: 0};
+  for (const row of rows) {
+    if (row.email_status === 'sent') counts.sent += Number(row.cnt || 0);
+    else if (row.email_status === 'failed') counts.failed += Number(row.cnt || 0);
+    else counts.pending += Number(row.cnt || 0);
+  }
+  return counts;
 }
 
 export function createChatSession(input: {
@@ -530,7 +704,7 @@ export function appendChatMessage(
 
 export function updateChatEmailStatus(
   sessionId: string,
-  status: 'sent' | 'failed' | 'smtp_unconfigured',
+  status: EmailDeliveryStatus,
   messageId?: number,
 ): void {
   const db = getDatabase();
