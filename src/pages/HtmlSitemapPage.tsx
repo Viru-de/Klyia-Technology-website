@@ -9,6 +9,7 @@ import {
   ALL_BLOG_ARTICLES,
   ALL_INDUSTRIES,
   ALL_LOCATIONS,
+  ERP_PRODUCTS,
   SERVICE_CATEGORIES,
   getServicesByCategory,
 } from '../data/index.ts';
@@ -21,6 +22,7 @@ interface HtmlSitemapPageProps {
 const CORE_LINKS = [
   {label: 'Home', href: ROUTES.HOME},
   {label: 'About Us', href: ROUTES.ABOUT},
+  {label: 'ERP Software Solutions', href: ROUTES.ERP_HUB},
   {label: 'Services Hub', href: ROUTES.SERVICES},
   {label: 'Industries Hub', href: ROUTES.INDUSTRIES},
   {label: 'Locations Hub', href: ROUTES.LOCATIONS},
@@ -58,6 +60,33 @@ export function HtmlSitemapPage({breadcrumbs}: HtmlSitemapPageProps) {
                     className="block rounded-lg border border-[#303030] bg-[#111111] px-4 py-3 text-[#CDCBCA] hover:border-[#D41514] hover:text-white transition-colors"
                   >
                     {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Dedicated ERP Solutions */}
+          <div className="rounded-xl border border-[#303030] bg-[#111111] p-6 space-y-4">
+            <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-white">
+              Industry-Specific ERP Solutions ({ERP_PRODUCTS.length + 1})
+            </h2>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-sm">
+              <li>
+                <Link
+                  href={ROUTES.ERP_HUB}
+                  className="font-semibold text-[#D41514] hover:underline underline-offset-4 transition-colors"
+                >
+                  ERP Software Development Overview
+                </Link>
+              </li>
+              {ERP_PRODUCTS.map((erp) => (
+                <li key={erp.slug}>
+                  <Link
+                    href={erp.canonicalPath}
+                    className="text-[#CDCBCA] hover:text-white hover:underline underline-offset-4 transition-colors"
+                  >
+                    {erp.name}
                   </Link>
                 </li>
               ))}

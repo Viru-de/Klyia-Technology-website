@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {Building2, CheckCircle2, ExternalLink, Mail, MapPin, MessageSquare, Phone} from 'lucide-react';
+import {OfficeGoogleMap} from '../components/contact/OfficeGoogleMap.tsx';
 import {OPEN_CHATBOX_EVENT} from '../components/layout/FloatingSupportDock.tsx';
 import {InnerPageBanner} from '../components/layout/InnerPageBanner.tsx';
 import {Button} from '../components/ui/Button.tsx';
@@ -474,11 +475,50 @@ export function ContactPage({breadcrumbs}: ContactPageProps) {
                     </label>
                   </div>
 
-                  <Button type="submit" variant="primary" size="md" disabled={submitting}>
+                <Button type="submit" variant="primary" size="md" disabled={submitting}>
                     {submitting ? 'Sending Message...' : 'Send Inquiry'}
                   </Button>
                 </form>
               )}
+            </div>
+          </div>
+
+          {/* Interactive Google Map Section */}
+          <div className="mt-12 sm:mt-16 rounded-2xl border border-[#303030] bg-[#111111] p-6 sm:p-8 shadow-[0_18px_50px_rgba(0,0,0,0.45)] space-y-6">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-5 pb-5 border-b border-[#303030]">
+              <div className="space-y-2">
+                <p className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider uppercase text-[#D41514]">
+                  <span className="h-px w-5 bg-[#D41514]" aria-hidden="true" />
+                  <span>Office Location</span>
+                </p>
+                <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-white">
+                  Visit Our Office
+                </h2>
+                <div className="text-sm leading-relaxed text-[#CDCBCA]">
+                  <p className="font-semibold text-white">{BRAND.name}</p>
+                  <address className="not-italic text-[#969696]">
+                    {BRAND.address.full}
+                  </address>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3 shrink-0">
+                <a
+                  href={BRAND.googleMapsDirectionsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Get Directions to Klyia Technology office in Risali, Bhilai on Google Maps"
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#D41514] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#b51110] transition-colors"
+                >
+                  <MapPin className="w-4 h-4 shrink-0" aria-hidden="true" />
+                  <span>Get Directions</span>
+                  <ExternalLink className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                </a>
+              </div>
+            </div>
+
+            <div className="w-full overflow-hidden rounded-xl border border-[#303030] bg-[#080808]">
+              <OfficeGoogleMap />
             </div>
           </div>
         </Container>

@@ -42,6 +42,7 @@ import {
   sanitizeMultiline,
   sanitizeSingleLine,
 } from './server/security.ts';
+import {BRAND} from './src/config/brand.ts';
 import {CORE_INDEXABLE_ROUTES, ROUTES} from './src/config/routes.ts';
 import {resolveBaseUrl} from './src/config/seo.ts';
 import {
@@ -49,6 +50,7 @@ import {
   ALL_INDUSTRIES,
   ALL_LOCATIONS,
   ALL_SERVICES,
+  ERP_PRODUCTS,
 } from './src/data/index.ts';
 
 interface SsrModule {
@@ -308,6 +310,10 @@ async function createAppServer() {
     '/industries': ROUTES.INDUSTRIES,
     '/location': ROUTES.LOCATIONS,
     '/locations': ROUTES.LOCATIONS,
+    '/erp': ROUTES.ERP_HUB,
+    '/erp/': ROUTES.ERP_HUB,
+    '/erp-solutions': ROUTES.ERP_HUB,
+    '/erp-solutions/': ROUTES.ERP_HUB,
     '/blog': ROUTES.INSIGHTS,
   };
 
@@ -379,6 +385,7 @@ async function createAppServer() {
     const baseUrl = resolveBaseUrl(getRequestOrigin(req));
     const childSitemaps = [
       '/sitemap-pages.xml',
+      '/sitemap-erp.xml',
       '/sitemap-services.xml',
       '/sitemap-industries.xml',
       '/sitemap-locations.xml',
@@ -411,6 +418,25 @@ async function createAppServer() {
         changefreq: 'weekly',
       })),
     );
+    res.status(200).type('application/xml; charset=utf-8').send(xml);
+  });
+
+  app.get('/sitemap-erp.xml', (req: Request, res: Response) => {
+    const baseUrl = resolveBaseUrl(getRequestOrigin(req));
+    const xml = buildUrlSetXml(baseUrl, [
+      {
+        path: ROUTES.ERP_HUB,
+        priority: '0.95',
+        changefreq: 'weekly',
+        lastmod: '2026-11-20',
+      },
+      ...ERP_PRODUCTS.filter((item) => item.indexable !== false).map((item) => ({
+        path: item.canonicalPath,
+        priority: '0.9',
+        changefreq: 'monthly',
+        lastmod: item.updatedAt,
+      })),
+    ]);
     res.status(200).type('application/xml; charset=utf-8').send(xml);
   });
 
@@ -468,6 +494,180 @@ async function createAppServer() {
       })),
     );
     res.status(200).type('application/xml; charset=utf-8').send(xml);
+  });
+
+  // Server-side Google Geocoding cache (strictly <= 7 days, within 30-day GMP ToS limit)
+  const OFFICE_GEOCODE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+  let cachedOfficeGeocode: {
+    lat: number;
+    lng: number;
+    placeId: string | null;
+    formattedAddress: string;
+    source: 'geocoding-v4' | 'geocoding-json';
+    fetchedAt: number;
+  } | null = null;
+
+  app.get('/api/office-location', async (req: Request, res: Response) => {
+    const publicMapsApiKey = (process.env.VITE_GOOGLE_MAPS_API_KEY || '').trim();
+    const serverMapsApiKey = (
+      process.env.GOOGLE_MAPS_API_KEY ||
+      process.env.VITE_GOOGLE_MAPS_API_KEY ||
+      ''
+    ).trim();
+
+    if (
+      cachedOfficeGeocode &&
+      Date.now() - cachedOfficeGeocode.fetchedAt < OFFICE_GEOCODE_TTL_MS
+    ) {
+      res.setHeader('Cache-Control', 'public, max-age=3600');
+      res.status(200).json({
+        ok: true,
+        configured: Boolean(publicMapsApiKey || serverMapsApiKey),
+        mapsApiKey: publicMapsApiKey || undefined,
+        center: {lat: cachedOfficeGeocode.lat, lng: cachedOfficeGeocode.lng},
+        placeId: cachedOfficeGeocode.placeId,
+        formattedAddress: BRAND.address.full,
+        geocodedSource: cachedOfficeGeocode.source,
+      });
+      return;
+    }
+
+    if (!serverMapsApiKey) {
+      res.setHeader('Cache-Control', 'no-store');
+      res.status(200).json({
+        ok: true,
+        configured: false,
+        center: null,
+        placeId: null,
+        formattedAddress: BRAND.address.full,
+      });
+      return;
+    }
+
+    const candidateQueries = [
+      BRAND.address.full,
+      'Bajrang Hardware, Krishna Talkies Road, Risali, Bhilai, Chhattisgarh, India',
+    ];
+    const requestReferer = req.get('referer') || `${getRequestOrigin(req)}/`;
+    let quotaExceeded = false;
+
+    for (const query of candidateQueries) {
+      try {
+        const v4Url = `https://geocode.googleapis.com/v4/geocode/address/${encodeURIComponent(
+          query,
+        )}?regionCode=in&languageCode=en`;
+        const v4Resp = await fetch(v4Url, {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Goog-Api-Key': serverMapsApiKey,
+            'X-Goog-FieldMask': 'results.placeId,results.location,results.formattedAddress',
+            'X-Goog-Maps-Solution-ID': 'gmp_mcp_codeassist_v1_aistudio',
+            Referer: requestReferer,
+          },
+          signal: AbortSignal.timeout(6000),
+        });
+
+        const v4Json = (await v4Resp.json().catch(() => null)) as {
+          results?: Array<{
+            placeId?: string;
+            formattedAddress?: string;
+            location?: {latitude?: number; longitude?: number};
+          }>;
+          error?: {status?: string; message?: string};
+        } | null;
+
+        if (v4Resp.status === 429 || v4Json?.error?.status === 'RESOURCE_EXHAUSTED') {
+          quotaExceeded = true;
+          break;
+        }
+
+        const firstV4 = v4Json?.results?.[0];
+        if (
+          v4Resp.ok &&
+          typeof firstV4?.location?.latitude === 'number' &&
+          typeof firstV4?.location?.longitude === 'number'
+        ) {
+          cachedOfficeGeocode = {
+            lat: firstV4.location.latitude,
+            lng: firstV4.location.longitude,
+            placeId: firstV4.placeId || null,
+            formattedAddress: firstV4.formattedAddress || BRAND.address.full,
+            source: 'geocoding-v4',
+            fetchedAt: Date.now(),
+          };
+          break;
+        }
+      } catch {
+        // Fall through to legacy-compatible Geocoding JSON REST endpoint
+      }
+
+      try {
+        const jsonUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+          query,
+        )}&region=in&language=en&key=${encodeURIComponent(serverMapsApiKey)}`;
+        const jsonResp = await fetch(jsonUrl, {
+          headers: {Referer: requestReferer},
+          signal: AbortSignal.timeout(6000),
+        });
+        const jsonData = (await jsonResp.json().catch(() => null)) as {
+          status?: string;
+          results?: Array<{
+            place_id?: string;
+            formatted_address?: string;
+            geometry?: {location?: {lat?: number; lng?: number}};
+          }>;
+        } | null;
+
+        if (jsonResp.status === 429 || jsonData?.status === 'OVER_QUERY_LIMIT') {
+          quotaExceeded = true;
+          break;
+        }
+
+        const firstJson = jsonData?.results?.[0];
+        if (
+          jsonResp.ok &&
+          jsonData?.status === 'OK' &&
+          typeof firstJson?.geometry?.location?.lat === 'number' &&
+          typeof firstJson?.geometry?.location?.lng === 'number'
+        ) {
+          cachedOfficeGeocode = {
+            lat: firstJson.geometry.location.lat,
+            lng: firstJson.geometry.location.lng,
+            placeId: firstJson.place_id || null,
+            formattedAddress: firstJson.formatted_address || BRAND.address.full,
+            source: 'geocoding-json',
+            fetchedAt: Date.now(),
+          };
+          break;
+        }
+      } catch {
+        // Continue to next query or client Places API (New) resolution
+      }
+    }
+
+    if (quotaExceeded) {
+      res.setHeader('Cache-Control', 'no-store');
+      res.status(429).json({
+        ok: false,
+        quotaExceeded: true,
+        configured: Boolean(publicMapsApiKey || serverMapsApiKey),
+        error: 'Google Maps Platform quota reached.',
+      });
+      return;
+    }
+
+    res.setHeader('Cache-Control', cachedOfficeGeocode ? 'public, max-age=3600' : 'no-store');
+    res.status(200).json({
+      ok: true,
+      configured: Boolean(publicMapsApiKey || serverMapsApiKey),
+      mapsApiKey: publicMapsApiKey || undefined,
+      center: cachedOfficeGeocode
+        ? {lat: cachedOfficeGeocode.lat, lng: cachedOfficeGeocode.lng}
+        : null,
+      placeId: cachedOfficeGeocode?.placeId || null,
+      formattedAddress: BRAND.address.full,
+      geocodedSource: cachedOfficeGeocode?.source || null,
+    });
   });
 
   app.get('/api/visitors', (_req: Request, res: Response) => {

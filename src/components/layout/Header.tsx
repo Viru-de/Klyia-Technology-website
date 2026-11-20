@@ -6,6 +6,7 @@ import {Link} from '../../lib/router.tsx';
 import {Button} from '../ui/Button.tsx';
 import {Container} from '../ui/Container.tsx';
 import {Logo} from '../ui/Logo.tsx';
+import {ErpMegaMenu} from './ErpMegaMenu.tsx';
 import {IndustriesMegaMenu} from './IndustriesMegaMenu.tsx';
 import {MainNavigation, type ActiveMegaMenu} from './MainNavigation.tsx';
 import {MobileNavigation} from './MobileNavigation.tsx';
@@ -127,6 +128,7 @@ export function Header() {
 
       {/* Dark Mega Menus */}
       <div onMouseEnter={cancelClose}>
+        <ErpMegaMenu isOpen={activeMenu === 'erp'} onClose={closeImmediate} />
         <ServicesMegaMenu isOpen={activeMenu === 'services'} onClose={closeImmediate} />
         <IndustriesMegaMenu isOpen={activeMenu === 'industries'} onClose={closeImmediate} />
       </div>

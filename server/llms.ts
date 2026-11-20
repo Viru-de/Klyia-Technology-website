@@ -5,6 +5,7 @@ import {
   ALL_INDUSTRIES,
   ALL_LOCATIONS,
   ALL_SERVICES,
+  ERP_PRODUCTS,
   SERVICE_CATEGORIES,
 } from '../src/data/index.ts';
 
@@ -33,6 +34,7 @@ export function buildLlmsTxt(baseUrl: string): string {
     '## Primary Navigation Pages',
     `- [Home](${origin}${ROUTES.HOME}): Overview of custom software, Solar ERP, Industrial ERP, website development, Local SEO, GEO, and AEO solutions.`,
     `- [About Klyia Technology](${origin}${ROUTES.ABOUT}): Company background, Risali Bhilai office, engineering methodology, and core principles.`,
+    `- [Custom ERP Software Development](${origin}${ROUTES.ERP_HUB}): Custom ERP architecture, 11 industry-specific ERP systems, 16 modular ERP blocks, workflow process, and consultation.`,
     `- [All Technology & Digital Growth Services](${origin}${ROUTES.SERVICES}): Complete catalog across 6 service pillars (${ALL_SERVICES.length} dedicated services).`,
     `- [Industries Served](${origin}${ROUTES.INDUSTRIES}): Sector-specific ERP, CRM, website, and growth solutions across ${ALL_INDUSTRIES.length} industries.`,
     `- [Locations Served](${origin}${ROUTES.LOCATIONS}): Regional delivery pages across Bhilai, Durg, Raipur, Chhattisgarh, and India.`,
@@ -52,6 +54,11 @@ export function buildLlmsTxt(baseUrl: string): string {
     `- [Search Engine Optimization (SEO)](${origin}/services/search-engine-optimization/): Ethical technical and on-page search engineering with Search Console and GA4 conversion tracking.`,
     `- [WhatsApp Business Automation](${origin}/services/whatsapp-business-automation/): Official WhatsApp Business API alerts for enquiry acknowledgement, dispatch updates, and AMC reminders.`,
     `- [Business AI Integration](${origin}/services/business-ai-integration/): Controlled server-side AI workflows for enquiry summarization, document parsing, and human-reviewed automation.`,
+    '',
+    '## Industry-Specific ERP Systems',
+    ...ERP_PRODUCTS.map(
+      (erp) => `- [${erp.name}](${origin}${erp.canonicalPath}): ${erp.heroSubtitle}`,
+    ),
     '',
     '## Priority Industries',
     ...ALL_INDUSTRIES.map(
@@ -119,6 +126,13 @@ export function buildLlmsFullTxt(baseUrl: string): string {
     }
     lines.push('');
   }
+
+  lines.push('## Industry-Specific ERP Software Solutions');
+  lines.push('');
+  for (const erp of ERP_PRODUCTS.filter((item) => item.indexable !== false)) {
+    lines.push(`- [${erp.name}](${origin}${erp.canonicalPath}): ${erp.metaDescription}`);
+  }
+  lines.push('');
 
   lines.push('## Industry Solutions');
   lines.push('');

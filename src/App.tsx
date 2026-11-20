@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {FloatingSupportDock} from './components/layout/FloatingSupportDock.tsx';
 import {Footer} from './components/layout/Footer.tsx';
 import {Header} from './components/layout/Header.tsx';
@@ -7,6 +7,7 @@ import {ROUTES, extractRouteSlug, normalizePathname} from './config/routes.ts';
 import {resolvePageSeo} from './config/seo.ts';
 import {
   getBlogArticleBySlug,
+  getErpProductBySlug,
   getIndustryBySlug,
   getLocationBySlug,
   getServiceBySlug,
@@ -15,6 +16,8 @@ import {RouterProvider, useRouter} from './lib/router.tsx';
 import {AboutPage} from './pages/AboutPage.tsx';
 import {BlogPostPage} from './pages/BlogPostPage.tsx';
 import {ContactPage} from './pages/ContactPage.tsx';
+import {ErpHubPage} from './pages/ErpHubPage.tsx';
+import {ErpProductDetailPage} from './pages/ErpProductDetailPage.tsx';
 import {GetAQuotePage} from './pages/GetAQuotePage.tsx';
 import {HomePage} from './pages/HomePage.tsx';
 import {HtmlSitemapPage} from './pages/HtmlSitemapPage.tsx';
@@ -47,6 +50,18 @@ function AppShell() {
   const {pathname} = useRouter();
   const normalizedPath = normalizePathname(pathname);
   const {seo, isNotFound} = resolvePageSeo(normalizedPath);
+  const [gmpQuotaExceeded, setGmpQuotaExceeded] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    const handleQuotaExceeded = () => setGmpQuotaExceeded(true);
+    window.addEventListener('gmp-quota-exceeded', handleQuotaExceeded);
+    return () => {
+      window.removeEventListener('gmp-quota-exceeded', handleQuotaExceeded);
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof document === 'undefined' || typeof window === 'undefined') {
@@ -88,6 +103,14 @@ function AppShell() {
       }
     }
 
+    const erpSlug = extractRouteSlug(normalizedPath, ROUTES.ERP_PRODUCTS);
+    if (erpSlug) {
+      const erpProduct = getErpProductBySlug(erpSlug);
+      if (erpProduct) {
+        return <ErpProductDetailPage product={erpProduct} breadcrumbs={seo.breadcrumbs} />;
+      }
+    }
+
     const industrySlug = extractRouteSlug(normalizedPath, ROUTES.INDUSTRIES);
     if (industrySlug) {
       const ind = getIndustryBySlug(industrySlug);
@@ -119,6 +142,8 @@ function AppShell() {
         return <AboutPage breadcrumbs={seo.breadcrumbs} />;
       case ROUTES.SERVICES:
         return <ServicesPage breadcrumbs={seo.breadcrumbs} />;
+      case ROUTES.ERP_HUB:
+        return <ErpHubPage breadcrumbs={seo.breadcrumbs} />;
       case ROUTES.INDUSTRIES:
         return <IndustriesPage breadcrumbs={seo.breadcrumbs} />;
       case ROUTES.LOCATIONS:
@@ -144,6 +169,26 @@ function AppShell() {
 
   return (
     <div className="flex min-h-screen flex-col bg-[#080808] text-[#CDCBCA]">
+      {gmpQuotaExceeded && (
+        <div
+          role="status"
+          className="bg-amber-50 border-b border-amber-200 text-amber-900 px-4 py-2.5 text-xs md:text-sm text-center sticky top-0 z-50 shadow-sm"
+        >
+          <span>
+            Google Maps Platform quota reached. If you are the app owner, visit{' '}
+            <a
+              href="https://developers.google.com/maps/ai/ai-studio?utm_campaign=gmp_mcp_codeassist_v1_aistudio#quota_exceeded_errors"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline font-semibold text-amber-950 hover:text-amber-800"
+            >
+              maps developer site
+            </a>{' '}
+            for instructions to update your account.
+          </span>
+        </div>
+      )}
+
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-[#D41514] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"

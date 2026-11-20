@@ -3,12 +3,15 @@ import {
   ALL_INDUSTRIES,
   ALL_LOCATIONS,
   ALL_SERVICES,
+  ERP_LANDING_FAQS,
   getBlogArticleBySlug,
+  getErpProductBySlug,
   getIndustryBySlug,
   getLocationBySlug,
   getServiceBySlug,
 } from '../data/index.ts';
 import type {FaqEntry} from '../data/types.ts';
+import {BANNER_IMAGES} from './banners.ts';
 import {BRAND} from './brand.ts';
 import {ROUTES, extractRouteSlug, normalizePathname} from './routes.ts';
 
@@ -30,6 +33,11 @@ export interface PageSeoMetadata {
     name: string;
     description: string;
     category: string;
+  };
+  softwareSchema?: {
+    name: string;
+    description: string;
+    applicationCategory: string;
   };
   articleSchema?: {
     headline: string;
@@ -104,6 +112,31 @@ const ROUTE_SEO_MAP: Record<string, PageSeoMetadata> = {
       {name: 'Home', path: ROUTES.HOME},
       {name: 'Services', path: ROUTES.SERVICES},
     ],
+  },
+  [ROUTES.ERP_HUB]: {
+    title: 'Custom ERP Software Development | Klyia Technology',
+    description:
+      'Custom ERP software development by Klyia Technology in Bhilai, India — Manufacturing ERP, Solar EPC, Wholesale Distribution, Mandi, Accounting, HR & Retail systems.',
+    canonicalPath: ROUTES.ERP_HUB,
+    ogType: 'website',
+    heroImage: BANNER_IMAGES.erpEnterpriseConsole,
+    breadcrumbs: [
+      {name: 'Home', path: ROUTES.HOME},
+      {name: 'ERP Software Solutions', path: ROUTES.ERP_HUB},
+    ],
+    faqs: ERP_LANDING_FAQS,
+    serviceSchema: {
+      name: 'Custom ERP Software Development & Business Automation',
+      description:
+        'Custom ERP software built around each business’s actual workflow across Manufacturing, Solar EPC, Wholesale, Fruit Mandi, Healthcare, Education, Retail, Accounting, HR, Fleet & Real Estate.',
+      category: 'Enterprise Resource Planning Software',
+    },
+    softwareSchema: {
+      name: 'Klyia Custom ERP & Business Automation Suite',
+      description:
+        'Modular cloud and on-premise web ERP software covering CRM, Inventory, Purchase, Sales, Finance & GST, HRM, POS Billing, and Workflow Automation.',
+      applicationCategory: 'BusinessApplication',
+    },
   },
   [ROUTES.INDUSTRIES]: {
     title: 'Industry Software & ERP Solutions | Klyia Technology',
@@ -248,6 +281,40 @@ export function resolvePageSeo(pathname: string): {seo: PageSeoMetadata; isNotFo
             name: service.name,
             description: service.metaDescription,
             category: service.categoryLabel,
+          },
+        },
+      };
+    }
+  }
+
+  const erpSlug = extractRouteSlug(normalized, ROUTES.ERP_PRODUCTS);
+  if (erpSlug) {
+    const erpProduct = getErpProductBySlug(erpSlug);
+    if (erpProduct) {
+      return {
+        isNotFound: false,
+        seo: {
+          title: erpProduct.seoTitle,
+          description: erpProduct.metaDescription,
+          canonicalPath: erpProduct.canonicalPath,
+          ogType: 'website',
+          robots: erpProduct.indexable === false ? 'noindex, follow' : 'index, follow',
+          heroImage: erpProduct.heroImage,
+          breadcrumbs: [
+            {name: 'Home', path: ROUTES.HOME},
+            {name: 'ERP Solutions', path: ROUTES.ERP_HUB},
+            {name: erpProduct.name, path: erpProduct.canonicalPath},
+          ],
+          faqs: erpProduct.faqs,
+          serviceSchema: {
+            name: erpProduct.name,
+            description: erpProduct.metaDescription,
+            category: erpProduct.industryLabel,
+          },
+          softwareSchema: {
+            name: erpProduct.name,
+            description: erpProduct.metaDescription,
+            applicationCategory: 'BusinessApplication',
           },
         },
       };
@@ -464,6 +531,19 @@ export function buildStructuredDataJson(seo: PageSeoMetadata, baseUrl: string): 
       serviceType: seo.serviceSchema.category,
       provider: {'@id': `${baseUrl}/#organization`},
       areaServed: ['Bhilai', 'Durg', 'Raipur', 'Chhattisgarh', 'India'],
+      url: canonicalUrl,
+    });
+  }
+
+  if (seo.softwareSchema) {
+    graph.push({
+      '@type': 'SoftwareApplication',
+      '@id': `${canonicalUrl}#software`,
+      name: seo.softwareSchema.name,
+      description: seo.softwareSchema.description,
+      applicationCategory: seo.softwareSchema.applicationCategory,
+      operatingSystem: 'Web, Cloud, Windows, Linux',
+      provider: {'@id': `${baseUrl}/#organization`},
       url: canonicalUrl,
     });
   }

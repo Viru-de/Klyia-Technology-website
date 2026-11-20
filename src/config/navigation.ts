@@ -3,7 +3,7 @@ import {ROUTES} from './routes.ts';
 export interface NavItem {
   label: string;
   href: string;
-  hasMegaMenu?: 'services' | 'industries';
+  hasMegaMenu?: 'erp' | 'services' | 'industries';
 }
 
 export interface MegaMenuServiceItem {
@@ -31,6 +31,7 @@ export interface FooterLinkItem {
 export const MAIN_NAVIGATION: NavItem[] = [
   {label: 'Home', href: ROUTES.HOME},
   {label: 'About Us', href: ROUTES.ABOUT},
+  {label: 'ERP & Software', href: ROUTES.ERP_HUB, hasMegaMenu: 'erp'},
   {label: 'Services', href: ROUTES.SERVICES, hasMegaMenu: 'services'},
   {label: 'Industries', href: ROUTES.INDUSTRIES, hasMegaMenu: 'industries'},
   {label: 'Our Work', href: ROUTES.OUR_WORK},
@@ -41,6 +42,47 @@ export const MAIN_NAVIGATION: NavItem[] = [
 export const HEADER_CTA = {
   label: 'Get a Quote',
   href: ROUTES.GET_A_QUOTE,
+} as const;
+
+export const ERP_MEGA_MENU_GROUPS: MegaMenuServiceColumn[] = [
+  {
+    heading: 'Industrial & Trade ERP',
+    href: ROUTES.ERP_HUB,
+    items: [
+      {label: 'Custom ERP Development', href: '/services/erp-software-development/'},
+      {label: 'Manufacturing ERP', href: '/erp/manufacturing-industrial-erp/'},
+      {label: 'Solar ERP & EPC Software', href: '/erp/solar-erp-epc-software/'},
+      {label: 'Inventory Management Software', href: '/services/inventory-management-software/'},
+      {label: 'Wholesale & Distribution ERP', href: '/erp/inventory-wholesale-distribution-erp/'},
+      {label: 'Fruit Mandi & Trading ERP', href: '/erp/fruit-mandi-trading-erp/'},
+    ],
+  },
+  {
+    heading: 'Sector & Operations ERP',
+    href: ROUTES.ERP_HUB,
+    items: [
+      {label: 'Hospital Management System', href: '/erp/hospital-clinic-management/'},
+      {label: 'School & College ERP', href: '/erp/school-college-erp/'},
+      {label: 'Retail & POS Software', href: '/erp/retail-pos-erp/'},
+      {label: 'Logistics & Fleet Management', href: '/erp/logistics-fleet-erp/'},
+      {label: 'Construction & Real Estate ERP', href: '/erp/construction-real-estate-erp/'},
+    ],
+  },
+  {
+    heading: 'Finance, HR & Business Apps',
+    href: ROUTES.ERP_HUB,
+    items: [
+      {label: 'Accounting & Billing Software', href: '/erp/accounting-billing-erp/'},
+      {label: 'HR & Payroll Software', href: '/erp/hr-payroll-erp/'},
+      {label: 'CRM Software', href: '/services/crm-software-development/'},
+      {label: 'Custom Business Applications', href: '/services/custom-software-development/'},
+    ],
+  },
+];
+
+export const ERP_MEGA_MENU_CTA = {
+  label: 'View All ERP Solutions',
+  href: ROUTES.ERP_HUB,
 } as const;
 
 export const SERVICES_MEGA_MENU: MegaMenuServiceColumn[] = [
@@ -194,6 +236,7 @@ export const FOOTER_COLUMNS = {
     {label: 'HTML Sitemap', href: ROUTES.SITEMAP},
   ] satisfies FooterLinkItem[],
   services: [
+    {label: 'ERP Solutions Hub', href: ROUTES.ERP_HUB},
     {label: 'Website Development', href: '/services/website-development-services/'},
     {label: 'Custom Software', href: '/services/custom-software-development/'},
     {label: 'ERP Software', href: '/services/erp-software-development/'},

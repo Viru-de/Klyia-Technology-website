@@ -3,6 +3,8 @@ import {createPortal} from 'react-dom';
 import {ChevronDown, Phone, X} from 'lucide-react';
 import {BRAND} from '../../config/brand.ts';
 import {
+  ERP_MEGA_MENU_CTA,
+  ERP_MEGA_MENU_GROUPS,
   HEADER_CTA,
   INDUSTRIES_MEGA_MENU,
   MAIN_NAVIGATION,
@@ -21,6 +23,7 @@ export function MobileNavigation({isOpen, onClose}: MobileNavigationProps) {
   const {pathname} = useRouter();
   const currentPath = normalizePathname(pathname);
   const prevPathRef = useRef(currentPath);
+  const [erpExpanded, setErpExpanded] = useState(false);
   const [servicesExpanded, setServicesExpanded] = useState(false);
   const [industriesExpanded, setIndustriesExpanded] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -139,6 +142,58 @@ export function MobileNavigation({isOpen, onClose}: MobileNavigationProps) {
         <nav aria-label="Mobile Menu Links" className="flex-1 px-5 py-4 space-y-1">
           {MAIN_NAVIGATION.map((item) => {
             const isActive = currentPath === normalizePathname(item.href);
+
+            if (item.hasMegaMenu === 'erp') {
+              return (
+                <div key={item.label} className="border-b border-[#303030] pb-1">
+                  <button
+                    type="button"
+                    aria-expanded={erpExpanded}
+                    onClick={() => setErpExpanded((prev) => !prev)}
+                    className="flex w-full min-h-[44px] items-center justify-between py-2.5 text-left text-[15px] font-semibold text-[#CDCBCA] hover:text-white cursor-pointer"
+                  >
+                    <span>ERP &amp; Software</span>
+                    <ChevronDown
+                      className={`w-4 h-4 transition-transform duration-150 ${
+                        erpExpanded ? 'rotate-180 text-[#D41514]' : 'text-[#969696]'
+                      }`}
+                      aria-hidden="true"
+                    />
+                  </button>
+                  {erpExpanded ? (
+                    <div className="pl-3 pb-3 space-y-4">
+                      <Link
+                        href={ERP_MEGA_MENU_CTA.href}
+                        onNavigate={onClose}
+                        className="block text-sm font-semibold text-[#D41514]"
+                      >
+                        {ERP_MEGA_MENU_CTA.label}
+                      </Link>
+                      {ERP_MEGA_MENU_GROUPS.map((group) => (
+                        <div key={group.heading} className="space-y-1.5">
+                          <p className="text-xs font-bold uppercase tracking-wider text-[#969696]">
+                            {group.heading}
+                          </p>
+                          <ul className="space-y-1">
+                            {group.items.map((subItem) => (
+                              <li key={subItem.label}>
+                                <Link
+                                  href={subItem.href}
+                                  onNavigate={onClose}
+                                  className="block py-1.5 text-sm text-[#CDCBCA] hover:text-[#D41514]"
+                                >
+                                  {subItem.label}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+              );
+            }
 
             if (item.hasMegaMenu === 'services') {
               return (

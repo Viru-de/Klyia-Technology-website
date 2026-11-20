@@ -18,6 +18,10 @@ export const BRAND = {
   whatsappPrefilledHref: buildWhatsAppHref(WHATSAPP_DEFAULT_MESSAGE),
   googleMapsUrl:
     'https://www.google.com/maps/search/?api=1&query=First+Floor,+Bajrang+Hardware,+Krishna+Talkies+Road,+Risali,+Bhilai,+Chhattisgarh,+India',
+  googleMapsDirectionsUrl:
+    'https://www.google.com/maps/dir/?api=1&destination=First+Floor,+Bajrang+Hardware,+Krishna+Talkies+Road,+Risali,+Bhilai,+Chhattisgarh,+India',
+  googleMapsEmbedUrl:
+    'https://www.google.com/maps/embed?origin=mfe&pb=!1m3!2m1!1sFirst+Floor,+Bajrang+Hardware,+Krishna+Talkies+Road,+Risali,+Bhilai,+Chhattisgarh,+India!6i16',
   social: {
     facebook: 'https://www.facebook.com/klyiatechnology/',
     instagram: 'https://www.instagram.com/klyiatechnology/',

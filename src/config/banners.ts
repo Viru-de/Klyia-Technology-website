@@ -43,11 +43,23 @@ export const BANNER_IMAGES = {
   professionalAdvisory: '/src/assets/images/banner_professional_advisory_1795011266971.jpg',
   bhilaiChhattisgarh: '/src/assets/images/banner_bhilai_chhattisgarh_1795011268475.jpg',
   raipurIndiaHub: '/src/assets/images/banner_raipur_india_hub_1795011268028.jpg',
+  erpEnterpriseConsole: '/src/assets/images/erp_enterprise_console_hero_1795178038410.jpg',
+  erpHrPayrollOffice: '/src/assets/images/erp_hr_payroll_office_1795178040039.jpg',
+  erpPosRetailCounter: '/src/assets/images/erp_pos_retail_counter_1795178039601.jpg',
   teamConsultation: '/src/assets/images/banner_team_consultation_1795011269227.jpg',
 } as const;
 
+const JPG_ONLY_ASSET_PREFIXES = [
+  '/src/assets/images/erp_enterprise_console_hero_',
+  '/src/assets/images/erp_hr_payroll_office_',
+  '/src/assets/images/erp_pos_retail_counter_',
+];
+
 export function toWebpAssetPath(imagePath?: string): string | undefined {
   if (!imagePath) {
+    return undefined;
+  }
+  if (JPG_ONLY_ASSET_PREFIXES.some((prefix) => imagePath.startsWith(prefix))) {
     return undefined;
   }
   if (imagePath.startsWith('/src/assets/images/') && imagePath.endsWith('.jpg')) {
