@@ -144,13 +144,18 @@ export function MobileNavigation({isOpen, onClose}: MobileNavigationProps) {
             const isActive = currentPath === normalizePathname(item.href);
 
             if (item.hasMegaMenu === 'erp') {
+              const isErpActive = currentPath === normalizePathname(item.href) || currentPath.startsWith('/erp/');
               return (
                 <div key={item.label} className="border-b border-[#303030] pb-1">
                   <button
                     type="button"
                     aria-expanded={erpExpanded}
                     onClick={() => setErpExpanded((prev) => !prev)}
-                    className="flex w-full min-h-[44px] items-center justify-between py-2.5 text-left text-[15px] font-semibold text-[#CDCBCA] hover:text-white cursor-pointer"
+                    className={`flex w-full min-h-[44px] items-center justify-between px-2 py-2.5 rounded-md text-left text-[15px] font-semibold transition-colors cursor-pointer ${
+                      isErpActive
+                        ? 'bg-[#1B1B1B] text-white'
+                        : 'text-[#CDCBCA] hover:bg-[#141414] hover:text-white'
+                    }`}
                   >
                     <span>ERP &amp; Software</span>
                     <ChevronDown
@@ -161,31 +166,47 @@ export function MobileNavigation({isOpen, onClose}: MobileNavigationProps) {
                     />
                   </button>
                   {erpExpanded ? (
-                    <div className="pl-3 pb-3 space-y-4">
+                    <div className="mt-1 mb-3 rounded-xl border border-[#303030] bg-[#111111] p-3 space-y-3">
                       <Link
                         href={ERP_MEGA_MENU_CTA.href}
                         onNavigate={onClose}
-                        className="block text-sm font-semibold text-[#D41514]"
+                        aria-current={currentPath === normalizePathname(ERP_MEGA_MENU_CTA.href) ? 'page' : undefined}
+                        className={`block rounded-md px-2.5 py-2 text-sm font-semibold transition-colors ${
+                          currentPath === normalizePathname(ERP_MEGA_MENU_CTA.href)
+                            ? 'bg-[#2A1010] border-l-2 border-[#D41514] text-white'
+                            : 'bg-[#141414] text-[#D41514] hover:bg-[#1B1B1B] hover:text-white'
+                        }`}
                       >
                         {ERP_MEGA_MENU_CTA.label}
                       </Link>
                       {ERP_MEGA_MENU_GROUPS.map((group) => (
-                        <div key={group.heading} className="space-y-1.5">
-                          <p className="text-xs font-bold uppercase tracking-wider text-[#969696]">
+                        <div
+                          key={group.heading}
+                          className="rounded-lg border border-[#303030] bg-[#141414] p-2.5 space-y-1.5"
+                        >
+                          <p className="px-1.5 pb-1 border-b border-[#303030] text-xs font-bold uppercase tracking-wider text-[#CDCBCA]">
                             {group.heading}
                           </p>
-                          <ul className="space-y-1">
-                            {group.items.map((subItem) => (
-                              <li key={subItem.label}>
-                                <Link
-                                  href={subItem.href}
-                                  onNavigate={onClose}
-                                  className="block py-1.5 text-sm text-[#CDCBCA] hover:text-[#D41514]"
-                                >
-                                  {subItem.label}
-                                </Link>
-                              </li>
-                            ))}
+                          <ul className="space-y-1 bg-[#141414]">
+                            {group.items.map((subItem) => {
+                              const isSubActive = currentPath === normalizePathname(subItem.href);
+                              return (
+                                <li key={subItem.label}>
+                                  <Link
+                                    href={subItem.href}
+                                    onNavigate={onClose}
+                                    aria-current={isSubActive ? 'page' : undefined}
+                                    className={`block rounded-md px-2.5 py-2 text-sm transition-colors ${
+                                      isSubActive
+                                        ? 'bg-[#2A1010] border-l-2 border-[#D41514] text-white font-semibold'
+                                        : 'bg-[#141414] text-[#CDCBCA] hover:bg-[#222222] hover:text-white'
+                                    }`}
+                                  >
+                                    {subItem.label}
+                                  </Link>
+                                </li>
+                              );
+                            })}
                           </ul>
                         </div>
                       ))}
@@ -196,13 +217,19 @@ export function MobileNavigation({isOpen, onClose}: MobileNavigationProps) {
             }
 
             if (item.hasMegaMenu === 'services') {
+              const isServicesActive =
+                currentPath === normalizePathname(item.href) || currentPath.startsWith('/services/');
               return (
                 <div key={item.label} className="border-b border-[#303030] pb-1">
                   <button
                     type="button"
                     aria-expanded={servicesExpanded}
                     onClick={() => setServicesExpanded((prev) => !prev)}
-                    className="flex w-full min-h-[44px] items-center justify-between py-2.5 text-left text-[15px] font-semibold text-[#CDCBCA] hover:text-white cursor-pointer"
+                    className={`flex w-full min-h-[44px] items-center justify-between px-2 py-2.5 rounded-md text-left text-[15px] font-semibold transition-colors cursor-pointer ${
+                      isServicesActive
+                        ? 'bg-[#1B1B1B] text-white'
+                        : 'text-[#CDCBCA] hover:bg-[#141414] hover:text-white'
+                    }`}
                   >
                     <span>Services</span>
                     <ChevronDown
@@ -213,31 +240,47 @@ export function MobileNavigation({isOpen, onClose}: MobileNavigationProps) {
                     />
                   </button>
                   {servicesExpanded ? (
-                    <div className="pl-3 pb-3 space-y-4">
+                    <div className="mt-1 mb-3 rounded-xl border border-[#303030] bg-[#111111] p-3 space-y-3">
                       <Link
                         href={ROUTES.SERVICES}
                         onNavigate={onClose}
-                        className="block text-sm font-semibold text-[#D41514]"
+                        aria-current={currentPath === normalizePathname(ROUTES.SERVICES) ? 'page' : undefined}
+                        className={`block rounded-md px-2.5 py-2 text-sm font-semibold transition-colors ${
+                          currentPath === normalizePathname(ROUTES.SERVICES)
+                            ? 'bg-[#2A1010] border-l-2 border-[#D41514] text-white'
+                            : 'bg-[#141414] text-[#D41514] hover:bg-[#1B1B1B] hover:text-white'
+                        }`}
                       >
                         All Services Overview
                       </Link>
                       {SERVICES_MEGA_MENU.map((group) => (
-                        <div key={group.heading} className="space-y-1.5">
-                          <p className="text-xs font-bold uppercase tracking-wider text-[#969696]">
+                        <div
+                          key={group.heading}
+                          className="rounded-lg border border-[#303030] bg-[#141414] p-2.5 space-y-1.5"
+                        >
+                          <p className="px-1.5 pb-1 border-b border-[#303030] text-xs font-bold uppercase tracking-wider text-[#CDCBCA]">
                             {group.heading}
                           </p>
-                          <ul className="space-y-1">
-                            {group.items.map((subItem) => (
-                              <li key={subItem.label}>
-                                <Link
-                                  href={subItem.href}
-                                  onNavigate={onClose}
-                                  className="block py-1.5 text-sm text-[#CDCBCA] hover:text-[#D41514]"
-                                >
-                                  {subItem.label}
-                                </Link>
-                              </li>
-                            ))}
+                          <ul className="space-y-1 bg-[#141414]">
+                            {group.items.map((subItem) => {
+                              const isSubActive = currentPath === normalizePathname(subItem.href);
+                              return (
+                                <li key={subItem.label}>
+                                  <Link
+                                    href={subItem.href}
+                                    onNavigate={onClose}
+                                    aria-current={isSubActive ? 'page' : undefined}
+                                    className={`block rounded-md px-2.5 py-2 text-sm transition-colors ${
+                                      isSubActive
+                                        ? 'bg-[#2A1010] border-l-2 border-[#D41514] text-white font-semibold'
+                                        : 'bg-[#141414] text-[#CDCBCA] hover:bg-[#222222] hover:text-white'
+                                    }`}
+                                  >
+                                    {subItem.label}
+                                  </Link>
+                                </li>
+                              );
+                            })}
                           </ul>
                         </div>
                       ))}
@@ -248,13 +291,19 @@ export function MobileNavigation({isOpen, onClose}: MobileNavigationProps) {
             }
 
             if (item.hasMegaMenu === 'industries') {
+              const isIndustriesActive =
+                currentPath === normalizePathname(item.href) || currentPath.startsWith('/industries/');
               return (
                 <div key={item.label} className="border-b border-[#303030] pb-1">
                   <button
                     type="button"
                     aria-expanded={industriesExpanded}
                     onClick={() => setIndustriesExpanded((prev) => !prev)}
-                    className="flex w-full min-h-[44px] items-center justify-between py-2.5 text-left text-[15px] font-semibold text-[#CDCBCA] hover:text-white cursor-pointer"
+                    className={`flex w-full min-h-[44px] items-center justify-between px-2 py-2.5 rounded-md text-left text-[15px] font-semibold transition-colors cursor-pointer ${
+                      isIndustriesActive
+                        ? 'bg-[#1B1B1B] text-white'
+                        : 'text-[#CDCBCA] hover:bg-[#141414] hover:text-white'
+                    }`}
                   >
                     <span>Industries</span>
                     <ChevronDown
@@ -265,24 +314,37 @@ export function MobileNavigation({isOpen, onClose}: MobileNavigationProps) {
                     />
                   </button>
                   {industriesExpanded ? (
-                    <div className="pl-3 pb-3 space-y-2">
+                    <div className="mt-1 mb-3 rounded-xl border border-[#303030] bg-[#111111] p-3 space-y-1.5">
                       <Link
                         href={ROUTES.INDUSTRIES}
                         onNavigate={onClose}
-                        className="block py-1 text-sm font-semibold text-[#D41514]"
+                        aria-current={currentPath === normalizePathname(ROUTES.INDUSTRIES) ? 'page' : undefined}
+                        className={`block rounded-md px-2.5 py-2 text-sm font-semibold transition-colors ${
+                          currentPath === normalizePathname(ROUTES.INDUSTRIES)
+                            ? 'bg-[#2A1010] border-l-2 border-[#D41514] text-white'
+                            : 'bg-[#141414] text-[#D41514] hover:bg-[#1B1B1B] hover:text-white'
+                        }`}
                       >
                         All Industries Overview
                       </Link>
-                      {INDUSTRIES_MEGA_MENU.map((industry) => (
-                        <Link
-                          key={industry.title}
-                          href={industry.href}
-                          onNavigate={onClose}
-                          className="block py-1.5 text-sm text-[#CDCBCA] hover:text-[#D41514]"
-                        >
-                          {industry.title}
-                        </Link>
-                      ))}
+                      {INDUSTRIES_MEGA_MENU.map((industry) => {
+                        const isSubActive = currentPath === normalizePathname(industry.href);
+                        return (
+                          <Link
+                            key={industry.title}
+                            href={industry.href}
+                            onNavigate={onClose}
+                            aria-current={isSubActive ? 'page' : undefined}
+                            className={`block rounded-md px-2.5 py-2 text-sm transition-colors ${
+                              isSubActive
+                                ? 'bg-[#2A1010] border-l-2 border-[#D41514] text-white font-semibold'
+                                : 'bg-[#141414] text-[#CDCBCA] hover:bg-[#222222] hover:text-white'
+                            }`}
+                          >
+                            {industry.title}
+                          </Link>
+                        );
+                      })}
                     </div>
                   ) : null}
                 </div>

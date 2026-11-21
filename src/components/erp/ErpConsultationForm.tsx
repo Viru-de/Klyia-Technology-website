@@ -12,6 +12,7 @@ interface ErpConsultationFormProps {
   preselectedIndustry?: string;
   heading?: string;
   subheading?: string;
+  variant?: 'light' | 'dark';
 }
 
 const USER_RANGE_OPTIONS = [
@@ -30,7 +31,9 @@ export function ErpConsultationForm({
   preselectedIndustry = 'Manufacturing & Steel',
   heading = 'Request Free ERP Consultation & Custom Architecture Demo',
   subheading = 'Share your operational workflow, preferred deployment, and modules required. Your enquiry saves directly to our engineering desk for tailored scoping.',
+  variant = 'light',
 }: ErpConsultationFormProps) {
+  const isDark = variant === 'dark';
   const formId = useId();
   const [name, setName] = useState('');
   const [company, setCompany] = useState('');
@@ -171,16 +174,29 @@ export function ErpConsultationForm({
     return (
       <div
         role="status"
-        className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 sm:p-8 space-y-4 shadow-sm"
+        className={
+          isDark
+            ? 'rounded-2xl border border-[#D41514]/45 bg-[#1B1B1B] p-6 sm:p-8 space-y-4 shadow-[0_18px_50px_rgba(0,0,0,0.45)]'
+            : 'rounded-2xl border border-emerald-200 bg-emerald-50 p-6 sm:p-8 space-y-4 shadow-sm'
+        }
       >
         <div className="flex items-start gap-3">
-          <CheckCircle2 className="w-6 h-6 text-emerald-700 shrink-0 mt-0.5" aria-hidden="true" />
+          <CheckCircle2
+            className={`w-6 h-6 shrink-0 mt-0.5 ${isDark ? 'text-[#D41514]' : 'text-emerald-700'}`}
+            aria-hidden="true"
+          />
           <div className="space-y-1.5">
-            <h3 className="text-lg font-bold text-slate-900">
+            <h3 className={`text-lg font-bold ${isDark ? 'text-[#CDCBCA]' : 'text-slate-900'}`}>
               ERP Consultation Request Saved
             </h3>
-            <p className="text-sm text-slate-700 leading-relaxed">{successData.statusMessage}</p>
-            <p className="text-xs font-mono font-semibold text-emerald-800 pt-1">
+            <p className={`text-sm leading-relaxed ${isDark ? 'text-[#CDCBCA]' : 'text-slate-700'}`}>
+              {successData.statusMessage}
+            </p>
+            <p
+              className={`text-xs font-mono font-semibold pt-1 ${
+                isDark ? 'text-white' : 'text-emerald-800'
+              }`}
+            >
               Reference ID: {successData.referenceId}
             </p>
           </div>
@@ -188,7 +204,11 @@ export function ErpConsultationForm({
         <button
           type="button"
           onClick={() => setSuccessData(null)}
-          className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 transition-colors cursor-pointer"
+          className={
+            isDark
+              ? 'rounded-lg border border-[#303030] bg-[#141414] px-4 py-2 text-xs font-semibold text-[#CDCBCA] hover:border-[#D41514] hover:text-white transition-colors cursor-pointer'
+              : 'rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 transition-colors cursor-pointer'
+          }
         >
           Submit Another ERP Requirement
         </button>
@@ -196,28 +216,57 @@ export function ErpConsultationForm({
     );
   }
 
+  const labelClass = isDark
+    ? 'block text-xs font-semibold text-[#CDCBCA]'
+    : 'block text-xs font-semibold text-slate-800';
+
+  const inputClass = isDark
+    ? 'w-full rounded-lg border border-[#303030] bg-[#080808] px-3.5 py-2.5 text-sm text-[#CDCBCA] placeholder:text-[#969696]/60 focus:border-[#D41514] focus:outline-none'
+    : 'w-full rounded-lg border border-slate-300 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:bg-white focus:outline-none';
+
   return (
     <form
       onSubmit={handleSubmit}
       noValidate
-      className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-[0_16px_44px_-18px_rgba(15,23,42,0.12)] space-y-6"
+      className={
+        isDark
+          ? 'rounded-2xl border border-[#303030] bg-[#111111] p-6 sm:p-8 shadow-[0_18px_50px_rgba(0,0,0,0.45)] space-y-6'
+          : 'rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-[0_16px_44px_-18px_rgba(15,23,42,0.12)] space-y-6'
+      }
     >
-      <div className="space-y-2 border-b border-slate-200 pb-4">
-        <p className="text-xs font-bold uppercase tracking-wider text-blue-700">
+      <div className={`space-y-2 border-b pb-4 ${isDark ? 'border-[#303030]' : 'border-slate-200'}`}>
+        <p
+          className={`text-xs font-bold uppercase tracking-wider ${
+            isDark ? 'text-[#D41514]' : 'text-blue-700'
+          }`}
+        >
           Direct Engineering Consultation
         </p>
-        <h3 className="font-[family-name:var(--font-display)] text-xl sm:text-2xl font-bold text-slate-900">
+        <h3
+          className={`font-[family-name:var(--font-display)] text-xl sm:text-2xl font-bold ${
+            isDark ? 'text-[#CDCBCA]' : 'text-slate-900'
+          }`}
+        >
           {heading}
         </h3>
-        <p className="text-sm text-slate-600 leading-relaxed">{subheading}</p>
+        <p className={`text-sm leading-relaxed ${isDark ? 'text-[#969696]' : 'text-slate-600'}`}>
+          {subheading}
+        </p>
       </div>
 
       {errorMsg && (
         <div
           role="alert"
-          className="flex items-start gap-2.5 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-900"
+          className={
+            isDark
+              ? 'flex items-start gap-2.5 rounded-lg border border-[#D41514]/60 bg-[#D41514]/15 px-4 py-3 text-sm text-white'
+              : 'flex items-start gap-2.5 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-900'
+          }
         >
-          <AlertCircle className="w-4 h-4 text-red-700 shrink-0 mt-0.5" aria-hidden="true" />
+          <AlertCircle
+            className={`w-4 h-4 shrink-0 mt-0.5 ${isDark ? 'text-[#D41514]' : 'text-red-700'}`}
+            aria-hidden="true"
+          />
           <span>{errorMsg}</span>
         </div>
       )}
@@ -238,7 +287,7 @@ export function ErpConsultationForm({
       {/* Contact & Company Details */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-1.5">
-          <label htmlFor={`${formId}-name`} className="block text-xs font-semibold text-slate-800">
+          <label htmlFor={`${formId}-name`} className={labelClass}>
             Full Name <span className="text-[#D41514]">*</span>
           </label>
           <input
@@ -248,12 +297,12 @@ export function ErpConsultationForm({
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Your full name"
-            className="w-full rounded-lg border border-slate-300 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:bg-white focus:outline-none"
+            className={inputClass}
           />
         </div>
 
         <div className="space-y-1.5">
-          <label htmlFor={`${formId}-company`} className="block text-xs font-semibold text-slate-800">
+          <label htmlFor={`${formId}-company`} className={labelClass}>
             Company Name <span className="text-[#D41514]">*</span>
           </label>
           <input
@@ -263,12 +312,12 @@ export function ErpConsultationForm({
             value={company}
             onChange={(e) => setCompany(e.target.value)}
             placeholder="Organization or firm name"
-            className="w-full rounded-lg border border-slate-300 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:bg-white focus:outline-none"
+            className={inputClass}
           />
         </div>
 
         <div className="space-y-1.5">
-          <label htmlFor={`${formId}-phone`} className="block text-xs font-semibold text-slate-800">
+          <label htmlFor={`${formId}-phone`} className={labelClass}>
             Phone Number <span className="text-[#D41514]">*</span>
           </label>
           <input
@@ -278,12 +327,12 @@ export function ErpConsultationForm({
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="+91 98XXXXXXXX"
-            className="w-full rounded-lg border border-slate-300 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:bg-white focus:outline-none"
+            className={inputClass}
           />
         </div>
 
         <div className="space-y-1.5">
-          <label htmlFor={`${formId}-email`} className="block text-xs font-semibold text-slate-800">
+          <label htmlFor={`${formId}-email`} className={labelClass}>
             Business Email <span className="text-[#D41514]">*</span>
           </label>
           <input
@@ -293,7 +342,7 @@ export function ErpConsultationForm({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="name@company.com"
-            className="w-full rounded-lg border border-slate-300 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:bg-white focus:outline-none"
+            className={inputClass}
           />
         </div>
       </div>
@@ -301,17 +350,17 @@ export function ErpConsultationForm({
       {/* Industry, ERP Solution, Users & Deployment */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <div className="space-y-1.5">
-          <label htmlFor={`${formId}-industry`} className="block text-xs font-semibold text-slate-800">
+          <label htmlFor={`${formId}-industry`} className={labelClass}>
             Industry
           </label>
           <select
             id={`${formId}-industry`}
             value={industry}
             onChange={(e) => setIndustry(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-900 focus:border-blue-600 focus:bg-white focus:outline-none"
+            className={inputClass}
           >
             {ERP_CONSULTATION_INDUSTRY_OPTIONS.map((opt) => (
-              <option key={opt} value={opt}>
+              <option key={opt} value={opt} className={isDark ? 'bg-[#111111] text-[#CDCBCA]' : undefined}>
                 {opt}
               </option>
             ))}
@@ -319,17 +368,17 @@ export function ErpConsultationForm({
         </div>
 
         <div className="space-y-1.5">
-          <label htmlFor={`${formId}-solution`} className="block text-xs font-semibold text-slate-800">
+          <label htmlFor={`${formId}-solution`} className={labelClass}>
             ERP Solution Required
           </label>
           <select
             id={`${formId}-solution`}
             value={erpSolution}
             onChange={(e) => setErpSolution(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-900 focus:border-blue-600 focus:bg-white focus:outline-none"
+            className={inputClass}
           >
             {ERP_CONSULTATION_SOLUTION_OPTIONS.map((opt) => (
-              <option key={opt} value={opt}>
+              <option key={opt} value={opt} className={isDark ? 'bg-[#111111] text-[#CDCBCA]' : undefined}>
                 {opt}
               </option>
             ))}
@@ -337,17 +386,17 @@ export function ErpConsultationForm({
         </div>
 
         <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
-          <label htmlFor={`${formId}-users`} className="block text-xs font-semibold text-slate-800">
+          <label htmlFor={`${formId}-users`} className={labelClass}>
             Number of Users
           </label>
           <select
             id={`${formId}-users`}
             value={userCount}
             onChange={(e) => setUserCount(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-900 focus:border-blue-600 focus:bg-white focus:outline-none"
+            className={inputClass}
           >
             {USER_RANGE_OPTIONS.map((opt) => (
-              <option key={opt} value={opt}>
+              <option key={opt} value={opt} className={isDark ? 'bg-[#111111] text-[#CDCBCA]' : undefined}>
                 {opt}
               </option>
             ))}
@@ -357,9 +406,7 @@ export function ErpConsultationForm({
 
       {/* Preferred Deployment */}
       <div className="space-y-2">
-        <span className="block text-xs font-semibold text-slate-800">
-          Preferred Deployment
-        </span>
+        <span className={labelClass}>Preferred Deployment</span>
         <div className="grid grid-cols-3 gap-3 max-w-md">
           {DEPLOYMENT_OPTIONS.map((option) => {
             const active = deployment === option;
@@ -370,9 +417,13 @@ export function ErpConsultationForm({
                 onClick={() => setDeployment(option)}
                 aria-pressed={active}
                 className={`rounded-lg border px-3 py-2 text-xs sm:text-sm font-semibold whitespace-nowrap transition-colors cursor-pointer ${
-                  active
-                    ? 'border-blue-700 bg-blue-700 text-white'
-                    : 'border-slate-300 bg-slate-50 text-slate-700 hover:bg-slate-100'
+                  isDark
+                    ? active
+                      ? 'border-[#D41514] bg-[#D41514] text-white'
+                      : 'border-[#303030] bg-[#141414] text-[#CDCBCA] hover:border-[#D41514]/70 hover:text-white'
+                    : active
+                      ? 'border-blue-700 bg-blue-700 text-white'
+                      : 'border-slate-300 bg-slate-50 text-slate-700 hover:bg-slate-100'
                 }`}
               >
                 {option}
@@ -384,9 +435,7 @@ export function ErpConsultationForm({
 
       {/* Multi-Select Modules Required */}
       <div className="space-y-2.5">
-        <span className="block text-xs font-semibold text-slate-800">
-          Modules Required (Select all applicable)
-        </span>
+        <span className={labelClass}>Modules Required (Select all applicable)</span>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
           {ERP_MODULES.map((mod) => {
             const checked = selectedModules.includes(mod.name);
@@ -394,16 +443,22 @@ export function ErpConsultationForm({
               <label
                 key={mod.id}
                 className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium cursor-pointer transition-colors ${
-                  checked
-                    ? 'border-blue-600 bg-blue-50 text-blue-950'
-                    : 'border-slate-200 bg-slate-50/70 text-slate-700 hover:border-slate-300'
+                  isDark
+                    ? checked
+                      ? 'border-[#D41514] bg-[#2A1010] text-white'
+                      : 'border-[#303030] bg-[#141414] text-[#CDCBCA] hover:border-[#D41514]/50'
+                    : checked
+                      ? 'border-blue-600 bg-blue-50 text-blue-950'
+                      : 'border-slate-200 bg-slate-50/70 text-slate-700 hover:border-slate-300'
                 }`}
               >
                 <input
                   type="checkbox"
                   checked={checked}
                   onChange={() => toggleModule(mod.name)}
-                  className="h-3.5 w-3.5 rounded accent-blue-700 shrink-0"
+                  className={`h-3.5 w-3.5 rounded shrink-0 ${
+                    isDark ? 'accent-[#D41514]' : 'accent-blue-700'
+                  }`}
                 />
                 <span className="leading-snug">{mod.name}</span>
               </label>
@@ -414,7 +469,7 @@ export function ErpConsultationForm({
 
       {/* Project Description */}
       <div className="space-y-1.5">
-        <label htmlFor={`${formId}-description`} className="block text-xs font-semibold text-slate-800">
+        <label htmlFor={`${formId}-description`} className={labelClass}>
           Project &amp; Workflow Description <span className="text-[#D41514]">*</span>
         </label>
         <textarea
@@ -424,17 +479,23 @@ export function ErpConsultationForm({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Describe your current workflow (branches, stock units, billing volume, approvals, or existing data you want migrated)..."
-          className="w-full rounded-lg border border-slate-300 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:bg-white focus:outline-none"
+          className={inputClass}
         />
       </div>
 
       {/* Privacy Consent */}
-      <label className="flex items-start gap-2.5 text-xs text-slate-600 cursor-pointer">
+      <label
+        className={`flex items-start gap-2.5 text-xs cursor-pointer ${
+          isDark ? 'text-[#CDCBCA]' : 'text-slate-600'
+        }`}
+      >
         <input
           type="checkbox"
           checked={consent}
           onChange={(e) => setConsent(e.target.checked)}
-          className="mt-0.5 h-4 w-4 rounded accent-blue-700 shrink-0"
+          className={`mt-0.5 h-4 w-4 rounded shrink-0 ${
+            isDark ? 'accent-[#D41514]' : 'accent-blue-700'
+          }`}
         />
         <span className="leading-relaxed">
           I agree that Klyia Technology may store and review these details solely to prepare a relevant ERP consultation and reply by phone, WhatsApp, or email.
@@ -450,7 +511,7 @@ export function ErpConsultationForm({
           <Send className="w-4 h-4 shrink-0" aria-hidden="true" />
           <span>{submitting ? 'Submitting ERP Request...' : 'Request Free ERP Consultation'}</span>
         </button>
-        <span className="text-xs text-slate-500">
+        <span className={`text-xs ${isDark ? 'text-[#969696]' : 'text-slate-500'}`}>
           Saved in system ledger &amp; dispatched directly to klyiatechnology@gmail.com
         </span>
       </div>

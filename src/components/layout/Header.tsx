@@ -65,7 +65,7 @@ export function Header() {
     <header
       ref={headerRef}
       onMouseLeave={scheduleClose}
-      className="sticky top-0 z-[70] w-full bg-[#080808]/95 backdrop-blur-md border-b border-[#303030] shadow-[0_6px_28px_rgba(0,0,0,0.65)]"
+      className="sticky top-0 z-[70] w-full bg-[#080808] border-b border-[#303030] shadow-[0_6px_28px_rgba(0,0,0,0.65)]"
     >
       <Container>
         <div className="flex h-16 lg:h-[72px] items-center justify-between gap-6">

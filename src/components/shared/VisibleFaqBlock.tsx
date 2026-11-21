@@ -7,6 +7,7 @@ interface VisibleFaqBlockProps {
   subtitle?: string;
   faqs: FaqEntry[];
   variant?: 'dark' | 'light';
+  headingClassName?: string;
 }
 
 export function VisibleFaqBlock({
@@ -14,6 +15,7 @@ export function VisibleFaqBlock({
   subtitle = 'Clear, straightforward answers covering scope, engineering workflow, and business suitability.',
   faqs,
   variant = 'dark',
+  headingClassName,
 }: VisibleFaqBlockProps) {
   if (!faqs || faqs.length === 0) {
     return null;
@@ -38,7 +40,7 @@ export function VisibleFaqBlock({
         <h2
           id="faq-section-heading"
           className={`font-[family-name:var(--font-display)] text-2xl sm:text-3xl font-bold ${
-            isLight ? 'text-slate-900' : 'text-white'
+            headingClassName ?? (isLight ? 'text-slate-900' : 'text-white')
           }`}
         >
           {heading}

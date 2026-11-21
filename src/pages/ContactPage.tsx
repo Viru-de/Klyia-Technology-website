@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Building2, CheckCircle2, ExternalLink, Mail, MapPin, MessageSquare, Phone} from 'lucide-react';
-import {OfficeGoogleMap} from '../components/contact/OfficeGoogleMap.tsx';
+import {OfficeLeafletMap} from '../components/contact/OfficeLeafletMap.tsx';
 import {OPEN_CHATBOX_EVENT} from '../components/layout/FloatingSupportDock.tsx';
 import {InnerPageBanner} from '../components/layout/InnerPageBanner.tsx';
 import {Button} from '../components/ui/Button.tsx';
@@ -229,13 +229,13 @@ export function ContactPage({breadcrumbs}: ContactPageProps) {
                       {BRAND.address.full}
                     </address>
                     <a
-                      href={BRAND.googleMapsUrl}
+                      href={BRAND.openStreetMapDirectionsUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label="Get directions to Klyia Technology Bhilai office on Google Maps"
+                      aria-label="Get directions to Klyia Technology Bhilai office on OpenStreetMap"
                       className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#D41514] hover:text-white transition-colors"
                     >
-                      <span>Get Directions on Google Maps</span>
+                      <span>Get Directions</span>
                       <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
                     </a>
                   </div>
@@ -483,7 +483,7 @@ export function ContactPage({breadcrumbs}: ContactPageProps) {
             </div>
           </div>
 
-          {/* Interactive Google Map Section */}
+          {/* Interactive OpenStreetMap Section */}
           <div className="mt-12 sm:mt-16 rounded-2xl border border-[#303030] bg-[#111111] p-6 sm:p-8 shadow-[0_18px_50px_rgba(0,0,0,0.45)] space-y-6">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-5 pb-5 border-b border-[#303030]">
               <div className="space-y-2">
@@ -504,10 +504,10 @@ export function ContactPage({breadcrumbs}: ContactPageProps) {
 
               <div className="flex flex-wrap items-center gap-3 shrink-0">
                 <a
-                  href={BRAND.googleMapsDirectionsUrl}
+                  href={BRAND.openStreetMapDirectionsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="Get Directions to Klyia Technology office in Risali, Bhilai on Google Maps"
+                  aria-label="Get Directions to Klyia Technology office in Risali, Bhilai on OpenStreetMap"
                   className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#D41514] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#b51110] transition-colors"
                 >
                   <MapPin className="w-4 h-4 shrink-0" aria-hidden="true" />
@@ -518,7 +518,7 @@ export function ContactPage({breadcrumbs}: ContactPageProps) {
             </div>
 
             <div className="w-full overflow-hidden rounded-xl border border-[#303030] bg-[#080808]">
-              <OfficeGoogleMap />
+              <OfficeLeafletMap />
             </div>
           </div>
         </Container>

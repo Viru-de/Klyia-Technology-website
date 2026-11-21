@@ -16,12 +16,18 @@ export const BRAND = {
   phoneHref: 'tel:+918296887643',
   whatsappHref: 'https://wa.me/918296887643',
   whatsappPrefilledHref: buildWhatsAppHref(WHATSAPP_DEFAULT_MESSAGE),
+  officeCoordinates: {
+    lat: 21.1590104,
+    lng: 81.3353664,
+  },
+  openStreetMapUrl:
+    'https://www.openstreetmap.org/?mlat=21.1590104&mlon=81.3353664#map=17/21.1590104/81.3353664',
+  openStreetMapDirectionsUrl:
+    'https://www.openstreetmap.org/directions?to=21.1590104%2C81.3353664#map=17/21.1590104/81.3353664',
   googleMapsUrl:
-    'https://www.google.com/maps/search/?api=1&query=First+Floor,+Bajrang+Hardware,+Krishna+Talkies+Road,+Risali,+Bhilai,+Chhattisgarh,+India',
+    'https://www.google.com/maps/search/?api=1&query=21.1590104,81.3353664',
   googleMapsDirectionsUrl:
-    'https://www.google.com/maps/dir/?api=1&destination=First+Floor,+Bajrang+Hardware,+Krishna+Talkies+Road,+Risali,+Bhilai,+Chhattisgarh,+India',
-  googleMapsEmbedUrl:
-    'https://www.google.com/maps/embed?origin=mfe&pb=!1m3!2m1!1sFirst+Floor,+Bajrang+Hardware,+Krishna+Talkies+Road,+Risali,+Bhilai,+Chhattisgarh,+India!6i16',
+    'https://www.google.com/maps/dir/?api=1&destination=21.1590104,81.3353664',
   social: {
     facebook: 'https://www.facebook.com/klyiatechnology/',
     instagram: 'https://www.instagram.com/klyiatechnology/',

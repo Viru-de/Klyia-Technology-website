@@ -36,7 +36,7 @@ export function ErpProductDetailPage({product, breadcrumbs}: ErpProductDetailPag
   const relatedIndustry = getIndustryBySlug(product.relatedIndustrySlug);
 
   return (
-    <>
+    <div className="bg-[#080808] text-[#CDCBCA]">
       <InnerPageBanner
         title={product.h1}
         subtitle={product.heroSubtitle}
@@ -45,45 +45,46 @@ export function ErpProductDetailPage({product, breadcrumbs}: ErpProductDetailPag
         backgroundAlt={product.heroImageAlt}
         ctaLabel={`Request ${product.shortTitle} Demo`}
         ctaHref="#product-consultation-form"
+        headingClassName="text-[#CDCBCA]"
       />
 
       {/* Overview & Workflow-First Philosophy */}
-      <section className="bg-white py-14 sm:py-16 border-b border-slate-200">
+      <section className="bg-[#080808] py-14 sm:py-16 border-b border-[#303030]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-4">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#303030] pb-4">
             <Link
               href={ROUTES.ERP_HUB}
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-700 hover:text-blue-900 transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#CDCBCA] hover:text-[#D41514] transition-colors"
             >
-              <ArrowLeft className="w-4 h-4" aria-hidden="true" />
+              <ArrowLeft className="w-4 h-4 text-[#D41514]" aria-hidden="true" />
               <span>Back to All ERP Software Solutions</span>
             </Link>
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-600">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#969696]">
               Category {product.code} · {product.industryLabel}
             </span>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
             <div className="lg:col-span-7 space-y-4">
-              <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-700">
-                <span className="h-px w-5 bg-blue-700" aria-hidden="true" />
+              <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#D41514]">
+                <span className="h-px w-5 bg-[#D41514]" aria-hidden="true" />
                 <span>Custom Workflow Fit</span>
               </p>
-              <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl font-bold text-slate-900">
+              <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl font-bold text-[#CDCBCA]">
                 Engineered Around Real {product.industryLabel} Workflows
               </h2>
               {product.overview.map((paragraph) => (
-                <p key={paragraph} className="text-sm sm:text-base leading-relaxed text-slate-700">
+                <p key={paragraph} className="text-sm sm:text-base leading-relaxed text-[#CDCBCA]">
                   {paragraph}
                 </p>
               ))}
-              <div className="rounded-xl border border-blue-200 bg-blue-50/70 p-4 text-sm text-slate-800 leading-relaxed">
-                <strong className="text-blue-900">Why Custom Build:</strong> {product.workflowFitNote}
+              <div className="rounded-xl border border-[#D41514]/40 bg-[#141414] p-4 text-sm text-[#CDCBCA] leading-relaxed">
+                <strong className="text-white">Why Custom Build:</strong> {product.workflowFitNote}
               </div>
             </div>
 
             <div className="lg:col-span-5">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-2.5 shadow-sm">
+              <div className="rounded-2xl border border-[#303030] bg-[#141414] p-2.5 shadow-[0_14px_38px_rgba(0,0,0,0.45)]">
                 <MediaFrame
                   src={product.heroImage}
                   webpSrc={toWebpAssetPath(product.heroImage)}
@@ -100,14 +101,14 @@ export function ErpProductDetailPage({product, breadcrumbs}: ErpProductDetailPag
       </section>
 
       {/* Step-by-Step Operational Workflow */}
-      <section className="bg-slate-50 py-14 sm:py-16 border-b border-slate-200">
+      <section className="bg-[#080808] py-14 sm:py-16 border-b border-[#303030]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="max-w-3xl space-y-2">
-            <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-700">
+            <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#D41514]">
               <Workflow className="w-4 h-4" aria-hidden="true" />
               <span>End-to-End Execution</span>
             </p>
-            <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl font-bold text-slate-900">
+            <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl font-bold text-[#CDCBCA]">
               How {product.name} Works Step by Step
             </h2>
           </div>
@@ -116,13 +117,13 @@ export function ErpProductDetailPage({product, breadcrumbs}: ErpProductDetailPag
             {product.workflowSteps.map((ws) => (
               <div
                 key={ws.step}
-                className="rounded-xl border border-slate-200 bg-white p-5 space-y-2.5 shadow-2xs"
+                className="rounded-xl border border-[#303030] bg-[#111111] p-5 space-y-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
               >
-                <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-700 text-xs font-bold text-white">
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-[#D41514] text-xs font-bold text-white">
                   {ws.step}
                 </span>
-                <h3 className="text-base font-bold text-slate-900 leading-snug">{ws.title}</h3>
-                <p className="text-xs sm:text-sm leading-relaxed text-slate-600">{ws.detail}</p>
+                <h3 className="text-base font-bold text-white leading-snug">{ws.title}</h3>
+                <p className="text-xs sm:text-sm leading-relaxed text-[#969696]">{ws.detail}</p>
               </div>
             ))}
           </div>
@@ -130,14 +131,14 @@ export function ErpProductDetailPage({product, breadcrumbs}: ErpProductDetailPag
       </section>
 
       {/* Core Modules Included */}
-      <section className="bg-white py-14 sm:py-16 border-b border-slate-200">
+      <section className="bg-[#080808] py-14 sm:py-16 border-b border-[#303030]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="max-w-3xl space-y-2">
-            <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-700">
+            <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#D41514]">
               <Layers className="w-4 h-4" aria-hidden="true" />
               <span>Included Capabilities</span>
             </p>
-            <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl font-bold text-slate-900">
+            <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl font-bold text-[#CDCBCA]">
               Specialized Modules in {product.name}
             </h2>
           </div>
@@ -146,10 +147,10 @@ export function ErpProductDetailPage({product, breadcrumbs}: ErpProductDetailPag
             {product.modules.map((mod) => (
               <div
                 key={mod.title}
-                className="rounded-xl border border-slate-200 bg-slate-50/70 p-5 space-y-2"
+                className="rounded-xl border border-[#303030] bg-[#111111] p-5 space-y-2 hover:border-[#D41514]/50 transition-colors"
               >
-                <h3 className="text-base font-bold text-slate-900">{mod.title}</h3>
-                <p className="text-xs sm:text-sm leading-relaxed text-slate-600">{mod.detail}</p>
+                <h3 className="text-base font-bold text-white">{mod.title}</h3>
+                <p className="text-xs sm:text-sm leading-relaxed text-[#969696]">{mod.detail}</p>
               </div>
             ))}
           </div>
@@ -157,18 +158,18 @@ export function ErpProductDetailPage({product, breadcrumbs}: ErpProductDetailPag
       </section>
 
       {/* Business Benefits & Modular Compatibility */}
-      <section className="bg-slate-50 py-14 sm:py-16 border-b border-slate-200">
+      <section className="bg-[#080808] py-14 sm:py-16 border-b border-[#303030]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 space-y-4">
-              <h2 className="font-[family-name:var(--font-display)] text-xl sm:text-2xl font-bold text-slate-900">
+            <div className="rounded-2xl border border-[#303030] bg-[#111111] p-6 sm:p-8 space-y-4">
+              <h2 className="font-[family-name:var(--font-display)] text-xl sm:text-2xl font-bold text-[#CDCBCA]">
                 Operational Benefits for Your Team
               </h2>
               <ul className="space-y-3">
                 {product.benefits.map((benefit) => (
-                  <li key={benefit} className="flex items-start gap-2.5 text-sm text-slate-700">
+                  <li key={benefit} className="flex items-start gap-2.5 text-sm text-[#CDCBCA]">
                     <CheckCircle2
-                      className="w-4 h-4 text-blue-700 shrink-0 mt-0.5"
+                      className="w-4 h-4 text-[#D41514] shrink-0 mt-0.5"
                       aria-hidden="true"
                     />
                     <span>{benefit}</span>
@@ -177,19 +178,19 @@ export function ErpProductDetailPage({product, breadcrumbs}: ErpProductDetailPag
               </ul>
             </div>
 
-            <div className="rounded-2xl border border-blue-200 bg-white p-6 sm:p-8 space-y-4">
+            <div className="rounded-2xl border border-[#303030] bg-[#111111] p-6 sm:p-8 space-y-4">
               <div className="flex items-center gap-2.5">
-                <Database className="w-5 h-5 text-blue-700 shrink-0" aria-hidden="true" />
-                <h2 className="font-[family-name:var(--font-display)] text-xl sm:text-2xl font-bold text-slate-900">
+                <Database className="w-5 h-5 text-[#D41514] shrink-0" aria-hidden="true" />
+                <h2 className="font-[family-name:var(--font-display)] text-xl sm:text-2xl font-bold text-[#CDCBCA]">
                   Standalone &amp; Integrated Compatibility
                 </h2>
               </div>
-              <p className="text-sm leading-relaxed text-slate-700">
+              <p className="text-sm leading-relaxed text-[#CDCBCA]">
                 {product.standaloneVsIntegratedNote}
               </p>
 
               <div className="space-y-2 pt-2">
-                <p className="text-xs font-bold uppercase tracking-wider text-blue-700">
+                <p className="text-xs font-bold uppercase tracking-wider text-[#D41514]">
                   Compatible Platform Modules
                 </p>
                 <div className="grid grid-cols-2 gap-2">
@@ -197,7 +198,7 @@ export function ErpProductDetailPage({product, breadcrumbs}: ErpProductDetailPag
                     <Link
                       key={modName}
                       href={`${ROUTES.ERP_HUB}#erp-modules`}
-                      className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-800 hover:border-blue-600 hover:text-blue-700 transition-colors"
+                      className="rounded-lg border border-[#303030] bg-[#141414] px-3 py-2 text-xs font-semibold text-[#CDCBCA] hover:border-[#D41514] hover:text-white transition-colors"
                     >
                       {modName}
                     </Link>
@@ -206,15 +207,15 @@ export function ErpProductDetailPage({product, breadcrumbs}: ErpProductDetailPag
               </div>
 
               {/* Related Industry & Service Contextual Links */}
-              <div className="pt-3 border-t border-slate-200 space-y-2">
-                <p className="text-xs font-bold uppercase tracking-wider text-slate-600">
+              <div className="pt-3 border-t border-[#303030] space-y-2">
+                <p className="text-xs font-bold uppercase tracking-wider text-[#969696]">
                   Related Domain &amp; Engineering Pages
                 </p>
                 <div className="flex flex-wrap gap-3 text-xs sm:text-sm font-semibold">
                   {relatedIndustry && (
                     <Link
                       href={relatedIndustry.canonicalPath}
-                      className="text-blue-700 hover:text-blue-900 underline underline-offset-4"
+                      className="text-[#CDCBCA] hover:text-[#D41514] underline underline-offset-4 transition-colors"
                     >
                       {relatedIndustry.name} Digital Solutions
                     </Link>
@@ -223,7 +224,7 @@ export function ErpProductDetailPage({product, breadcrumbs}: ErpProductDetailPag
                     <Link
                       key={srv.slug}
                       href={srv.canonicalPath}
-                      className="text-blue-700 hover:text-blue-900 underline underline-offset-4"
+                      className="text-[#CDCBCA] hover:text-[#D41514] underline underline-offset-4 transition-colors"
                     >
                       {srv.name}
                     </Link>
@@ -239,10 +240,11 @@ export function ErpProductDetailPage({product, breadcrumbs}: ErpProductDetailPag
       <section
         id="product-consultation-form"
         aria-label={`${product.name} Consultation Form`}
-        className="bg-blue-50/40 py-14 sm:py-16 border-b border-slate-200 scroll-mt-20"
+        className="bg-[#080808] py-14 sm:py-16 border-b border-[#303030] scroll-mt-20"
       >
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <ErpConsultationForm
+            variant="dark"
             sourcePage={product.canonicalPath}
             preselectedSolution={product.name}
             heading={`Request a Consultation or Demo for ${product.name}`}
@@ -252,10 +254,11 @@ export function ErpProductDetailPage({product, breadcrumbs}: ErpProductDetailPag
       </section>
 
       {/* Product FAQs */}
-      <section className="bg-white py-14 sm:py-16 border-b border-slate-200">
+      <section className="bg-[#080808] py-14 sm:py-16 border-b border-[#303030]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <VisibleFaqBlock
-            variant="light"
+            variant="dark"
+            headingClassName="text-[#CDCBCA]"
             heading={`${product.shortTitle} — Frequently Asked Questions`}
             subtitle={`Practical answers about implementing ${product.name} for your business.`}
             faqs={product.faqs}
@@ -265,9 +268,9 @@ export function ErpProductDetailPage({product, breadcrumbs}: ErpProductDetailPag
 
       {/* Related ERP Solutions */}
       {relatedProducts.length > 0 && (
-        <section className="bg-slate-50 py-12 sm:py-14 border-b border-slate-200">
+        <section className="bg-[#080808] py-12 sm:py-14 border-b border-[#303030]">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-6">
-            <h2 className="font-[family-name:var(--font-display)] text-xl sm:text-2xl font-bold text-slate-900">
+            <h2 className="font-[family-name:var(--font-display)] text-xl sm:text-2xl font-bold text-[#CDCBCA]">
               Explore Related ERP Solutions
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -275,22 +278,22 @@ export function ErpProductDetailPage({product, breadcrumbs}: ErpProductDetailPag
                 <Link
                   key={rel.slug}
                   href={rel.canonicalPath}
-                  className="group flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-5 space-y-3 hover:border-blue-600 transition-colors"
+                  className="group flex flex-col justify-between rounded-xl border border-[#303030] bg-[#111111] p-5 space-y-3 hover:border-[#D41514] transition-colors"
                 >
                   <div className="space-y-1.5">
-                    <span className="text-xs font-bold uppercase tracking-wider text-blue-700">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#D41514]">
                       {rel.industryLabel}
                     </span>
-                    <h3 className="text-base font-bold text-slate-900 group-hover:text-blue-700 transition-colors">
+                    <h3 className="text-base font-bold text-white group-hover:text-[#D41514] transition-colors">
                       {rel.name}
                     </h3>
-                    <p className="text-xs sm:text-sm text-slate-600 line-clamp-2">
+                    <p className="text-xs sm:text-sm text-[#969696] line-clamp-2">
                       {rel.heroSubtitle}
                     </p>
                   </div>
-                  <span className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-700">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#CDCBCA] group-hover:text-white transition-colors">
                     <span>View {rel.shortTitle} Modules</span>
-                    <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+                    <ArrowRight className="w-3.5 h-3.5 text-[#D41514]" aria-hidden="true" />
                   </span>
                 </Link>
               ))}
@@ -300,6 +303,6 @@ export function ErpProductDetailPage({product, breadcrumbs}: ErpProductDetailPag
       )}
 
       <CTASection />
-    </>
+    </div>
   );
 }

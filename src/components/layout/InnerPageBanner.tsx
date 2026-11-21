@@ -17,6 +17,7 @@ interface InnerPageBannerProps {
   ctaLabel?: string;
   ctaHref?: string;
   onCtaNavigate?: () => void;
+  headingClassName?: string;
 }
 
 const DEFAULT_BANNER_IMAGE = '/src/assets/images/banner_obsidian_architecture_1795006490317.jpg';
@@ -31,6 +32,7 @@ export function InnerPageBanner({
   ctaLabel,
   ctaHref,
   onCtaNavigate,
+  headingClassName = 'text-white',
 }: InnerPageBannerProps) {
   const prefersReducedMotion = useReducedMotion();
   const [imageError, setImageError] = useState(false);
@@ -117,7 +119,9 @@ export function InnerPageBanner({
             </ol>
           </nav>
 
-          <h1 className="font-[family-name:var(--font-display)] text-[26px] sm:text-4xl lg:text-[42px] font-bold leading-[1.15] tracking-[-0.02em] text-white [text-wrap:balance]">
+          <h1
+            className={`font-[family-name:var(--font-display)] text-[26px] sm:text-4xl lg:text-[42px] font-bold leading-[1.15] tracking-[-0.02em] [text-wrap:balance] ${headingClassName}`}
+          >
             {title}
           </h1>
 
