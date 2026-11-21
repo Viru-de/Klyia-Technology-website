@@ -73,7 +73,7 @@ export function buildLlmsTxt(baseUrl: string): string {
     '',
     '## Full Documentation & Sitemaps',
     `- [Complete Service & Article Index (llms-full.txt)](${origin}/llms-full.txt): Extended reference covering all ${ALL_SERVICES.length} services, ${ALL_INDUSTRIES.length} industries, ${ALL_LOCATIONS.length} location guides, and ${ALL_BLOG_ARTICLES.length} knowledge articles.`,
-    `- [XML Sitemap Index](${origin}/sitemap.xml): Machine-readable XML sitemap index.`,
+    `- [XML Sitemap](${origin}/sitemap.xml): Machine-readable XML sitemap of all canonical public pages.`,
     `- [HTML Sitemap](${origin}${ROUTES.SITEMAP}): Human-readable directory of all public URLs.`,
     '',
   ];

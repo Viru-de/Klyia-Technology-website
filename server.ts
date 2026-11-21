@@ -42,16 +42,14 @@ import {
   sanitizeMultiline,
   sanitizeSingleLine,
 } from './server/security.ts';
-import {BRAND} from './src/config/brand.ts';
-import {CORE_INDEXABLE_ROUTES, ROUTES} from './src/config/routes.ts';
-import {resolveBaseUrl} from './src/config/seo.ts';
 import {
-  ALL_BLOG_ARTICLES,
-  ALL_INDUSTRIES,
-  ALL_LOCATIONS,
-  ALL_SERVICES,
-  ERP_PRODUCTS,
-} from './src/data/index.ts';
+  LEGACY_SITEMAP_CHILD_PATHS,
+  buildPrimarySitemapXml,
+  normalizeCanonicalSitemapBaseUrl,
+  renderUrlSetXml,
+} from './server/sitemap.ts';
+import {ROUTES} from './src/config/routes.ts';
+import {resolveBaseUrl} from './src/config/seo.ts';
 
 interface SsrModule {
   render: (
@@ -115,7 +113,6 @@ const rawPort = process.env.PORT;
 const port: number | string =
   rawPort && /^\d+$/.test(rawPort) ? Number(rawPort) : rawPort || 3000;
 const VISITOR_COOKIE_NAME = 'klyia_vid';
-const DEFAULT_SITEMAP_LASTMOD = '2026-11-18';
 
 const SUCCESS_SAVED_AND_EMAILED_MSG =
   'Your enquiry has been received successfully. Our team will contact you shortly.';
@@ -257,25 +254,6 @@ function getRequestOrigin(req: Request): string {
   return `${protocol}://${host}`;
 }
 
-function buildUrlSetXml(
-  baseUrl: string,
-  entries: {path: string; priority: string; changefreq: string; lastmod?: string}[],
-): string {
-  const rows = entries
-    .map(
-      (entry) =>
-        `  <url>\n    <loc>${baseUrl}${entry.path}</loc>\n    <lastmod>${entry.lastmod || DEFAULT_SITEMAP_LASTMOD}</lastmod>\n    <changefreq>${entry.changefreq}</changefreq>\n    <priority>${entry.priority}</priority>\n  </url>`,
-    )
-    .join('\n');
-
-  return [
-    '<?xml version="1.0" encoding="UTF-8"?>',
-    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-    rows,
-    '</urlset>',
-  ].join('\n');
-}
-
 async function createAppServer() {
   getDatabase();
 
@@ -358,9 +336,10 @@ async function createAppServer() {
   });
 
   app.get('/robots.txt', (req: Request, res: Response) => {
-    const baseUrl = resolveBaseUrl(getRequestOrigin(req));
+    const baseUrl = normalizeCanonicalSitemapBaseUrl(getRequestOrigin(req));
     res
       .status(200)
+      .setHeader('Cache-Control', 'public, max-age=3600')
       .type('text/plain; charset=utf-8')
       .send(`User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /admin/\nSitemap: ${baseUrl}/sitemap.xml\n`);
   });
@@ -384,118 +363,48 @@ async function createAppServer() {
   });
 
   app.get('/sitemap.xml', (req: Request, res: Response) => {
-    const baseUrl = resolveBaseUrl(getRequestOrigin(req));
-    const childSitemaps = [
-      '/sitemap-pages.xml',
-      '/sitemap-erp.xml',
-      '/sitemap-services.xml',
-      '/sitemap-industries.xml',
-      '/sitemap-locations.xml',
-      '/sitemap-blog.xml',
-    ];
-    const entries = childSitemaps
-      .map(
-        (childPath) =>
-          `  <sitemap>\n    <loc>${baseUrl}${childPath}</loc>\n    <lastmod>${DEFAULT_SITEMAP_LASTMOD}</lastmod>\n  </sitemap>`,
-      )
-      .join('\n');
+    const {xml} = buildPrimarySitemapXml({
+      requestOrigin: getRequestOrigin(req),
+      redirectMap: REDIRECT_MAP,
+    });
 
-    const xml = [
-      '<?xml version="1.0" encoding="UTF-8"?>',
-      '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-      entries,
-      '</sitemapindex>',
-    ].join('\n');
-
-    res.status(200).type('application/xml; charset=utf-8').send(xml);
+    res
+      .status(200)
+      .setHeader('Cache-Control', 'public, max-age=3600')
+      .type('application/xml; charset=utf-8')
+      .send(xml);
   });
 
-  app.get('/sitemap-pages.xml', (req: Request, res: Response) => {
-    const baseUrl = resolveBaseUrl(getRequestOrigin(req));
-    const xml = buildUrlSetXml(
-      baseUrl,
-      CORE_INDEXABLE_ROUTES.map((routePath) => ({
-        path: routePath,
-        priority: routePath === '/' ? '1.0' : '0.8',
-        changefreq: 'weekly',
-      })),
-    );
-    res.status(200).type('application/xml; charset=utf-8').send(xml);
-  });
+  for (const legacySitemapPath of LEGACY_SITEMAP_CHILD_PATHS) {
+    app.get(legacySitemapPath, (req: Request, res: Response) => {
+      const baseUrl = normalizeCanonicalSitemapBaseUrl(getRequestOrigin(req));
+      res.redirect(301, `${baseUrl}/sitemap.xml`);
+    });
+  }
 
-  app.get('/sitemap-erp.xml', (req: Request, res: Response) => {
-    const baseUrl = resolveBaseUrl(getRequestOrigin(req));
-    const xml = buildUrlSetXml(baseUrl, [
-      {
-        path: ROUTES.ERP_HUB,
-        priority: '0.95',
-        changefreq: 'weekly',
-        lastmod: '2026-11-20',
-      },
-      ...ERP_PRODUCTS.filter((item) => item.indexable !== false).map((item) => ({
-        path: item.canonicalPath,
-        priority: '0.9',
-        changefreq: 'monthly',
-        lastmod: item.updatedAt,
-      })),
-    ]);
-    res.status(200).type('application/xml; charset=utf-8').send(xml);
-  });
+  app.get('/sitemap-:part.xml', (req: Request, res: Response, next: NextFunction) => {
+    const partParam = req.params.part;
+    if (!/^\d+$/.test(partParam)) {
+      next();
+      return;
+    }
 
-  app.get('/sitemap-services.xml', (req: Request, res: Response) => {
-    const baseUrl = resolveBaseUrl(getRequestOrigin(req));
-    const xml = buildUrlSetXml(
-      baseUrl,
-      ALL_SERVICES.filter((item) => item.indexable !== false).map((item) => ({
-        path: item.canonicalPath,
-        priority: '0.85',
-        changefreq: 'monthly',
-        lastmod: item.updatedAt,
-      })),
-    );
-    res.status(200).type('application/xml; charset=utf-8').send(xml);
-  });
+    const partIndex = Number(partParam) - 1;
+    const {isIndex, chunks} = buildPrimarySitemapXml({
+      requestOrigin: getRequestOrigin(req),
+      redirectMap: REDIRECT_MAP,
+    });
 
-  app.get('/sitemap-industries.xml', (req: Request, res: Response) => {
-    const baseUrl = resolveBaseUrl(getRequestOrigin(req));
-    const xml = buildUrlSetXml(
-      baseUrl,
-      ALL_INDUSTRIES.filter((item) => item.indexable !== false).map((item) => ({
-        path: item.canonicalPath,
-        priority: item.priorityBadge ? '0.9' : '0.8',
-        changefreq: 'monthly',
-        lastmod: item.updatedAt,
-      })),
-    );
-    res.status(200).type('application/xml; charset=utf-8').send(xml);
-  });
+    if (!isIndex || partIndex < 0 || partIndex >= chunks.length) {
+      next();
+      return;
+    }
 
-  app.get('/sitemap-locations.xml', (req: Request, res: Response) => {
-    const baseUrl = resolveBaseUrl(getRequestOrigin(req));
-    const xml = buildUrlSetXml(
-      baseUrl,
-      ALL_LOCATIONS.filter((item) => item.indexable !== false).map((item) => ({
-        path: item.canonicalPath,
-        priority: '0.8',
-        changefreq: 'monthly',
-        lastmod: item.updatedAt,
-      })),
-    );
-    res.status(200).type('application/xml; charset=utf-8').send(xml);
-  });
-
-  app.get('/sitemap-blog.xml', (req: Request, res: Response) => {
-    const baseUrl = resolveBaseUrl(getRequestOrigin(req));
-    const xml = buildUrlSetXml(
-      baseUrl,
-      ALL_BLOG_ARTICLES.filter((item) => item.indexable !== false).map((item) => ({
-        path: item.canonicalPath,
-        priority: '0.75',
-        changefreq: 'monthly',
-        lastmod: item.updatedAt,
-      })),
-    );
-    res.status(200).type('application/xml; charset=utf-8').send(xml);
+    res
+      .status(200)
+      .setHeader('Cache-Control', 'public, max-age=3600')
+      .type('application/xml; charset=utf-8')
+      .send(renderUrlSetXml(chunks[partIndex]));
   });
 
   app.get('/api/visitors', (_req: Request, res: Response) => {

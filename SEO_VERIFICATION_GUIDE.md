@@ -24,15 +24,10 @@ CLARITY_PROJECT_ID="yourclarityid"
 
 1. Open [Google Search Console](https://search.google.com/search-console/) and add property `https://klyiatechnology.com`.
 2. Verify via **HTML Tag** (paste the verification token into `GOOGLE_SITE_VERIFICATION`) or **DNS TXT record** cleanly at your domain registrar.
-3. Under **Sitemaps**, submit only the primary Sitemap Index:
+3. Under **Sitemaps**, submit only the primary XML sitemap:
    - `https://klyiatechnology.com/sitemap.xml`
-4. Verify Google discovers all five child sitemaps cleanly:
-   - `https://klyiatechnology.com/sitemap-pages.xml`
-   - `https://klyiatechnology.com/sitemap-services.xml`
-   - `https://klyiatechnology.com/sitemap-industries.xml`
-   - `https://klyiatechnology.com/sitemap-locations.xml`
-   - `https://klyiatechnology.com/sitemap-blog.xml`
-5. Use **URL Inspection** on `/`, `/services/erp-software-development/`, `/industries/steel-iron-industry/`, `/industries/solar-renewable-energy/`, and `/locations/website-development-company-in-bhilai/` to confirm SSR HTML and structured Schema validate cleanly.
+4. Verify Google discovers all canonical public URLs (core pages, Custom ERP Hub + 11 ERP industry pages, 45 services, 13 industries, 8 location guides, and 8 blog articles) cleanly without duplicates or `noindex` pages.
+5. Use **URL Inspection** on `/`, `/erp-software-development/`, `/services/erp-software-development/`, `/industries/steel-iron-industry/`, `/industries/solar-renewable-energy/`, and `/locations/website-development-company-in-bhilai/` to confirm SSR HTML and structured Schema validate cleanly.
 
 ---
 
