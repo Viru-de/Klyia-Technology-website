@@ -16,14 +16,14 @@ const VISITOR_HASH_SALT = process.env.VISITOR_HASH_SALT || 'klyia-tech-bhilai-vi
 
 let dbInstance: DatabaseSync | null = null;
 
-export type LeadSourceType = 'contact' | 'quote' | 'service' | 'solar' | 'chat';
+export type LeadSourceType = 'contact' | 'quote' | 'service' | 'solar' | 'chat' | 'callback';
 
 export interface LeadRecordInput {
   source: LeadSourceType;
   name: string;
   company?: string;
   phone: string;
-  email: string;
+  email?: string;
   city?: string;
   service?: string;
   industry?: string;
@@ -474,12 +474,10 @@ export function listFailedLeadsForRetry(options?: {
     ? `SELECT * FROM leads
        WHERE email_status IN ('pending', 'failed')
          AND retry_count < ?
-         AND email IS NOT NULL AND email != ''
        ORDER BY id ASC LIMIT ?`
     : `SELECT * FROM leads
        WHERE email_status IN ('pending', 'failed')
          AND retry_count < ?
-         AND email IS NOT NULL AND email != ''
          AND COALESCE(email_error_code, '') NOT IN ('EAUTH', 'SMTP_NOT_CONFIGURED', 'INVALID_RECIPIENT')
        ORDER BY id ASC LIMIT ?`;
 
@@ -505,10 +503,10 @@ export function getLeadEmailStatusCounts(): Record<EmailDeliveryStatus, number> 
 export function createChatSession(input: {
   name: string;
   phone: string;
-  email: string;
-  company: string;
-  service: string;
-  initialRequirement: string;
+  email?: string;
+  company?: string;
+  service?: string;
+  initialRequirement?: string;
   sourcePage: string;
 }): {session: ChatSessionRecord; initialMessages: ChatMessageRecord[]} {
   const db = getDatabase();
@@ -519,6 +517,12 @@ export function createChatSession(input: {
   const sessionId = randomUUID();
   const sessionToken = randomBytes(24).toString('hex');
   const createdAt = now.toISOString();
+  const safeEmail = (input.email || '').trim();
+  const safeCompany = (input.company || '').trim();
+  const safeService = (input.service || 'Website Enquiry Chat').trim();
+  const safeRequirement = (input.initialRequirement || '').trim();
+  const leadMessage =
+    safeRequirement || 'Visitor started Website Enquiry Chat with Full Name and Phone Number.';
 
   db.exec('BEGIN IMMEDIATE');
   try {
@@ -533,10 +537,10 @@ export function createChatSession(input: {
       referenceId,
       input.name,
       input.phone,
-      input.email,
-      input.company,
-      input.service,
-      input.initialRequirement,
+      safeEmail,
+      safeCompany,
+      safeService,
+      safeRequirement,
       input.sourcePage,
       createdAt,
     );
@@ -549,23 +553,34 @@ export function createChatSession(input: {
     ).run(
       referenceId,
       input.name,
-      input.company,
+      safeCompany || null,
       input.phone,
-      input.email,
-      input.service,
-      `Chatbox Enquiry: ${input.service}`,
-      input.initialRequirement,
+      safeEmail || null,
+      safeService,
+      `Chatbox Enquiry: ${safeService}`,
+      leadMessage,
       input.sourcePage,
-      computeSubmissionFingerprint(['chat', input.email, input.phone, input.initialRequirement]),
+      computeSubmissionFingerprint(['chat', input.name, input.phone, leadMessage]),
       createdAt,
     );
 
-    const userMsgInfo = db
-      .prepare(
-        `INSERT INTO chat_messages (session_id, sender, message, email_status, created_at)
-         VALUES (?, 'visitor', ?, 'pending', ?)`,
-      )
-      .run(sessionId, input.initialRequirement, createdAt);
+    const initialMessages: ChatMessageRecord[] = [];
+    if (safeRequirement) {
+      const userMsgInfo = db
+        .prepare(
+          `INSERT INTO chat_messages (session_id, sender, message, email_status, created_at)
+           VALUES (?, 'visitor', ?, 'pending', ?)`,
+        )
+        .run(sessionId, safeRequirement, createdAt);
+      initialMessages.push({
+        id: Number(userMsgInfo.lastInsertRowid),
+        sessionId,
+        sender: 'visitor',
+        message: safeRequirement,
+        emailStatus: 'pending',
+        createdAt,
+      });
+    }
 
     db.exec('COMMIT');
 
@@ -575,26 +590,15 @@ export function createChatSession(input: {
       referenceId,
       name: input.name,
       phone: input.phone,
-      email: input.email,
-      company: input.company,
-      service: input.service,
-      initialRequirement: input.initialRequirement,
+      email: safeEmail,
+      company: safeCompany,
+      service: safeService,
+      initialRequirement: safeRequirement,
       sourcePage: input.sourcePage,
       consent: true,
       emailStatus: 'pending',
       createdAt,
     };
-
-    const initialMessages: ChatMessageRecord[] = [
-      {
-        id: Number(userMsgInfo.lastInsertRowid),
-        sessionId,
-        sender: 'visitor',
-        message: input.initialRequirement,
-        emailStatus: 'pending',
-        createdAt,
-      },
-    ];
 
     return {session, initialMessages};
   } catch (error) {

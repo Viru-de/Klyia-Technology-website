@@ -161,15 +161,17 @@ async function deliverSavedLeadEmail(lead: StoredLeadSummary): Promise<{
 
   try {
     const emailKind =
-      lead.source === 'solar'
-        ? 'solar'
-        : lead.source === 'service'
-          ? 'service'
-          : lead.source === 'quote'
-            ? 'quote'
-            : lead.source === 'chat'
-              ? 'chat_lead'
-              : 'contact';
+      lead.source === 'callback'
+        ? 'callback'
+        : lead.source === 'solar'
+          ? 'solar'
+          : lead.source === 'service'
+            ? 'service'
+            : lead.source === 'quote'
+              ? 'quote'
+              : lead.source === 'chat'
+                ? 'chat_lead'
+                : 'contact';
 
     const mailResult = await sendEnquiryNotificationEmail({
       kind: emailKind,
@@ -579,44 +581,55 @@ async function createAppServer() {
     const sourceSection = sanitizeSingleLine(body.sourceSection, 120) || 'Website Form';
     const consentGiven = body.consent === true;
 
-    const allowedSources: LeadSourceType[] = ['contact', 'quote', 'service', 'solar'];
+    const allowedSources: LeadSourceType[] = ['contact', 'quote', 'service', 'solar', 'callback'];
     const source: LeadSourceType = allowedSources.includes(body.type as LeadSourceType)
       ? (body.type as LeadSourceType)
       : defaultSource;
+    const isCallbackLead = source === 'callback';
 
     if (name.length < 2) {
       res.status(400).json({ok: false, error: 'Please provide your full name (at least 2 characters).'});
       return;
     }
-    if (!isValidEmailAddress(email)) {
-      res.status(400).json({ok: false, error: 'Please provide a valid email address.'});
-      return;
-    }
     if (!isValidPhoneNumber(phone)) {
-      res.status(400).json({ok: false, error: 'Please provide a valid 10-digit mobile number.'});
+      res.status(400).json({ok: false, error: 'Please provide a valid 10-digit Indian mobile number.'});
       return;
     }
-    if (message.length < 10) {
-      res.status(400).json({
-        ok: false,
-        error: 'Please include brief project or enquiry details (at least 10 characters).',
-      });
-      return;
-    }
-    if (!consentGiven) {
-      res.status(400).json({
-        ok: false,
-        error: 'Please confirm your privacy consent before submitting your enquiry.',
-      });
-      return;
+
+    const effectiveEmail = isCallbackLead ? '' : email;
+    const effectiveService = service || (isCallbackLead ? 'Callback Request' : '');
+    const effectiveSubject = subject || (isCallbackLead ? 'Homepage Callback Request' : '');
+    const effectiveMessage =
+      message || (isCallbackLead ? 'Quick callback request submitted from Homepage Hero Banner.' : '');
+    const effectiveConsent = isCallbackLead ? true : consentGiven;
+
+    if (!isCallbackLead) {
+      if (!isValidEmailAddress(effectiveEmail)) {
+        res.status(400).json({ok: false, error: 'Please provide a valid email address.'});
+        return;
+      }
+      if (effectiveMessage.length < 10) {
+        res.status(400).json({
+          ok: false,
+          error: 'Please include brief project or enquiry details (at least 10 characters).',
+        });
+        return;
+      }
+      if (!effectiveConsent) {
+        res.status(400).json({
+          ok: false,
+          error: 'Please confirm your privacy consent before submitting your enquiry.',
+        });
+        return;
+      }
     }
 
     const fingerprint = computeSubmissionFingerprint([
       source,
-      email,
+      effectiveEmail,
       phone.replace(/\D/g, ''),
-      service,
-      message,
+      effectiveService,
+      effectiveMessage,
     ]);
 
     try {
@@ -683,15 +696,15 @@ async function createAppServer() {
           name,
           company,
           phone,
-          email,
+          email: effectiveEmail,
           city,
-          service,
+          service: effectiveService,
           industry,
-          subject,
-          message,
+          subject: effectiveSubject,
+          message: effectiveMessage,
           sourcePage,
           sourceSection,
-          consentGiven,
+          consentGiven: effectiveConsent,
           fingerprint,
         });
       } catch (dbError) {
@@ -707,13 +720,15 @@ async function createAppServer() {
 
       // Step 3: Attempt SMTP email delivery (never fail/delete the saved DB record on SMTP errors)
       const emailKind =
-        source === 'solar'
-          ? 'solar'
-          : source === 'service'
-            ? 'service'
-            : source === 'quote'
-              ? 'quote'
-              : 'contact';
+        source === 'callback'
+          ? 'callback'
+          : source === 'solar'
+            ? 'solar'
+            : source === 'service'
+              ? 'service'
+              : source === 'quote'
+                ? 'quote'
+                : 'contact';
 
       let delivered = false;
       let messageId: string | undefined;
@@ -726,17 +741,17 @@ async function createAppServer() {
           referenceId: saved.referenceId,
           name,
           company,
-          email,
+          email: effectiveEmail,
           phone,
           city,
-          service,
+          service: effectiveService,
           industry,
-          subject,
-          message,
+          subject: effectiveSubject,
+          message: effectiveMessage,
           sourcePage,
           sourceSection,
           submittedAtIso: saved.createdAt,
-          consentGiven,
+          consentGiven: effectiveConsent,
         });
         delivered = mailResult.delivered;
         messageId = mailResult.messageId;
@@ -902,43 +917,16 @@ async function createAppServer() {
     const phone = sanitizeSingleLine(body.phone, 32);
     const email = sanitizeSingleLine(body.email, 160);
     const company = sanitizeSingleLine(body.company, 140);
-    const service = sanitizeSingleLine(body.service, 120);
+    const service = sanitizeSingleLine(body.service, 120) || 'Website Enquiry Chat';
     const requirement = sanitizeMultiline(body.requirement, 2000);
     const sourcePage = sanitizeSingleLine(body.sourcePage, 200) || '/';
-    const consentGiven = body.consent === true;
 
     if (name.length < 2) {
       res.status(400).json({ok: false, error: 'Please enter your full name.'});
       return;
     }
     if (!isValidPhoneNumber(phone)) {
-      res.status(400).json({ok: false, error: 'Please enter a valid 10-digit mobile number.'});
-      return;
-    }
-    if (!isValidEmailAddress(email)) {
-      res.status(400).json({ok: false, error: 'Please enter a valid email address.'});
-      return;
-    }
-    if (company.length < 2) {
-      res.status(400).json({ok: false, error: 'Please enter your company or business name.'});
-      return;
-    }
-    if (service.length < 2) {
-      res.status(400).json({ok: false, error: 'Please select a service you are interested in.'});
-      return;
-    }
-    if (requirement.length < 10) {
-      res.status(400).json({
-        ok: false,
-        error: 'Please briefly describe your requirement (at least 10 characters).',
-      });
-      return;
-    }
-    if (!consentGiven) {
-      res.status(400).json({
-        ok: false,
-        error: 'Please provide consent before starting the chat.',
-      });
+      res.status(400).json({ok: false, error: 'Please enter a valid 10-digit Indian mobile number.'});
       return;
     }
 
@@ -961,8 +949,10 @@ async function createAppServer() {
         email: session.email,
         phone: session.phone,
         service: session.service,
-        subject: `Chatbox Lead — ${session.service}`,
-        message: session.initialRequirement,
+        subject: `Chatbox Lead — ${session.name}`,
+        message:
+          session.initialRequirement ||
+          'Visitor initiated Website Enquiry Chat with Name & Phone Number.',
         sourcePage: session.sourcePage,
         sourceSection: 'Website Chatbox (Step 1)',
         submittedAtIso: session.createdAt,

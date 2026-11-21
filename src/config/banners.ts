@@ -46,6 +46,7 @@ export const BANNER_IMAGES = {
   erpEnterpriseConsole: '/src/assets/images/erp_enterprise_console_hero_1795178038410.jpg',
   erpHrPayrollOffice: '/src/assets/images/erp_hr_payroll_office_1795178040039.jpg',
   erpPosRetailCounter: '/src/assets/images/erp_pos_retail_counter_1795178039601.jpg',
+  heroFullwidthBanner: '/src/assets/images/hero_fullwidth_banner_1795262024188.jpg',
   teamConsultation: '/src/assets/images/banner_team_consultation_1795011269227.jpg',
 } as const;
 
@@ -53,6 +54,7 @@ const JPG_ONLY_ASSET_PREFIXES = [
   '/src/assets/images/erp_enterprise_console_hero_',
   '/src/assets/images/erp_hr_payroll_office_',
   '/src/assets/images/erp_pos_retail_counter_',
+  '/src/assets/images/hero_fullwidth_banner_',
 ];
 
 export function toWebpAssetPath(imagePath?: string): string | undefined {

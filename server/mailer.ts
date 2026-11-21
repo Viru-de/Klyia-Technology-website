@@ -4,11 +4,11 @@ import type {Transporter} from 'nodemailer';
 import {escapeHtml, isValidEmailAddress, sanitizeSingleLine} from './security.ts';
 
 export interface EnquiryEmailPayload {
-  kind: 'contact' | 'quote' | 'service' | 'solar' | 'chat_lead' | 'chat_message';
+  kind: 'contact' | 'quote' | 'service' | 'solar' | 'chat_lead' | 'chat_message' | 'callback';
   referenceId: string;
   name: string;
   company?: string;
-  email: string;
+  email?: string;
   phone: string;
   city?: string;
   service?: string;
@@ -517,6 +517,8 @@ function formatIndiaTimestamp(isoString: string): string {
 
 function resolveKindLabel(kind: EnquiryEmailPayload['kind']): string {
   switch (kind) {
+    case 'callback':
+      return 'Homepage Callback Request';
     case 'solar':
       return 'Solar & Renewable Energy Enquiry';
     case 'service':
@@ -558,8 +560,13 @@ export async function sendEnquiryNotificationEmail(
     };
   }
 
-  const trimmedReplyEmail = payload.email.trim();
-  if (!isValidEmailAddress(trimmedReplyEmail) || /[\r\n<>]/.test(trimmedReplyEmail)) {
+  const trimmedReplyEmail = (payload.email || '').trim();
+  const hasValidReplyEmail =
+    Boolean(trimmedReplyEmail) &&
+    isValidEmailAddress(trimmedReplyEmail) &&
+    !/[\r\n<>]/.test(trimmedReplyEmail);
+
+  if (trimmedReplyEmail && !hasValidReplyEmail) {
     return {
       configured: true,
       delivered: false,
@@ -584,7 +591,7 @@ export async function sendEnquiryNotificationEmail(
     ['Full Name', payload.name],
     ['Company / Business', payload.company || 'Not specified'],
     ['Mobile Number', payload.phone],
-    ['Email Address', trimmedReplyEmail],
+    ['Email Address', hasValidReplyEmail ? trimmedReplyEmail : 'Not provided'],
     ['Selected Service', payload.service || 'General Enquiry'],
     ['Industry', payload.industry || 'Not specified'],
     ['City / Region', payload.city || 'Not specified'],
@@ -703,7 +710,9 @@ export async function sendEnquiryNotificationEmail(
           to: cfg.toEmail,
         },
         to: cfg.toEmail,
-        replyTo: safeReplyToName ? {name: safeReplyToName, address: trimmedReplyEmail} : trimmedReplyEmail,
+        ...(hasValidReplyEmail
+          ? {replyTo: safeReplyToName ? {name: safeReplyToName, address: trimmedReplyEmail} : trimmedReplyEmail}
+          : {}),
         subject: emailSubject,
         text: textLines.join('\n'),
         html: htmlBody,

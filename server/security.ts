@@ -107,17 +107,27 @@ export function isValidEmailAddress(email: string): boolean {
 }
 
 export function isValidPhoneNumber(phone: string): boolean {
-  const digits = phone.replace(/\D/g, '');
+  const trimmed = phone.trim();
+  const digits = trimmed.replace(/\D/g, '');
   if (digits.length < 10 || digits.length > 15) {
     return false;
   }
   if (digits.length === 10) {
     return /^[6-9]\d{9}$/.test(digits);
   }
-  if (digits.length === 12 && digits.startsWith('91')) {
-    return /^[6-9]\d{9}$/.test(digits.slice(2));
+  if (digits.length === 11) {
+    return /^0[6-9]\d{9}$/.test(digits);
   }
-  return true;
+  if (digits.length === 12) {
+    return /^91[6-9]\d{9}$/.test(digits);
+  }
+  if (digits.length === 14 && digits.startsWith('0091')) {
+    return /^[6-9]\d{9}$/.test(digits.slice(4));
+  }
+  if (trimmed.startsWith('+') && !digits.startsWith('91')) {
+    return digits.length >= 10 && digits.length <= 15;
+  }
+  return false;
 }
 
 export function escapeHtml(raw: string): string {

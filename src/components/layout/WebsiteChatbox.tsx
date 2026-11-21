@@ -11,19 +11,8 @@ import {
   X,
 } from 'lucide-react';
 import {BRAND, buildWhatsAppHref} from '../../config/brand.ts';
-import {ROUTES} from '../../config/routes.ts';
-import {Link, useRouter} from '../../lib/router.tsx';
+import {useRouter} from '../../lib/router.tsx';
 import {WhatsAppIcon} from '../ui/WhatsAppIcon.tsx';
-
-export const CHAT_SERVICE_OPTIONS = [
-  'Custom Software Development',
-  'ERP Software',
-  'Solar ERP / Solar EPC Solutions',
-  'Website Development',
-  'SEO / GEO / AI Search Optimization',
-  'WhatsApp Business Automation',
-  'Other',
-] as const;
 
 interface ChatMessageItem {
   id: number | string;
@@ -38,9 +27,9 @@ interface StoredChatSession {
   sessionToken: string;
   referenceId: string;
   name: string;
-  company: string;
-  service: string;
-  initialRequirement: string;
+  company?: string;
+  service?: string;
+  initialRequirement?: string;
   emailNotice: string;
 }
 
@@ -51,18 +40,37 @@ interface WebsiteChatboxProps {
 
 const CHAT_STORAGE_KEY = 'klyia_website_chat_session_v1';
 
+function isValidIndianOrIntlPhone(raw: string): boolean {
+  const trimmed = raw.trim();
+  const digits = trimmed.replace(/\D/g, '');
+  if (/^[6-9]\d{9}$/.test(digits)) {
+    return true;
+  }
+  if (/^0[6-9]\d{9}$/.test(digits)) {
+    return true;
+  }
+  if (/^91[6-9]\d{9}$/.test(digits)) {
+    return true;
+  }
+  if (/^0091[6-9]\d{9}$/.test(digits)) {
+    return true;
+  }
+  if (trimmed.startsWith('+')) {
+    if (digits.startsWith('91')) {
+      return /^91[6-9]\d{9}$/.test(digits);
+    }
+    return digits.length >= 10 && digits.length <= 15 && !/^(\d)\1{6,}$/.test(digits);
+  }
+  return false;
+}
+
 export function WebsiteChatbox({isOpen, onClose}: WebsiteChatboxProps) {
   const {pathname} = useRouter();
   const [step, setStep] = useState<'form' | 'chat'>('form');
 
-  // Step 1 Visitor Information Fields
+  // Step 1 Visitor Information Fields (Strictly Full Name + Phone Number)
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [company, setCompany] = useState('');
-  const [service, setService] = useState<string>(CHAT_SERVICE_OPTIONS[0]);
-  const [requirement, setRequirement] = useState('');
-  const [consent, setConsent] = useState(false);
   const [websiteUrl, setWebsiteUrl] = useState('');
   const [startingChat, setStartingChat] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
@@ -142,9 +150,9 @@ export function WebsiteChatbox({isOpen, onClose}: WebsiteChatboxProps) {
 
   const whatsappUrl = buildWhatsAppHref(
     activeSession
-      ? `Hello Klyia Technology, my name is ${activeSession.name} (${activeSession.company}). I submitted enquiry ${activeSession.referenceId} regarding ${activeSession.service}.`
+      ? `Hello Klyia Technology, my name is ${activeSession.name}. I started enquiry ${activeSession.referenceId} on your website and would like to discuss my requirements.`
       : name.trim()
-        ? `Hello Klyia Technology, my name is ${name.trim()} and I would like to discuss ${service}.`
+        ? `Hello Klyia Technology, my name is ${name.trim()} and I would like to discuss my project requirements.`
         : undefined,
   );
 
@@ -157,37 +165,13 @@ export function WebsiteChatbox({isOpen, onClose}: WebsiteChatboxProps) {
 
     const trimmedName = name.trim();
     const trimmedPhone = phone.trim();
-    const trimmedEmail = email.trim();
-    const trimmedCompany = company.trim();
-    const trimmedReq = requirement.trim();
-    const digits = trimmedPhone.replace(/\D/g, '');
 
     if (trimmedName.length < 2) {
       setFormError('Please enter your full name.');
       return;
     }
-    if (
-      digits.length < 10 ||
-      digits.length > 15 ||
-      (digits.length === 10 && !/^[6-9]\d{9}$/.test(digits))
-    ) {
+    if (!isValidIndianOrIntlPhone(trimmedPhone)) {
       setFormError('Please enter a valid 10-digit mobile number.');
-      return;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(trimmedEmail)) {
-      setFormError('Please enter a valid email address.');
-      return;
-    }
-    if (trimmedCompany.length < 2) {
-      setFormError('Please enter your company or business name.');
-      return;
-    }
-    if (trimmedReq.length < 10) {
-      setFormError('Please briefly describe your requirement (at least 10 characters).');
-      return;
-    }
-    if (!consent) {
-      setFormError('Please check the consent box so our team can contact you.');
       return;
     }
 
@@ -199,12 +183,7 @@ export function WebsiteChatbox({isOpen, onClose}: WebsiteChatboxProps) {
         body: JSON.stringify({
           name: trimmedName,
           phone: trimmedPhone,
-          email: trimmedEmail,
-          company: trimmedCompany,
-          service,
-          requirement: trimmedReq,
           sourcePage: pathname || '/',
-          consent: true,
           website_url: websiteUrl,
         }),
       });
@@ -231,12 +210,9 @@ export function WebsiteChatbox({isOpen, onClose}: WebsiteChatboxProps) {
         sessionToken: payload.sessionToken,
         referenceId: payload.referenceId || 'KLY-CHAT',
         name: trimmedName,
-        company: trimmedCompany,
-        service,
-        initialRequirement: trimmedReq,
         emailNotice:
           payload.emailNotice ||
-          'Enquiry received. Our team reviews all messages directly.',
+          'Enquiry received. Our team will reach out to you shortly.',
       };
 
       setActiveSession(nextSession);
@@ -396,14 +372,14 @@ export function WebsiteChatbox({isOpen, onClose}: WebsiteChatboxProps) {
       </div>
 
       {step === 'form' ? (
-        /* Step 1: Mandatory Visitor Details Gate */
+        /* Step 1: Simplified Visitor Details Gate (Full Name + Phone Number ONLY) */
         <div className="flex-1 overflow-y-auto p-4 space-y-3.5">
           <div className="rounded-xl border border-[#303030] bg-[#141414] p-3.5 space-y-1">
             <p className="text-xs font-bold text-white">
               Welcome to Klyia Technology!
             </p>
             <p className="text-xs leading-relaxed text-[#CDCBCA]">
-              Welcome to Klyia Technology! Please share your details so our team can assist you.
+              Enter your name and phone number to start an enquiry chat with our team.
             </p>
           </div>
 
@@ -417,7 +393,7 @@ export function WebsiteChatbox({isOpen, onClose}: WebsiteChatboxProps) {
             </div>
           ) : null}
 
-          <form onSubmit={handleStartChat} className="space-y-3" noValidate>
+          <form onSubmit={handleStartChat} className="space-y-3.5" noValidate>
             <div className="hidden" aria-hidden="true">
               <label htmlFor="chat-honeypot">Leave blank</label>
               <input
@@ -431,118 +407,44 @@ export function WebsiteChatbox({isOpen, onClose}: WebsiteChatboxProps) {
             </div>
 
             <div>
-              <label htmlFor="chat-name" className="block text-xs font-semibold text-[#CDCBCA] mb-1">
-                1. Full Name *
+              <label htmlFor="chat-name" className="block text-xs font-semibold text-[#CDCBCA] mb-1.5">
+                Full Name *
               </label>
               <input
                 id="chat-name"
+                name="name"
                 type="text"
                 required
+                autoComplete="name"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Your full name"
-                className="w-full rounded-lg border border-[#303030] bg-[#111111] px-3 py-2 text-xs text-white placeholder:text-[#969696]/70 focus:border-[#D41514] focus:outline-none"
+                onChange={(e) => {
+                  setName(e.target.value);
+                  if (formError) setFormError(null);
+                }}
+                placeholder="Enter your full name"
+                className="w-full h-10 rounded-lg border border-[#303030] bg-[#111111] px-3 text-xs text-white placeholder:text-[#969696]/70 focus:border-[#D41514] focus:outline-none"
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              <div>
-                <label htmlFor="chat-phone" className="block text-xs font-semibold text-[#CDCBCA] mb-1">
-                  2. Mobile Number *
-                </label>
-                <input
-                  id="chat-phone"
-                  type="tel"
-                  required
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+91 98XXXXXXXX"
-                  className="w-full rounded-lg border border-[#303030] bg-[#111111] px-3 py-2 text-xs text-white placeholder:text-[#969696]/70 focus:border-[#D41514] focus:outline-none"
-                />
-              </div>
-              <div>
-                <label htmlFor="chat-email" className="block text-xs font-semibold text-[#CDCBCA] mb-1">
-                  3. Email Address *
-                </label>
-                <input
-                  id="chat-email"
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@company.com"
-                  className="w-full rounded-lg border border-[#303030] bg-[#111111] px-3 py-2 text-xs text-white placeholder:text-[#969696]/70 focus:border-[#D41514] focus:outline-none"
-                />
-              </div>
-            </div>
-
             <div>
-              <label htmlFor="chat-company" className="block text-xs font-semibold text-[#CDCBCA] mb-1">
-                4. Company / Business Name *
+              <label htmlFor="chat-phone" className="block text-xs font-semibold text-[#CDCBCA] mb-1.5">
+                Phone Number *
               </label>
               <input
-                id="chat-company"
-                type="text"
+                id="chat-phone"
+                name="phone"
+                type="tel"
                 required
-                value={company}
-                onChange={(e) => setCompany(e.target.value)}
-                placeholder="Your company or enterprise name"
-                className="w-full rounded-lg border border-[#303030] bg-[#111111] px-3 py-2 text-xs text-white placeholder:text-[#969696]/70 focus:border-[#D41514] focus:outline-none"
+                autoComplete="tel"
+                inputMode="tel"
+                value={phone}
+                onChange={(e) => {
+                  setPhone(e.target.value);
+                  if (formError) setFormError(null);
+                }}
+                placeholder="Enter your mobile number"
+                className="w-full h-10 rounded-lg border border-[#303030] bg-[#111111] px-3 text-xs text-white placeholder:text-[#969696]/70 focus:border-[#D41514] focus:outline-none"
               />
-            </div>
-
-            <div>
-              <label htmlFor="chat-service" className="block text-xs font-semibold text-[#CDCBCA] mb-1">
-                5. What service are you interested in? *
-              </label>
-              <select
-                id="chat-service"
-                value={service}
-                onChange={(e) => setService(e.target.value)}
-                className="w-full rounded-lg border border-[#303030] bg-[#111111] px-3 py-2 text-xs text-white focus:border-[#D41514] focus:outline-none"
-              >
-                {CHAT_SERVICE_OPTIONS.map((opt) => (
-                  <option key={opt} value={opt} className="bg-[#111111] text-[#CDCBCA]">
-                    {opt}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label htmlFor="chat-requirement" className="block text-xs font-semibold text-[#CDCBCA] mb-1">
-                6. Briefly describe your requirement *
-              </label>
-              <textarea
-                id="chat-requirement"
-                rows={2}
-                required
-                value={requirement}
-                onChange={(e) => setRequirement(e.target.value)}
-                placeholder="Tell us briefly what you need..."
-                className="w-full rounded-lg border border-[#303030] bg-[#111111] px-3 py-2 text-xs text-white placeholder:text-[#969696]/70 focus:border-[#D41514] focus:outline-none"
-              />
-            </div>
-
-            <div className="rounded-lg border border-[#303030] bg-[#111111] p-2.5">
-              <label className="flex items-start gap-2 cursor-pointer text-[11px] leading-relaxed text-[#CDCBCA]">
-                <input
-                  type="checkbox"
-                  checked={consent}
-                  onChange={(e) => setConsent(e.target.checked)}
-                  className="mt-0.5 h-3.5 w-3.5 rounded border-[#303030] bg-[#080808] accent-[#D41514] shrink-0"
-                />
-                <span>
-                  I agree to share my contact details with Klyia Technology so the team can respond to my enquiry.{' '}
-                  <Link
-                    href={ROUTES.PRIVACY_POLICY}
-                    onNavigate={onClose}
-                    className="underline text-white hover:text-[#D41514]"
-                  >
-                    Privacy Notice
-                  </Link>
-                </span>
-              </label>
             </div>
 
             <button
@@ -550,7 +452,7 @@ export function WebsiteChatbox({isOpen, onClose}: WebsiteChatboxProps) {
               disabled={startingChat}
               className="flex w-full h-10 items-center justify-center gap-2 rounded-lg bg-[#D41514] px-4 text-xs font-semibold text-white hover:bg-[#E31E1D] disabled:opacity-60 transition-colors cursor-pointer"
             >
-              <span>{startingChat ? 'Submitting Details...' : 'Start Enquiry Chat'}</span>
+              <span>{startingChat ? 'Starting Chat...' : 'Start Enquiry Chat'}</span>
               <Send className="w-3.5 h-3.5" aria-hidden="true" />
             </button>
           </form>
@@ -565,8 +467,12 @@ export function WebsiteChatbox({isOpen, onClose}: WebsiteChatboxProps) {
                 Hello {activeSession?.name}, thank you for reaching out to Klyia Technology.
               </p>
               <p className="text-[11px] text-[#CDCBCA] leading-relaxed">
-                <strong className="text-white">Service:</strong> {activeSession?.service}
-                <br />
+                {activeSession?.service ? (
+                  <>
+                    <strong className="text-white">Service:</strong> {activeSession.service}
+                    <br />
+                  </>
+                ) : null}
                 <strong className="text-white">Ref ID:</strong>{' '}
                 <span className="font-[family-name:var(--font-mono)]">{activeSession?.referenceId}</span>
               </p>
@@ -574,6 +480,11 @@ export function WebsiteChatbox({isOpen, onClose}: WebsiteChatboxProps) {
                 <Clock className="w-3.5 h-3.5 text-[#D41514] shrink-0 mt-0.5" aria-hidden="true" />
                 <span>{activeSession?.emailNotice}</span>
               </div>
+              {messages.length === 0 ? (
+                <p className="text-[11px] text-[#969696]">
+                  Ask a question or share your requirements below to start chatting.
+                </p>
+              ) : null}
             </div>
 
             {/* Messages Thread */}
